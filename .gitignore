@@ -1,2 +1,8 @@
+# Do not track ctags
 tags
+
+# Do not track changes in submodules
 external/*
+
+# Do not track build artifacts
+firmware/*/Debug/*
