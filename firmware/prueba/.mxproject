@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=/home/alexis/atollic_ws/prueba/Inc
+HeaderPath=/home/alexis/tesis-bot/firmware/prueba/Inc
 HeaderFiles=stm32f7xx_it.h;stm32f7xx_hal_conf.h;main.h;FreeRTOSConfig.h;
-SourcePath=/home/alexis/atollic_ws/prueba/Src
+SourcePath=/home/alexis/tesis-bot/firmware/prueba/Src
 SourceFiles=stm32f7xx_it.c;stm32f7xx_hal_msp.c;main.c;freertos.c;stm32f7xx_hal_timebase_tim.c;
 
 [PreviousLibFiles]

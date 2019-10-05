@@ -11,15 +11,14 @@
 #include <mainpp.h>
 #include <sensor_msgs/Imu.h>
 #include <std_msgs/String.h>
+#include <geometry_msgs/Twist.h>
 #include <I2Cdev.h>
 #include <create2.h>
 #include <MPU6050.h>
 
 ros::NodeHandle nh;
 
-
 extern I2C_HandleTypeDef hi2c1;
-
 extern UART_HandleTypeDef huart2;
 
 irobot::create2 robot(&huart2, BRC_GPIO_Port, BRC_Pin);
@@ -31,10 +30,20 @@ char buff[50];
 
 sensor_msgs::Imu imu_msg;
 std_msgs::String string_msg;
-ros::Publisher imu_pub("alexis", &imu_msg);
-ros::Publisher chatter("chatter", &string_msg);
+geometry_msgs::Twist cmdvel_msg;
 
+//ros::Publisher imu_pub("alexis", &imu_msg);
+//ros::Publisher chatter("chatter", &string_msg);
+float vel_right, vel_left;
+const float wheels_dist = 235.0;
 
+void cmdvel_cb(const geometry_msgs::Twist& msg) {
+    vel_right = msg.linear.x + msg.angular.z * wheels_dist / 2;
+    vel_left = msg.linear.x - msg.angular.z * wheels_dist / 2;
+    robot.driveVelocity(vel_right, vel_left);
+}
+
+ros::Subscriber<geometry_msgs::Twist> cmdvel_sub("cmd_vel", &cmdvel_cb);
 
 void ToQuaternion(geometry_msgs::Quaternion* quat, int16_t yaw, int16_t pitch, int16_t roll) // yaw (Z), pitch (Y), roll (X)
 {
@@ -67,31 +76,32 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 
 void setup(void)
 {
-//  nh.initNode();
 //  nh.advertise(chatter);
 //  nh.advertise(imu_pub);
 //  I2Cdev_init(&hi2c1);
 //  MPU6050_setAddress(0x68);
 //  MPU6050_initialize();
-  HAL_Delay(5000);
+  HAL_Delay(2000);
   robot.start();
-  HAL_Delay(5000);
+  HAL_Delay(2000);
   robot.goFullMode();
   HAL_Delay(2000);
-  robot.drivePWM(128, -128);
-  HAL_Delay(2000);
-  robot.drivePWM(0, 0);
-  HAL_Delay(1000);
-  robot.drivePWM(-128, 128);
-  HAL_Delay(2000);
-  robot.drivePWM(0, 0);
-  HAL_Delay(1000);
-  robot.stop();
+  nh.initNode();
+  nh.subscribe(cmdvel_sub);
+//  robot.drivePWM(64, -64);
+//  HAL_Delay(2000);
+//  robot.drivePWM(0, 0);
+//  HAL_Delay(1000);
+//  robot.drivePWM(-64, 64);
+//  HAL_Delay(2000);
+//  robot.drivePWM(0, 0);
+//  HAL_Delay(1000);
+//  robot.stop();
 }
 
 void loop(void)
 {
-//  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0);
+  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0);
 ////  MPU6050_getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
 //
 //  // Updated on every step
@@ -109,9 +119,9 @@ void loop(void)
 //
 ////  string_msg.data = "Hola!";
 ////  chatter.publish(&string_msg);
-//  nh.spinOnce();
+  nh.spinOnce();
 //
-//  vTaskDelay(100 / portTICK_PERIOD_MS);
+  vTaskDelay(100 / portTICK_PERIOD_MS);
 }
 
 #ifdef __cplusplus
