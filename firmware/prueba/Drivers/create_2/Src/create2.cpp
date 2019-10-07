@@ -87,6 +87,295 @@ void create2::drivePWM(int16_t rightPWM, int16_t leftPWM) {
 	HAL_UART_Transmit(uart, txData, 5, 500);
 }
 
+void create2::requestSensorData(uint8_t sensorID) {
+	uint8_t packetID = 0;
+	if (sensorID > 100) {
+		switch (sensorID) {
+		case 101:
+		case 102:
+		case 103:
+		case 104:
+			packetID = 7;
+			break;
+		case 105:
+		case 106:
+		case 107:
+		case 108:
+			packetID = 14;
+			break;
+		case 109:
+		case 110:
+		case 111:
+		case 112:
+		case 113:
+		case 114:
+		case 115:
+		case 116:
+			packetID = 18;
+			break;
+		case 117:
+		case 118:
+		case 119:
+		case 120:
+		case 121:
+		case 122:
+			packetID = 45;
+			break;
+		}
+
+	} else {
+		packetID = sensorID;
+	}
+
+	uint8_t txByte = 142;
+	HAL_UART_Transmit(uart, &txByte, 1, 500);
+	txByte = (uint8_t) packetID;
+	HAL_UART_Transmit(uart, &txByte, 1, 500);
+}
+
+void create2::requestSensorDataList(uint8_t numOfRequests,
+		uint8_t requestIDs[]) {
+	uint8_t packetIDs[numOfRequests];
+	for (uint8_t i = 0; i < numOfRequests; ++i) {
+		if (requestIDs[i] > 100) {
+			switch (requestIDs[i]) {
+			case 101:
+			case 102:
+			case 103:
+			case 104:
+				packetIDs[i] = 7;
+				break;
+			case 105:
+			case 106:
+			case 107:
+			case 108:
+				packetIDs[i] = 14;
+				break;
+			case 109:
+			case 110:
+			case 111:
+			case 112:
+			case 113:
+			case 114:
+			case 115:
+			case 116:
+				packetIDs[i] = 18;
+				break;
+			case 117:
+			case 118:
+			case 119:
+			case 120:
+			case 121:
+			case 122:
+				packetIDs[i] = 45;
+				break;
+			}
+
+		} else {
+			packetIDs[i] = requestIDs[i];
+		}
+	}
+	uint8_t txByte = 149;
+	HAL_UART_Transmit(uart, &txByte, 1, 500);
+	HAL_UART_Transmit(uart, &numOfRequests, 1, 500);
+	for (int i = 0; i < numOfRequests; ++i) {
+		HAL_UART_Transmit(uart, &packetIDs[i], 1, 500);
+	}
+}
+
+void create2::beginDataStream(uint8_t numOfRequests, uint8_t requestIDs[]) {
+	uint8_t packetIDs[numOfRequests];
+	for (int i = 0; i < numOfRequests; i++) {
+		if (requestIDs[i] > 100) {
+			switch (requestIDs[i]) {
+			case 101:
+			case 102:
+			case 103:
+			case 104:
+				packetIDs[i] = 7;
+				break;
+			case 105:
+			case 106:
+			case 107:
+			case 108:
+				packetIDs[i] = 14;
+				break;
+			case 109:
+			case 110:
+			case 111:
+			case 112:
+			case 113:
+			case 114:
+			case 115:
+			case 116:
+				packetIDs[i] = 18;
+				break;
+			case 117:
+			case 118:
+			case 119:
+			case 120:
+			case 121:
+			case 122:
+				packetIDs[i] = 45;
+				break;
+			}
+
+		} else {
+			packetIDs[i] = requestIDs[i];
+		}
+	}
+	uint8_t txByte = 148;
+	HAL_UART_Transmit(uart, &txByte, 1, 500);
+	HAL_UART_Transmit(uart, &numOfRequests, 1, 500);
+	for (int i = 0; i < numOfRequests; ++i) {
+		HAL_UART_Transmit(uart, &packetIDs[i], 1, 500);
+	}
+}
+
+void create2::pauseStream() {
+	uint8_t txByte = 150;
+	HAL_UART_Transmit(uart, &txByte, 1, 500);
+	txByte = (uint8_t) 0x00;
+	HAL_UART_Transmit(uart, &txByte, 1, 500);
+}
+
+void create2::resumeSteam() {
+	uint8_t txByte = 150;
+	HAL_UART_Transmit(uart, &txByte, 1, 500);
+	txByte = 1;
+	HAL_UART_Transmit(uart, &txByte, 1, 500);
+}
+
+int create2::getSensorData(uint8_t sensorID) {
+	int returnVal;
+	uint8_t packetID = 0;
+	if (sensorID > 100) {
+		switch (sensorID) {
+		case 101:
+		case 102:
+		case 103:
+		case 104:
+			packetID = 7;
+			break;
+		case 105:
+		case 106:
+		case 107:
+		case 108:
+			packetID = 14;
+			break;
+		case 109:
+		case 110:
+		case 111:
+		case 112:
+		case 113:
+		case 114:
+		case 115:
+		case 116:
+			packetID = 18;
+			break;
+		case 117:
+		case 118:
+		case 119:
+		case 120:
+		case 121:
+		case 122:
+			packetID = 45;
+			break;
+		}
+
+	} else {
+		packetID = sensorID;
+	}
+	uint8_t txByte = 142;
+	uint8_t rxBytes[2];
+	HAL_UART_Transmit(uart, &txByte, 1, 500);
+	HAL_UART_Transmit(uart, &packetID, 1, 500);
+	if (is_in_array(packetID)) {
+		HAL_UART_Receive(uart, rxBytes, 2, 500);
+		returnVal = rxBytes[0] << 7 | rxBytes[1];
+	}
+	return returnVal;
+}
+
+void create2::getSensorData(int returnVal[], uint8_t numOfRequests,
+		uint8_t requestIDs[]) {
+	uint8_t packetIDs[numOfRequests];
+	for (int i = 0; i < numOfRequests; i++) {
+		if (requestIDs[i] > 100) {
+			switch (requestIDs[i]) {
+			case 101:
+			case 102:
+			case 103:
+			case 104:
+				packetIDs[i] = 7;
+				break;
+			case 105:
+			case 106:
+			case 107:
+			case 108:
+				packetIDs[i] = 14;
+				break;
+			case 109:
+			case 110:
+			case 111:
+			case 112:
+			case 113:
+			case 114:
+			case 115:
+			case 116:
+				packetIDs[i] = 18;
+				break;
+			case 117:
+			case 118:
+			case 119:
+			case 120:
+			case 121:
+			case 122:
+				packetIDs[i] = 45;
+				break;
+			}
+		} else {
+			packetIDs[i] = requestIDs[i];
+		}
+	}
+	uint8_t txByte = 149;
+	uint8_t rxBytes[2];
+	HAL_UART_Transmit(uart, &txByte, 1, 500);
+	HAL_UART_Transmit(uart, &numOfRequests, 1, 500);
+	for (int i = 0; i < numOfRequests; ++i) {
+		HAL_UART_Transmit(uart, &packetIDs[i], 1, 500);
+	}
+	uint8_t pos = 0;
+	for (int i = 0; i < numOfRequests / 2; ++i) {
+		HAL_UART_Receive(uart, rxBytes, 2, 500);
+		returnVal[pos++] = (rxBytes[0] << 7) | rxBytes[1];
+	}
+}
+
+/**
+ Returns false if failed, due to a timeout
+ returns true if successful and fills the buffer provided by the pointer
+ **/
+bool create2::getSensorData(uint8_t * buffer, uint8_t bufferLength) {
+	uint8_t rxByte;
+	while (bufferLength-- > 0) {
+		if (HAL_UART_Receive(uart, &rxByte, 1, 200) != HAL_OK) {
+			return false; // Timed out
+		}
+		*buffer++ = rxByte;
+	}
+	return true;
+}
+
+bool create2::is_in_array(uint8_t val) {
+	for (int i = 0; i < 22; ++i) {
+		if (val == single_byte_packets[i]) {
+			return true;
+		}
+	}
+	return false;
+}
+
 } /* namespace irobot */
 
 #ifdef __cplusplus
