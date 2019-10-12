@@ -160,10 +160,14 @@ public:
 	int getSensorData(uint8_t sensorID);
 	void getSensorData(int returnVal[], uint8_t numOfRequests, uint8_t requestIDs[]);
 	bool getSensorData(uint8_t * buffer, uint8_t bufferLength);
-	void decodeIR(uint8_t value);
+
+    void readEncoders(uint16_t* leftEncoderCount, uint16_t* rightEncoderCount);
+
+    uint16_t readLeftEncoder();
+    uint16_t readRightEncoder();
 
 private:
-	bool is_in_array(uint8_t val);
+	bool is_single_byte(uint8_t val);
 
 	UART_HandleTypeDef* uart;
 

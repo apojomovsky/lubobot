@@ -247,7 +247,7 @@ void create2::resumeSteam() {
 }
 
 int create2::getSensorData(uint8_t sensorID) {
-	int returnVal;
+	int returnVal = -2;
 	uint8_t packetID = 0;
 	if (sensorID > 100) {
 		switch (sensorID) {
@@ -287,12 +287,27 @@ int create2::getSensorData(uint8_t sensorID) {
 		packetID = sensorID;
 	}
 	uint8_t txByte = 142;
-	uint8_t rxBytes[2];
-	HAL_UART_Transmit(uart, &txByte, 1, 500);
-	HAL_UART_Transmit(uart, &packetID, 1, 500);
-	if (is_in_array(packetID)) {
-		HAL_UART_Receive(uart, rxBytes, 2, 500);
-		returnVal = rxBytes[0] << 7 | rxBytes[1];
+	uint8_t MSB;
+	uint8_t LSB;
+	HAL_UART_Transmit(uart, &txByte, 1, 100);
+	HAL_UART_Transmit(uart, &packetID, 1, 100);
+	if (is_single_byte(packetID)) {
+		if(HAL_UART_Receive(uart, &LSB, 1, 100) != HAL_OK)
+		{
+		  return -1;
+		}
+		returnVal = LSB && 0xFF;
+	}
+	else {
+		if(HAL_UART_Receive(uart, &MSB, 1, 100) != HAL_OK)
+		{
+		  return -1;
+		}
+		if(HAL_UART_Receive(uart, &LSB, 1, 100) != HAL_OK)
+		{
+		  return -1;
+		}
+		returnVal = (int)((MSB << 7) | (LSB && 0xFF));
 	}
 	return returnVal;
 }
@@ -367,7 +382,53 @@ bool create2::getSensorData(uint8_t * buffer, uint8_t bufferLength) {
 	return true;
 }
 
-bool create2::is_in_array(uint8_t val) {
+void create2::readEncoders(uint16_t* leftEncoderCount, uint16_t* rightEncoderCount) {
+  uint16_t rxBuffer[2];
+  for(uint8_t i=0; i<2; ++i) {
+	  rxBuffer[i] = 0;
+  }
+  uint8_t txByte;
+  uint8_t* txBytePtr = &txByte;
+  txByte = 149;
+  HAL_UART_Transmit(uart, txBytePtr, 1, 100);
+  txByte = 2;
+  HAL_UART_Transmit(uart, txBytePtr, 1, 100);
+  txByte = 43;
+  HAL_UART_Transmit(uart, txBytePtr, 1, 100);
+  txByte = 44;
+  HAL_UART_Transmit(uart, txBytePtr, 1, 100);
+  HAL_UART_Receive(uart, (uint8_t*)rxBuffer, 4, 300);
+  *leftEncoderCount = (rxBuffer[0]);
+  *rightEncoderCount = (rxBuffer[1]);
+}
+
+
+uint16_t create2::readLeftEncoder() {
+  uint16_t leftEncoderCount = 0;
+  uint8_t txByte;
+  uint8_t* txBytePtr = &txByte;
+  txByte = 142;
+  HAL_UART_Transmit(uart, txBytePtr, 1, 100);
+  txByte = 43;
+  HAL_UART_Transmit(uart, txBytePtr, 1, 100);
+  HAL_UART_Receive(uart, (uint8_t*)&leftEncoderCount, 2, 300);
+  return leftEncoderCount;
+}
+
+
+uint16_t create2::readRightEncoder() {
+  uint16_t rightEncoderCount = 0;
+  uint8_t txByte;
+  uint8_t* txBytePtr = &txByte;
+  txByte = 142;
+  HAL_UART_Transmit(uart, txBytePtr, 1, 100);
+  txByte = 44;
+  HAL_UART_Transmit(uart, txBytePtr, 1, 100);
+  HAL_UART_Receive(uart, (uint8_t*)&rightEncoderCount, 2, 300);
+  return rightEncoderCount;
+}
+
+bool create2::is_single_byte(uint8_t val) {
 	for (int i = 0; i < 22; ++i) {
 		if (val == single_byte_packets[i]) {
 			return true;
