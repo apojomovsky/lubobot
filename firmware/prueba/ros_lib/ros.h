@@ -36,7 +36,12 @@
 #define _ROS_H_
 
 #include "ros/node_handle.h"
-#include "STM32Hardware.h"
+
+#if defined(ROSSERIAL_TCP)
+  #include "STM32TcpHardware.h"
+#else
+  #include "STM32Hardware.h"
+#endif
 
 namespace ros
 {
