@@ -1,3 +1,9 @@
 [submodule "external/create_autonomy"]
 	path = external/create_autonomy
 	url = https://github.com/AutonomyLab/create_autonomy.git
+[submodule "external/tiny_msgs"]
+	path = external/tiny_msgs
+	url = https://github.com/superjax/tiny_msgs.git
+[submodule "external/tinyIMU_relay"]
+	path = external/tinyIMU_relay
+	url = https://github.com/superjax/tinyIMU_relay.git
