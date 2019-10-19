@@ -51,6 +51,18 @@
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/include" />
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS" />
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/system" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/netif/ppp" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/lwip" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/lwip/apps" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/lwip/priv" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/lwip/prot" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/netif" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/posix" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/posix/sys" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/system/arch" />
+									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Include" />
 								</option>
 								<option id="com.atollic.truestudio.gcc.symbols.defined.1670122205" name="Defined symbols" superClass="com.atollic.truestudio.gcc.symbols.defined" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__weak=&quot;__attribute__((weak))&quot;" />
@@ -99,6 +111,17 @@
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS" />
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1" />
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/prueba/Drivers/create_2/Inc}&quot;" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/system" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/netif/ppp" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/lwip" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/lwip/apps" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/lwip/priv" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/lwip/prot" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/netif" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/posix" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/posix/sys" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/system/arch" />
 								</option>
 								<option id="com.atollic.truestudio.gpp.symbols.defined.1619552487" name="Defined symbols" superClass="com.atollic.truestudio.gpp.symbols.defined" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__weak=&quot;__attribute__((weak))&quot;" />
@@ -207,6 +230,18 @@
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/include" />
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS" />
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/system" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/netif/ppp" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/lwip" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/lwip/apps" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/lwip/priv" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/lwip/prot" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/netif" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/posix" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/posix/sys" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/system/arch" />
+									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Include" />
 								</option>
 								<option id="com.atollic.truestudio.gcc.symbols.defined.1670122205" name="Defined symbols" superClass="com.atollic.truestudio.gcc.symbols.defined" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__weak=&quot;__attribute__((weak))&quot;" />
@@ -254,6 +289,18 @@
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/include" />
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS" />
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/system" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/netif/ppp" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/lwip" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/lwip/apps" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/lwip/priv" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/lwip/prot" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/netif" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/posix" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/src/include/posix/sys" />
+									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/LwIP/system/arch" />
+									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Include" />
 								</option>
 								<option id="com.atollic.truestudio.gpp.symbols.defined.1619552487" name="Defined symbols" superClass="com.atollic.truestudio.gpp.symbols.defined" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__weak=&quot;__attribute__((weak))&quot;" />

@@ -24,9 +24,9 @@ using namespace irobot;
 ros::NodeHandle nh;
 
 //extern I2C_HandleTypeDef hi2c1;
-extern UART_HandleTypeDef huart2;
+extern UART_HandleTypeDef huart5;
 
-irobot::create2 robot(&huart2, BRC_GPIO_Port, BRC_Pin);
+irobot::create2 robot(&huart5, BRC_GPIO_Port, BRC_Pin);
 
 //int16_t ax, ay, az;
 //int16_t gx, gy, gz;
@@ -103,7 +103,7 @@ void setup(void) {
   robot.start();
   robot.pauseStream();
 //  HAL_Delay(500);
-  robot.goFullMode();
+  robot.goSafeMode();
 //  HAL_Delay(500);
 //  robot.drivePWM(64, -64);
 //  HAL_Delay(500);
