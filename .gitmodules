@@ -7,3 +7,6 @@
 [submodule "external/tinyIMU_relay"]
 	path = external/tinyIMU_relay
 	url = https://github.com/superjax/tinyIMU_relay.git
+[submodule "external/libcreate"]
+	path = external/libcreate
+	url = https://github.com/AutonomyLab/libcreate.git

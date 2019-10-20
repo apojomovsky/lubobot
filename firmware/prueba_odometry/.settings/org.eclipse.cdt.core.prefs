@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+environment/project/com.atollic.truestudio.exe.debug.1518366166/PATH/delimiter=\:
+environment/project/com.atollic.truestudio.exe.debug.1518366166/PATH/operation=replace
+environment/project/com.atollic.truestudio.exe.debug.1518366166/PATH/value=/opt/Atollic_TrueSTUDIO_for_STM32_x86_64_9.3.0/ARMTools/bin\:/opt/Atollic_TrueSTUDIO_for_STM32_x86_64_9.3.0/Tools\:/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/usr/games\:/usr/local/games\:/snap/bin
+environment/project/com.atollic.truestudio.exe.debug.1518366166/append=true
+environment/project/com.atollic.truestudio.exe.debug.1518366166/appendContributed=true
