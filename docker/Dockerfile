@@ -20,6 +20,7 @@ RUN apt-get update && \
       python-catkin-tools \
       python-rosdep \
       python-rosinstall \
+      ros-kinetic-rosserial \
       sudo \
       tmux \
       xserver-xorg-video-intel && \
@@ -47,6 +48,7 @@ RUN echo ". /opt/ros/kinetic/setup.bash" >> /home/dev/.bashrc
 
 RUN rosdep update --include-eol-distros
 RUN sudo apt-get update
+
 
 WORKDIR /catkin_ws/
 RUN sudo chown -R dev:dev /catkin_ws
