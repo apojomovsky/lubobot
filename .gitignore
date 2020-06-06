@@ -1,8 +1,10 @@
-# Do not track ctags
+# ctags
 tags
+# VIM swap files
+.swp
 
-# Do not track changes in submodules
+# Changes in submodules
 external/*
 
-# Do not track build artifacts
+# Build artifacts
 firmware/*/Debug/*

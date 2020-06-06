@@ -20,7 +20,7 @@ RUN apt-get update && \
       python-catkin-tools \
       python-rosdep \
       python-rosinstall \
-      ros-kinetic-rosserial \
+      # ros-kinetic-rosserial \
       sudo \
       tmux \
       xserver-xorg-video-intel && \

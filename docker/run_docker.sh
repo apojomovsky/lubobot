@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 SCRIPTS_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 REPO_DIR=`readlink -f ${SCRIPTS_DIR}/..`
 
@@ -7,7 +9,7 @@ DOCKER_CAPABILITIES="--ipc=host \
 DOCKER_NETWORK="--network=host"
 DOCKER_MOUNT_ARGS="\
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
-    -v ${REPO_DIR}:/catkin_ws/src/tesis-bot"
+    -v ${REPO_DIR}/external:/catkin_ws/src/"
 DOCKER_GRAPHICS_FLAG="--device /dev/dri"
 
 xhost +
@@ -18,6 +20,7 @@ docker run --privileged --rm \
         -e ROS_HOSTNAME=localhost \
         -e ROS_MASTER_URI=http://localhost:11311 \
         ${DOCKER_GRAPHICS_FLAG} \
+        --device /dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_0672FF495150807567014123-if01 \
         ${DOCKER_NETWORK} \
         -e DISPLAY=${DISPLAY} \
         -it ros-kinetic-dev

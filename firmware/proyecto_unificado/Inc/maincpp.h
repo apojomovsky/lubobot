@@ -1,9 +1,16 @@
+#ifndef MAINPP_H_
+#define MAINPP_H_
+
 #ifdef __cplusplus
-extern "C" {
+ extern "C" {
 #endif
 
-void maincpp(void);
+void setup(void);
+void loop(void);
 
 #ifdef __cplusplus
 }
 #endif
+
+
+#endif /* MAINPP_H_ */
