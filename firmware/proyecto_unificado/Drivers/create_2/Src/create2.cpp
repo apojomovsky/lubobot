@@ -11,6 +11,7 @@ extern "C" {
 
 #include "create2.h"
 
+
 namespace irobot {
 
 create2::create2(UART_HandleTypeDef* _uart, GPIO_TypeDef* _brcPort,
@@ -87,6 +88,45 @@ void create2::drivePWM(int16_t rightPWM, int16_t leftPWM) {
 	HAL_UART_Transmit(uart, txData, 5, 500);
 }
 
+void create2::pauseStream() {
+    uint8_t txByte = 150;
+    HAL_UART_Transmit(uart, &txByte, 1, 500);
+    txByte = (uint8_t) 0x00;
+    HAL_UART_Transmit(uart, &txByte, 1, 500);
+}
+
+void create2::resumeSteam() {
+	uint8_t txByte = 150;
+	HAL_UART_Transmit(uart, &txByte, 1, 500);
+	txByte = 1;
+	HAL_UART_Transmit(uart, &txByte, 1, 500);
+}
+
+
+uint16_t create2::readLeftEncoder() {
+  uint16_t leftEncoderCount = 0;
+  uint8_t txByte;
+  uint8_t* txBytePtr = &txByte;
+  txByte = 142;
+  HAL_UART_Transmit(uart, txBytePtr, 1, 100);
+  txByte = 43;
+  HAL_UART_Transmit(uart, txBytePtr, 1, 100);
+  HAL_UART_Receive(uart, (uint8_t*)&leftEncoderCount, 2, 300);
+  return leftEncoderCount;
+}
+
+
+uint16_t create2::readRightEncoder() {
+  uint16_t rightEncoderCount = 0;
+  uint8_t txByte;
+  uint8_t* txBytePtr = &txByte;
+  txByte = 142;
+  HAL_UART_Transmit(uart, txBytePtr, 1, 100);
+  txByte = 44;
+  HAL_UART_Transmit(uart, txBytePtr, 1, 100);
+  HAL_UART_Receive(uart, (uint8_t*)&rightEncoderCount, 2, 300);
+  return rightEncoderCount;
+}
 } /* namespace irobot */
 
 #ifdef __cplusplus
