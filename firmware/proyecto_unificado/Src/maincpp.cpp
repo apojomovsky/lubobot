@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <stdint.h>
+#include <arm_math.h>
 
 
 #ifdef __cplusplus
@@ -16,8 +18,6 @@
 extern "C" {
 #endif
 
-#define ARM_MATH_CM7
-#include <arm_math.h>
 
 #include <sensor_msgs/Imu.h>
 #include <std_msgs/String.h>
@@ -112,7 +112,7 @@ ros::Subscriber<geometry_msgs::Twist> cmdvel_sub("cmd_vel", &cmdvel_cb);
 //float dt, deltaDist, deltaX, deltaY, deltaYaw, leftWheelDist, rightWheelDist,
 //		wheelDistDiff;
 //
-//arm_matrix_instance_f32 invCovar;
+arm_matrix_instance_f32 invCovar;
 //arm_matrix_instance_f32 Finc, FincT;
 //arm_matrix_instance_f32 Fp, FpT;
 //arm_matrix_instance_f32 velCovar, tmp;
@@ -218,12 +218,12 @@ void loop(void) {
 //	float sinYawAndHalfDelta = sin(pose.yaw + (deltaYaw / 2.0)); // deltaY?
 //	float distOverTwoWB = deltaDist / (util::AXLE_LENGTH * 2.0);
 //
-//	float32_t invCovarData[4];
-//	invCovarData[0] = kr * fabs(rightWheelDist);
-//	invCovarData[1] = 0.0;
-//	invCovarData[2] = 0.0;
-//	invCovarData[3] = kl * fabs(leftWheelDist);
-//	arm_mat_init_f32(&invCovar, 2, 2, (float32_t *) invCovarData);
+	float32_t invCovarData[4];
+	invCovarData[0] = 0.0;
+	invCovarData[1] = 0.0;
+	invCovarData[2] = 0.0;
+	invCovarData[3] = 0.0;
+	arm_mat_init_f32(&invCovar, 2, 2, (float32_t *) invCovarData);
 //
 //	float32_t FincData[6], FincTData[6];
 //	FincData[0] = (cosYawAndHalfDelta / 2.0)
