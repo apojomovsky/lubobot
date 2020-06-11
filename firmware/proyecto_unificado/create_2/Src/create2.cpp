@@ -65,8 +65,8 @@ void create2::drive(int16_t velocity, int16_t radius) {
 }
 
 void create2::driveVelocity(int16_t rightVel, int16_t leftVel) {
-	rightVel = clamp(rightVel, -500, 500);
-	leftVel = clamp(leftVel, -500, 500);
+	rightVel = clamp(rightVel, -100, 100);
+	leftVel = clamp(leftVel, -100, 100);
 	uint8_t txData[5];
 	txData[0] = 145;
 	txData[1] = rightVel >> 8;
