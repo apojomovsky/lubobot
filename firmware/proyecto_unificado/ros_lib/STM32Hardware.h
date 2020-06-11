@@ -55,12 +55,12 @@ class STM32Hardware {
   protected:
     UART_HandleTypeDef *huart;
 
-    const static uint16_t rbuflen = 512;
+    const static uint16_t rbuflen = 1024;
     uint8_t rbuf[rbuflen];
     uint32_t rind;
     inline uint32_t getRdmaInd(void){ return (rbuflen - __HAL_DMA_GET_COUNTER(huart->hdmarx)) & (rbuflen - 1); }
 
-    const static uint16_t tbuflen = 512;
+    const static uint16_t tbuflen = 1024;
     uint8_t tbuf[tbuflen];
     uint32_t twind, tfind;
 
