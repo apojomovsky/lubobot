@@ -27,7 +27,7 @@ uint32_t seq;
 
 //irobot::create2 robot(&huart5, BRC_GPIO_Port, BRC_Pin);
 
-const TickType_t xDelay = 200 / portTICK_PERIOD_MS;
+const TickType_t xDelay = 20 / portTICK_PERIOD_MS;
 
 ros::NodeHandle nh;
 //std_msgs::UInt16 left_ticks_msg;
