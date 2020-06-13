@@ -15,12 +15,29 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get dist-upgrade -y && \
     apt-get install --no-install-recommends -y \
+      avr-libc \
+      avrdude \
+      binutils-avr \
+      evemu-tools \
+      evtest \
+      gcc-avr \
+      inputattach \
+      joystick \
+      libcaca0 \
+      libevemu3 \
+      libftdi1 \
       libgl1-mesa-dri \
       libgl1-mesa-glx \
+      libsdl1.2debian \
+      libslang2 \
       python-catkin-tools \
       python-rosdep \
       python-rosinstall \
-      # ros-kinetic-rosserial \
+      python-serial \
+      ros-kinetic-joy \
+      ros-kinetic-joy-teleop \
+      ros-kinetic-teleop-tools-msgs \
+      ros-kinetic-teleop-tools-msgs \
       sudo \
       tmux \
       xserver-xorg-video-intel && \
