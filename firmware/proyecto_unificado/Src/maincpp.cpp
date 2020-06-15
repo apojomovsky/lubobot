@@ -27,7 +27,7 @@ uint32_t seq;
 
 //irobot::create2 robot(&huart5, BRC_GPIO_Port, BRC_Pin);
 
-const TickType_t xDelay = 20 / portTICK_PERIOD_MS;
+const TickType_t xDelay = 100 / portTICK_PERIOD_MS;
 
 ros::NodeHandle nh;
 //std_msgs::UInt16 left_ticks_msg;
@@ -70,9 +70,15 @@ void setup(void) {
     nh.advertise(imu_pub);
 
 	I2Cdev_init(&hi2c1);
-	MPU6050_setAddress(0x68);
 	MPU6050_initialize();
 	seq = 0;
+
+//    MPU6050_setXAccelOffset(-461);
+//    MPU6050_setYAccelOffset(-2286);
+//    MPU6050_setZAccelOffset(1863);
+//    MPU6050_setXGyroOffset(38);
+//    MPU6050_setYGyroOffset(-54);
+//    MPU6050_setZGyroOffset(75);
 
 //	robot.start();
 //	vTaskDelay(500);
@@ -108,21 +114,22 @@ void loop(void) {
 //    right_ticks_pub.publish(&right_ticks_msg);
 
     seq++;
-	MPU6050_getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
+//	MPU6050_getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
 
     imu_msg.header.stamp = nh.now();
-    imu_msg.header.frame_id = "/my_frame";
+    imu_msg.header.frame_id = "imu";
     imu_msg.header.seq = seq;
 
-    imu_msg.accel.x = ax;
-    imu_msg.accel.y = ay;
-    imu_msg.accel.z = az;
-    imu_msg.gyro.x = gx;
-    imu_msg.gyro.y = gy;
-    imu_msg.gyro.z = gz;
+    imu_msg.accel.x = MPU6050_getAccelerationX();
+    imu_msg.accel.y = MPU6050_getAccelerationY();
+    imu_msg.accel.z = MPU6050_getAccelerationZ();
+    imu_msg.gyro.x = MPU6050_getRotationX();
+    imu_msg.gyro.y = MPU6050_getRotationY();
+    imu_msg.gyro.z = MPU6050_getRotationZ();
 
     imu_pub.publish( &imu_msg );
 
-    nh.spinOnce();
 	vTaskDelay(xDelay);
+
+    nh.spinOnce();
 }

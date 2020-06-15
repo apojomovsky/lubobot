@@ -34,6 +34,7 @@ RUN apt-get update && \
       python-rosdep \
       python-rosinstall \
       python-serial \
+      ros-kinetic-imu-tools \
       ros-kinetic-joy \
       ros-kinetic-joy-teleop \
       ros-kinetic-teleop-tools-msgs \
