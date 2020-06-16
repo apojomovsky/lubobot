@@ -13,4 +13,5 @@
         <remap from="imu_msgs" to="imu/data_raw"/>
     </node>
 
+    <node pkg="lubobot" type="diff_tf.py" name="diff_tf" output="screen"/>
 </launch>
