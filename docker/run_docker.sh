@@ -9,7 +9,8 @@ DOCKER_CAPABILITIES="--ipc=host \
 DOCKER_NETWORK="--network=host"
 DOCKER_MOUNT_ARGS="\
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
-    -v ${REPO_DIR}/external:/catkin_ws/src/"
+    -v ${REPO_DIR}/external:/catkin_ws/src/external \
+    -v ${REPO_DIR}/lubobot:/catkin_ws/src/lubobot"
 DOCKER_GRAPHICS_FLAG="--device /dev/dri"
 
 xhost +
