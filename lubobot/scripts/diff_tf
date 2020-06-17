@@ -52,7 +52,7 @@ diff_controller.py - controller for a differential drive
 
 """
 
-from std_msgs.msg import Int16
+from std_msgs.msg import UInt16
 from tf.broadcaster import TransformBroadcaster
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
@@ -75,7 +75,8 @@ class DiffTf:
         # The number of wheel encoder ticks per meter of travel
         self.ticks_meter = float(rospy.get_param('ticks_meter', 50))
         # The wheel base width in meters
-        self.base_width = float(rospy.get_param('~base_width', 0.245))
+        self.base_width = float(rospy.get_param('~base_width', 0.3485))
+        self.wheel_radius = float(rospy.get_param('~wheel_radius', 0.235))
 
         # the name of the base frame of the robot
         self.base_frame_id = rospy.get_param('~base_frame_id', 'base_link')
@@ -88,6 +89,11 @@ class DiffTf:
             'wheel_low_wrap', (self.encoder_max - self.encoder_min) * 0.3 + self.encoder_min)
         self.encoder_high_wrap = rospy.get_param(
             'wheel_high_wrap', (self.encoder_max - self.encoder_min) * 0.7 + self.encoder_min)
+        self.left_encoder_topic = rospy.get_param(
+            'left_encoder_topic', "lwheel")
+        self.right_encoder_topic = rospy.get_param(
+            'right_encoder_topic', "rwheel")
+        self.cmd_vel_topic = rospy.get_param('cmd_vel_topic', "cmd_vel")
 
         self.t_delta = rospy.Duration(1.0/self.rate)
         self.t_next = rospy.Time.now() + self.t_delta
@@ -108,9 +114,12 @@ class DiffTf:
         self.dr = 0
         self.then = rospy.Time.now()
 
+        self.v_r = 0.0
+        self.v_l = 0.0
+
         # subscriptions
-        rospy.Subscriber("lwheel", Int16, self.lwheelCallback)
-        rospy.Subscriber("rwheel", Int16, self.rwheelCallback)
+        rospy.Subscriber(self.left_encoder_topic, UInt16, self.lwheelCallback)
+        rospy.Subscriber(self.right_encoder_topic, UInt16, self.rwheelCallback)
         self.odomPub = rospy.Publisher("odom", Odometry, queue_size=10)
         self.odomBroadcaster = TransformBroadcaster()
 
@@ -190,8 +199,12 @@ class DiffTf:
         if (enc > self.encoder_high_wrap and self.prev_lencoder < self.encoder_low_wrap):
             self.lmult = self.lmult - 1
 
-        self.left = 1.0 * (enc + self.lmult *
-                           (self.encoder_max - self.encoder_min))
+        if self.v_l >= 0:
+            self.left = 1.0 * (enc + self.lmult *
+                               (self.encoder_max - self.encoder_min))
+        else:
+            self.left = 1.0 * (enc - self.lmult *
+                               (self.encoder_max - self.encoder_min))
         self.prev_lencoder = enc
 
     def rwheelCallback(self, msg):
@@ -202,9 +215,19 @@ class DiffTf:
         if(enc > self.encoder_high_wrap and self.prev_rencoder < self.encoder_low_wrap):
             self.rmult = self.rmult - 1
 
-        self.right = 1.0 * (enc + self.rmult *
-                            (self.encoder_max - self.encoder_min))
+        if self.v_r >= 0:
+            self.right = 1.0 * (enc + self.rmult *
+                                (self.encoder_max - self.encoder_min))
+        else:
+            self.right = 1.0 * (enc - self.rmult *
+                                (self.encoder_max - self.encoder_min))
         self.prev_rencoder = enc
+
+    def cmdVelCallback(self, msg):
+        v = msg.linear.x
+        w = msg.angular.z
+        self.v_r = ((2 * v) + (w * self.base_width)) / (2 * self.wheel_radius)
+        self.v_l = ((2 * v) - (w * self.base_width)) / (2 * self.wheel_radius)
 
 
 if __name__ == '__main__':

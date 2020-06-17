@@ -1,17 +1,31 @@
 <launch>
-    <node pkg="tf" type="static_transform_publisher" name="link_broadcaster" args="0 0 0 0 0 0 1 map imu 10" />
+    <!-- <node pkg="tf" type="static_transform_publisher" name="link_broadcaster" args="0 0 0 0 0 0 1 map imu 10" /> -->
 
     <node name="serial_node" pkg="rosserial_python" type="serial_node.py" output="screen">
         <param name="port" value="/dev/ttyACM0"/>
         <param name="baud" value="115200"/>
     </node>
 
-    <node pkg="imu_complementary_filter" type="complementary_filter_node" name="imu_complementary_filter" output="screen" respawn="false"/>
+    <!-- <node pkg="imu_complementary_filter" type="complementary_filter_node" name="imu_complementary_filter" output="screen" respawn="false"/>
 
     <node pkg="tinyIMU_relay" type="tinyIMU_relay" name="tiny_imu_relay" output="screen" respawn="false">
         <param name="scale" value="true"/>
         <remap from="imu_msgs" to="imu/data_raw"/>
-    </node>
+    </node> -->
 
-    <node pkg="lubobot" type="diff_tf.py" name="diff_tf" output="screen"/>
+    <!-- <node pkg="lubobot" type="diff_tf.py" name="diff_tf" output="screen"/> -->
+
+    <node name="diff_tf" pkg="lubobot" type="diff_tf" output="screen">
+        <param name="base_frame_id" value="base_link"/>
+        <param name="base_width" value="0.3485"/>
+        <param name="cmd_vel_topic" value="cmd_vel"/>
+        <param name="encoder_max" value="65535"/>
+        <param name="encoder_min" value="0"/>
+        <param name="left_encoder_topic" value="lwheel"/>
+        <param name="odom_frame_id" value="odom"/>
+        <param name="rate" value="10"/>
+        <param name="right_encoder_topic" value="rwheel"/>
+        <param name="ticks_meter" value="50"/>
+        <param name="wheel_radius" value="0.235"/>
+    </node>
 </launch>

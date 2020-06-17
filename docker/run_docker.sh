@@ -21,7 +21,7 @@ docker run --privileged --rm \
         -e ROS_HOSTNAME=localhost \
         -e ROS_MASTER_URI=http://localhost:11311 \
         ${DOCKER_GRAPHICS_FLAG} \
-        --device /dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_0672FF495150807567014123-if01 \
+        --device /dev/ttyACM0 \
         ${DOCKER_NETWORK} \
         -e DISPLAY=${DISPLAY} \
         -it ros-kinetic-dev

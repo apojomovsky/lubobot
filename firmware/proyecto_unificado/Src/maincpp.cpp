@@ -12,7 +12,7 @@
 #include <std_msgs/String.h>
 #include <ros.h>
 
-const TickType_t xDelay = 200 / portTICK_PERIOD_MS;
+const TickType_t xDelay = 50 / portTICK_PERIOD_MS;
 
 extern UART_HandleTypeDef huart5;
 irobot::create2 robot(&huart5, BRC_GPIO_Port, BRC_Pin);
@@ -22,8 +22,8 @@ std_msgs::String str_msg;
 std_msgs::UInt16 left_ticks_msg;
 std_msgs::UInt16 right_ticks_msg;
 ros::Publisher chatter("chatter", &str_msg);
-ros::Publisher left_ticks_pub("left_ticks", &left_ticks_msg);
-ros::Publisher right_ticks_pub("right_ticks", &right_ticks_msg);
+ros::Publisher left_ticks_pub("lwheel", &left_ticks_msg);
+ros::Publisher right_ticks_pub("rwheel", &right_ticks_msg);
 char hello[] = "Hello world!";
 
 geometry_msgs::Twist cmdvel_msg;

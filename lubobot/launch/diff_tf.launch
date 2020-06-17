@@ -5,7 +5,7 @@
         <param name="base_width" value="0.245"/>
         <param name="base_frame_id" value="base_link"/>
         <param name="odom_frame_id" value="odom"/>
-        <param name="encoder_min" value="-32768"/>
-        <param name="encoder_max" value="32768"/>
+        <param name="encoder_min" value="0"/>
+        <param name="encoder_max" value="65535"/>
     </node>
 </launch>
