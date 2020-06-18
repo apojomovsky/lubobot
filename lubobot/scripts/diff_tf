@@ -199,12 +199,8 @@ class DiffTf:
         if (enc > self.encoder_high_wrap and self.prev_lencoder < self.encoder_low_wrap):
             self.lmult = self.lmult - 1
 
-        if self.v_l >= 0:
-            self.left = 1.0 * (enc + self.lmult *
-                               (self.encoder_max - self.encoder_min))
-        else:
-            self.left = 1.0 * (enc - self.lmult *
-                               (self.encoder_max - self.encoder_min))
+        self.left = 1.0 * (enc + self.lmult *
+                           (self.encoder_max - self.encoder_min))
         self.prev_lencoder = enc
 
     def rwheelCallback(self, msg):
@@ -215,12 +211,8 @@ class DiffTf:
         if(enc > self.encoder_high_wrap and self.prev_rencoder < self.encoder_low_wrap):
             self.rmult = self.rmult - 1
 
-        if self.v_r >= 0:
-            self.right = 1.0 * (enc + self.rmult *
-                                (self.encoder_max - self.encoder_min))
-        else:
-            self.right = 1.0 * (enc - self.rmult *
-                                (self.encoder_max - self.encoder_min))
+        self.right = 1.0 * (enc + self.rmult *
+                            (self.encoder_max - self.encoder_min))
         self.prev_rencoder = enc
 
     def cmdVelCallback(self, msg):
