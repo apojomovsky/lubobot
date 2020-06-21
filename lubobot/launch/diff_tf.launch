@@ -1,11 +1,16 @@
 <launch>
     <node name="diff_tf" pkg="lubobot" type="diff_tf" output="screen">
-        <param name="rate" value="10"/>
-        <param name="ticks_meter" value="50"/>
-        <param name="base_width" value="0.245"/>
         <param name="base_frame_id" value="base_link"/>
-        <param name="odom_frame_id" value="odom"/>
+        <param name="base_width" value="0.3485"/>
+        <param name="wheel_radius" value="0.235"/>
+        <param name="ticks_per_rev" value="508.8"/>
+        <!-- <param name="ticks_per_rev" value="568.5"/> -->
         <param name="encoder_min" value="0"/>
         <param name="encoder_max" value="65535"/>
+        <param name="odom_frame_id" value="odom"/>
+        <param name="cmd_vel_topic" value="cmd_vel"/>
+        <param name="left_encoder_topic" value="lwheel"/>
+        <param name="right_encoder_topic" value="rwheel"/>
+        <param name="rate" value="10"/>
     </node>
 </launch>

@@ -7,9 +7,9 @@ catkin_package()
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_executable(diff_tf_cpp src/diff_tf.cpp)
-target_link_libraries(diff_tf_cpp ${catkin_LIBRARIES})
-add_dependencies(diff_tf_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_executable(diff_tf_cpp src/diff_tf.cpp)
+# target_link_libraries(diff_tf_cpp ${catkin_LIBRARIES})
+# add_dependencies(diff_tf_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 catkin_install_python(PROGRAMS
   scripts/diff_tf
