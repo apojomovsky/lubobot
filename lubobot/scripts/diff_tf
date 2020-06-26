@@ -118,6 +118,7 @@ class DiffTf:
         self.dx = 0                 # speeds in x/rotation
         self.dr = 0
         self.then = rospy.Time.now()
+        self.first_loop = True
 
         # subscriptions
         rospy.Subscriber(self.left_encoder_topic, UInt16, self.lwheelCallback)
@@ -170,8 +171,12 @@ class DiffTf:
             quaternion = Quaternion()
             quaternion.x = 0.0
             quaternion.y = 0.0
-            quaternion.z = sin(self.th / 2)
-            quaternion.w = cos(self.th / 2)
+            if self.first_loop:
+                quaternion.z = 0.0
+                quaternion.w = 0.0
+            else:
+                quaternion.z = sin(self.th / 2)
+                quaternion.w = cos(self.th / 2)
             self.odomBroadcaster.sendTransform(
                 (self.x, self.y, 0),
                 (quaternion.x, quaternion.y, quaternion.z, quaternion.w),
@@ -183,8 +188,13 @@ class DiffTf:
             odom = Odometry()
             odom.header.stamp = now
             odom.header.frame_id = self.odom_frame_id
-            odom.pose.pose.position.x = self.x
-            odom.pose.pose.position.y = self.y
+            if self.first_loop:
+                odom.pose.pose.position.x = 0.0
+                odom.pose.pose.position.y = 0.0
+            else:
+                odom.pose.pose.position.x = self.x
+                odom.pose.pose.position.y = self.y
+            self.first_loop = False
             odom.pose.pose.position.z = 0
             odom.pose.pose.orientation = quaternion
             odom.child_frame_id = self.base_frame_id

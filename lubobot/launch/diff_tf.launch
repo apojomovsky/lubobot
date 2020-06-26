@@ -11,6 +11,6 @@
         <param name="cmd_vel_topic" value="cmd_vel"/>
         <param name="left_encoder_topic" value="lwheel"/>
         <param name="right_encoder_topic" value="rwheel"/>
-        <param name="rate" value="10"/>
+        <param name="rate" value="100"/>
     </node>
 </launch>

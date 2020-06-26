@@ -6,7 +6,9 @@
         <param name="baud" value="115200"/>
     </node>
 
-    <include file="$(find lubobot)/launch/diff_tf.launch" />
+    <node pkg="lubobot" type="prueba" name="prueba" output="screen" respawn="false"/>
+
+    <!-- <include file="$(find lubobot)/launch/diff_tf.launch" /> -->
 
     <!-- <node pkg="imu_complementary_filter" type="complementary_filter_node" name="imu_complementary_filter" output="screen" respawn="false"/>
 
