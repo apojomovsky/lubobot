@@ -12,9 +12,10 @@ DOCKER_MOUNT_ARGS="\
     -v ${REPO_DIR}/external:/catkin_ws/src/external \
     -v ${REPO_DIR}/lubobot:/catkin_ws/src/lubobot"
 DOCKER_GRAPHICS_FLAG="--device /dev/dri"
+DOCKER_ULIMIT_ARGS="--ulimit core=-1"
 
 xhost +
-docker run --privileged --rm \
+docker run ${DOCKER_ULIMIT_ARGS} --privileged --rm \
         ${DOCKER_CAPABILITIES} \
         ${DOCKER_MOUNT_ARGS} \
         -v /etc/fstab:/etc/fstab:ro \
@@ -22,6 +23,7 @@ docker run --privileged --rm \
         -e ROS_MASTER_URI=http://localhost:11311 \
         ${DOCKER_GRAPHICS_FLAG} \
         --device /dev/ttyACM0 \
+        --device /dev/ttyUSB0 \
         ${DOCKER_NETWORK} \
         -e DISPLAY=${DISPLAY} \
         -it ros-kinetic-dev

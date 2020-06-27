@@ -67,7 +67,7 @@ public:
 	void drive(int16_t velocity, int16_t radius);
 //		void driveLeft(int left);
 //		void driveRight(int right);
-	void driveVelocity(int16_t rightVel, int16_t leftVel);
+	void driveVelocity(int16_t leftVel, int16_t rightVel);
 	void drivePWM(int16_t rightPWM, int16_t leftPWM);
 //		void turnCW(unsigned short velocity,unsigned short degrees);
 //		void turnCCW(unsigned short velocity, unsigned short degrees);

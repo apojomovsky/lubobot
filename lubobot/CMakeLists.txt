@@ -1,16 +1,35 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(lubobot)
 
-find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs)
+find_package(catkin REQUIRED COMPONENTS
+  message_generation
+  nav_msgs
+  roscpp
+  rospy
+  std_msgs
+  tf
+)
 
-catkin_package()
+add_message_files(
+  FILES
+  luboEncoders.msg
+)
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
+
+catkin_package(
+  INCLUDE_DIRS include
+  CATKIN_DEPENDS
+)
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 add_executable(prueba src/prueba.cpp)
 target_link_libraries(prueba ${catkin_LIBRARIES})
 add_dependencies(prueba ${catkin_EXPORTED_TARGETS})
-
 
 catkin_install_python(PROGRAMS
   scripts/diff_tf

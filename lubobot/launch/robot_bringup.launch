@@ -1,5 +1,5 @@
 <launch>
-    <!-- <node pkg="tf" type="static_transform_publisher" name="link_broadcaster" args="1 0 0 0 0 0 1 map imu 10" /> -->
+    <node pkg="tf" type="static_transform_publisher" name="link_broadcaster" args="1 0 0 0 0 0 1 map odom 10" />
 
     <node name="serial_node" pkg="rosserial_python" type="serial_node.py" output="screen">
         <param name="port" value="/dev/ttyACM0"/>

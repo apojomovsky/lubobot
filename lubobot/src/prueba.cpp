@@ -1,6 +1,10 @@
-#include <nav_msgs/Odometry.h>
 #include <ros/ros.h>
+
+#include <nav_msgs/Odometry.h>
 #include <std_msgs/UInt16.h>
+#include <lubobot/luboEncoders.h>
+
+#include <tf/transform_broadcaster.h>
 #include <tf/transform_datatypes.h>
 #include <util.h>
 
@@ -9,6 +13,8 @@
 
 static const float axleLength = 0.235;
 static const float wheelDiameter = 0.072;
+
+bool new_data;
 
 static const double MAX_DBL = std::numeric_limits<double>::max();
 
@@ -39,13 +45,15 @@ typedef boost::numeric::ublas::matrix<float> Matrix;
 Pose pose;
 Vel vel;
 
-
-uint32_t prevTicksLeft;
-uint32_t prevTicksRight;
+uint16_t prevTicksLeft;
+uint16_t prevTicksRight;
 float totalLeftDist;
 float totalRightDist;
 bool firstOnData;
 timestamp_t prevOnDataTime;
+
+geometry_msgs::TransformStamped tf_odom_;
+bool publish_tf_;
 
 Matrix poseCovar;
 
@@ -54,8 +62,8 @@ float measuredRightVel;
 float requestedLeftVel;
 float requestedRightVel;
 
-uint16_t lwheel = 0;
-uint16_t rwheel = 0;
+uint16_t lwheel;
+uint16_t rwheel;
 
 std::string base_frame_;
 std::string odom_frame_;
@@ -90,6 +98,9 @@ Matrix addMatrices(const Matrix& A, const Matrix& B) {
 }
 
 void onData() {
+  if(!new_data) return;
+  new_data = false;
+
   if (firstOnData) {
     prevTicksLeft = lwheel;
     prevTicksRight = rwheel;
@@ -232,77 +243,104 @@ void onData() {
   prevOnDataTime = curTime;
 }
 
-void publishOdom() {
-  Pose pose = pose;
-  Vel vel = vel;
+void publishOdom(tf::TransformBroadcaster& tf_broadcaster) {
+  Pose odom_pose = pose;
+  Vel odom_vel = vel;
+  publish_tf_ = true;
 
   // Populate position info
   geometry_msgs::Quaternion quat =
-      tf::createQuaternionMsgFromRollPitchYaw(0, 0, pose.yaw);
+      tf::createQuaternionMsgFromRollPitchYaw(0, 0, odom_pose.yaw);
   odom_msg_.header.stamp = ros::Time::now();
-  odom_msg_.pose.pose.position.x = pose.x;
-  odom_msg_.pose.pose.position.y = pose.y;
+  odom_msg_.pose.pose.position.x = odom_pose.x;
+  odom_msg_.pose.pose.position.y = odom_pose.y;
   odom_msg_.pose.pose.orientation = quat;
 
-  // Populate velocity info
-  odom_msg_.twist.twist.linear.x = vel.x;
-  odom_msg_.twist.twist.linear.y = vel.y;
-  odom_msg_.twist.twist.angular.z = vel.yaw;
+  // Populate odom_velocity info
+  odom_msg_.twist.twist.linear.x = odom_vel.x;
+  odom_msg_.twist.twist.linear.y = odom_vel.y;
+  odom_msg_.twist.twist.angular.z = odom_vel.yaw;
 
   // Update covariances
-  odom_msg_.pose.covariance[0] = static_cast<double>(pose.covariance[0]);
-  odom_msg_.pose.covariance[1] = pose.covariance[1];
-  odom_msg_.pose.covariance[5] = pose.covariance[2];
-  odom_msg_.pose.covariance[6] = pose.covariance[3];
-  odom_msg_.pose.covariance[7] = pose.covariance[4];
-  odom_msg_.pose.covariance[11] = pose.covariance[5];
-  odom_msg_.pose.covariance[30] = pose.covariance[6];
-  odom_msg_.pose.covariance[31] = pose.covariance[7];
-  odom_msg_.pose.covariance[35] = pose.covariance[8];
-  odom_msg_.twist.covariance[0] = vel.covariance[0];
-  odom_msg_.twist.covariance[1] = vel.covariance[1];
-  odom_msg_.twist.covariance[5] = vel.covariance[2];
-  odom_msg_.twist.covariance[6] = vel.covariance[3];
-  odom_msg_.twist.covariance[7] = vel.covariance[4];
-  odom_msg_.twist.covariance[11] = vel.covariance[5];
-  odom_msg_.twist.covariance[30] = vel.covariance[6];
-  odom_msg_.twist.covariance[31] = vel.covariance[7];
-  odom_msg_.twist.covariance[35] = vel.covariance[8];
+  odom_msg_.pose.covariance[0] = static_cast<double>(odom_pose.covariance[0]);
+  odom_msg_.pose.covariance[1] = odom_pose.covariance[1];
+  odom_msg_.pose.covariance[5] = odom_pose.covariance[2];
+  odom_msg_.pose.covariance[6] = odom_pose.covariance[3];
+  odom_msg_.pose.covariance[7] = odom_pose.covariance[4];
+  odom_msg_.pose.covariance[11] = odom_pose.covariance[5];
+  odom_msg_.pose.covariance[30] = odom_pose.covariance[6];
+  odom_msg_.pose.covariance[31] = odom_pose.covariance[7];
+  odom_msg_.pose.covariance[35] = odom_pose.covariance[8];
+  odom_msg_.twist.covariance[0] = odom_vel.covariance[0];
+  odom_msg_.twist.covariance[1] = odom_vel.covariance[1];
+  odom_msg_.twist.covariance[5] = odom_vel.covariance[2];
+  odom_msg_.twist.covariance[6] = odom_vel.covariance[3];
+  odom_msg_.twist.covariance[7] = odom_vel.covariance[4];
+  odom_msg_.twist.covariance[11] = odom_vel.covariance[5];
+  odom_msg_.twist.covariance[30] = odom_vel.covariance[6];
+  odom_msg_.twist.covariance[31] = odom_vel.covariance[7];
+  odom_msg_.twist.covariance[35] = odom_vel.covariance[8];
 
-  //   if (publish_tf_)
-  //   {
-  //     tf_odom_.header.stamp = ros::Time::now();
-  //     tf_odom_.transform.translation.x = pose.x;
-  //     tf_odom_.transform.translation.y = pose.y;
-  //     tf_odom_.transform.rotation = quat;
-  //     tf_broadcaster_.sendTransform(tf_odom_);
-  //   }
+  // if (publish_tf_) {
+  //   tf_odom_.header.stamp = ros::Time::now();
+  //   tf_odom_.transform.translation.x = odom_pose.x;
+  //   tf_odom_.transform.translation.y = odom_pose.y;
+  //   tf_odom_.transform.rotation = quat;
+  //   tf_broadcaster.sendTransform(tf_odom_);
+  // }
 
   odom_pub_.publish(odom_msg_);
 }
 
-void LeftWheelCallback(const std_msgs::UInt16 msg) {
-  lwheel = msg.data;
-}
+// void LeftWheelCallback(const std_msgs::UInt16 msg) {
+//   lwheel = msg.data;
+// }
 
-void RightWheelCallback(const std_msgs::UInt16 msg) {
-  rwheel = msg.data;
+// void RightWheelCallback(const std_msgs::UInt16 msg) {
+//   rwheel = msg.data;
+// }
+
+void EncodersCallback(const lubobot::luboEncoders::ConstPtr& msg) {
+  lwheel = msg->left;
+  rwheel = msg->right;
+  new_data = true;
 }
 
 int main(int argc, char** argv) {
-  ros::init(argc, argv, "talker");
+  ros::init(argc, argv, "prueba");
+
+  tf::TransformBroadcaster tf_broadcaster_;
   ros::NodeHandle n;
-  ros::Subscriber lwheel_sub = n.subscribe("lwheel", 100, LeftWheelCallback);
-  ros::Subscriber rwheel_sub = n.subscribe("rwheel", 100, RightWheelCallback);
-  n.param<std::string>("base_frame", base_frame_, "base_footprint");
+  odom_pub_ = n.advertise<nav_msgs::Odometry>("odom", 1);
+  n.param<std::string>("base_frame", base_frame_, "base_link");
   n.param<std::string>("odom_frame", odom_frame_, "odom");
-  odom_pub_ = n.advertise<nav_msgs::Odometry>("odom", 30);
-  ros::Rate loop_rate(10);
-  int count = 0;
+  ros::Subscriber encoders_sub = n.subscribe("encoders", 1, EncodersCallback);
+  // ros::Subscriber lwheel_sub = n.subscribe("lwheel", 1, LeftWheelCallback);
+  // ros::Subscriber rwheel_sub = n.subscribe("rwheel", 1, RightWheelCallback);
+  ros::Rate loop_rate(100);
+  // int count = 0;
+  lwheel = 0;
+  rwheel = 0;
+  prevTicksLeft = 0;
+  prevTicksRight = 0;
+  totalLeftDist = 0.0;
+  totalRightDist = 0.0;
+  firstOnData = true;
+  pose.x = 0;
+  pose.y = 0;
+  pose.yaw = 0;
+  pose.covariance = std::vector<float>(9, 0.0);
+  vel.x = 0;
+  vel.y = 0;
+  vel.yaw = 0;
+  vel.covariance = std::vector<float>(9, 0.0);
+  poseCovar = Matrix(3, 3, 0.0);
+  requestedLeftVel = 0;
+  requestedRightVel = 0;
 
   // Set frame_id's
-  //   tf_odom_.header.frame_id = odom_frame_;
-  //   tf_odom_.child_frame_id = base_frame_;
+  tf_odom_.header.frame_id = odom_frame_;
+  tf_odom_.child_frame_id = base_frame_;
   odom_msg_.header.frame_id = odom_frame_;
   odom_msg_.child_frame_id = base_frame_;
   //   joint_state_msg_.name.resize(2);
@@ -322,14 +360,12 @@ int main(int argc, char** argv) {
     odom_msg_.twist.covariance[i] = COVARIANCE[i];
   }
 
-  firstOnData = true;
-
   while (ros::ok()) {
     onData();
-    publishOdom();
+    publishOdom(tf_broadcaster_);
     ros::spinOnce();
     loop_rate.sleep();
-    ++count;
+    // ++count;
   }
   return 0;
 }

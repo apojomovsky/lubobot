@@ -65,15 +65,15 @@ void create2::drive(int16_t velocity, int16_t radius) {
 }
 
 void create2::driveVelocity(int16_t rightVel, int16_t leftVel) {
-	rightVel = clamp(rightVel, -100, 100);
-	leftVel = clamp(leftVel, -100, 100);
+//	rightVel = clamp(rightVel, -100, 100);
+//	leftVel = clamp(leftVel, -100, 100);
 	uint8_t txData[5];
 	txData[0] = 145;
 	txData[1] = rightVel >> 8;
-	txData[2] = rightVel;
+	txData[2] = rightVel & 0xFF;
 	txData[3] = leftVel >> 8;
-	txData[4] = leftVel;
-	HAL_UART_Transmit(uart, txData, 5, 500);
+	txData[4] = leftVel & 0xFF;
+	HAL_UART_Transmit(uart, txData, 5, 100);
 }
 
 void create2::drivePWM(int16_t rightPWM, int16_t leftPWM) {
