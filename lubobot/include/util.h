@@ -41,7 +41,7 @@ POSSIBILITY OF SUCH DAMAGE.
 namespace util {
 
 static const uint8_t STREAM_HEADER = 19;
-static const float V_3_TICKS_PER_REV = 508.8;
+static const float V_3_TICKS_PER_REV = 65535;
 static const uint32_t V_3_MAX_ENCODER_TICKS = 65535;
 static const float MAX_RADIUS = 2.0;
 static const float STRAIGHT_RADIUS = 32.768;
