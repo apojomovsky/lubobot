@@ -137,15 +137,22 @@ void onData() {
   std::cout << ticksLeft << std::endl;
 
   // Handle wrap around
-  if (fabs(ticksLeft) > 0.5 * util::V_3_MAX_ENCODER_TICKS) {
-    ticksLeft = (ticksLeft % util::V_3_MAX_ENCODER_TICKS) + 1;
+  if (fabs(ticksLeft) >= 0.87 * util::V_3_MAX_ENCODER_TICKS) {
+    if(ticksLeft > 0) {
+      ticksLeft = ticksLeft - util::V_3_MAX_ENCODER_TICKS;
+    }
+    else {
+      ticksLeft = ticksLeft % util::V_3_MAX_ENCODER_TICKS;
+    }
   }
-  if (fabs(ticksRight) > 0.5 * util::V_3_MAX_ENCODER_TICKS) {
-    ticksRight = (ticksRight % util::V_3_MAX_ENCODER_TICKS) + 1;
+  if (fabs(ticksRight) >= 0.87 * util::V_3_MAX_ENCODER_TICKS) {
+    if(ticksRight > 0) {
+      ticksRight = ticksRight - util::V_3_MAX_ENCODER_TICKS;
+    }
+    else {
+      ticksRight = ticksRight % util::V_3_MAX_ENCODER_TICKS;
+    }
   }
-
-  std::cout << ticksLeft << std::endl;
-  std::cout << "********************" << std::endl;
 
   // Compute distance travelled by each wheel
   leftWheelDist =
