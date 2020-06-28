@@ -134,8 +134,6 @@ void onData() {
   prevTicksLeft = totalTicksLeft;
   prevTicksRight = totalTicksRight;
 
-  std::cout << ticksLeft << std::endl;
-
   // Handle wrap around
   if (fabs(ticksLeft) >= 0.87 * util::V_3_MAX_ENCODER_TICKS) {
     if(ticksLeft > 0) {

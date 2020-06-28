@@ -8,31 +8,33 @@
 #include <maincpp.h>
 
 #include <geometry_msgs/Twist.h>
-#include <std_msgs/UInt16.h>
-#include <std_msgs/String.h>
 #include <lubobot/luboEncoders.h>
+#include <tiny_msgs/tinyIMU.h>
 #include <ros.h>
 
-const TickType_t xDelay = 100 / portTICK_PERIOD_MS;
+#include <MPU6050.h>
 
+extern I2C_HandleTypeDef hi2c1;
 extern UART_HandleTypeDef huart5;
+
+
 irobot::create2 robot(&huart5, BRC_GPIO_Port, BRC_Pin);
 
 ros::NodeHandle nh;
-//std_msgs::String str_msg;
-std_msgs::UInt16 left_ticks_msg;
-std_msgs::UInt16 right_ticks_msg;
-lubobot::luboEncoders encoders_msg;
-
-//ros::Publisher chatter("chatter", &str_msg);
-ros::Publisher encoders_pub("encoders", &encoders_msg);
-ros::Publisher left_ticks_pub("lwheel", &left_ticks_msg);
-ros::Publisher right_ticks_pub("rwheel", &right_ticks_msg);
-char hello[] = "Hello world!";
 
 geometry_msgs::Twist cmdvel_msg;
+lubobot::luboEncoders encoders_msg;
+tiny_msgs::tinyIMU imu_msg;
 
-float vel_right, vel_left;
+ros::Publisher imu_pub("tinyImu", &imu_msg);
+ros::Publisher encoders_pub("encoders", &encoders_msg);
+
+
+
+// tinyIMU
+int16_t ax, ay, az, gx, gy, gz;
+uint32_t seq;
+
 static const float axleLength = 0.235; // m
 static const float maxVelocity = 0.1; // m/s
 
@@ -60,18 +62,16 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	nh.getHardware()->reset_rbuf();
 }
 
-uint16_t prevTicksLeft = 0;
-uint16_t prevTicksRight = 0;
-bool firstLoop = true;
-uint32_t prevOnDataTime = 0;
-
 void setup(void) {
 	nh.initNode();
-//    nh.advertise(chatter);
     nh.advertise(encoders_pub);
-//    nh.advertise(left_ticks_pub);
-//    nh.advertise(right_ticks_pub);
+    nh.advertise(imu_pub);
     nh.subscribe(cmdvel_sub);
+
+	I2Cdev_init(&hi2c1);
+	MPU6050_initialize();
+	seq = 0;
+    imu_msg.header.frame_id = "imu";
 
 	robot.start();
 	vTaskDelay(500);
@@ -79,42 +79,30 @@ void setup(void) {
 	vTaskDelay(500);
 	robot.goSafeMode();
 	vTaskDelay(500);
-//	robot.driveVelocity(-64, 64);
-//	vTaskDelay(1000);
-//	robot.driveVelocity(0, 0);
-//	vTaskDelay(500);
-//	robot.driveVelocity(64, -64);
-//	vTaskDelay(1000);
-//	robot.driveVelocity(0, 0);
 }
 
+const TickType_t xDelay = 100 / portTICK_PERIOD_MS;
+
 void loop(void) {
-//	if (firstLoop) {
-//		prevTicksLeft = robot.readLeftEncoder();
-//		prevTicksRight = robot.readRightEncoder();
-//		prevOnDataTime = HAL_GetTick();
-//		vTaskDelay(100 / portTICK_PERIOD_MS);
-//		firstLoop = false;
-//		return;
-//	}
+    seq++;
 	HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
-//    str_msg.data = hello;
-//    chatter.publish(&str_msg);
-	// Get cumulative ticks (wraps around at 65535)
 	uint16_t totalTicksLeft = robot.readLeftEncoder();
 	uint16_t totalTicksRight = robot.readRightEncoder();
 	encoders_msg.left = totalTicksLeft;
 	encoders_msg.right = totalTicksRight;
+
+    imu_msg.header.stamp = nh.now();
+    imu_msg.header.seq = seq;
+    imu_msg.accel.x = MPU6050_getAccelerationX();
+    imu_msg.accel.y = MPU6050_getAccelerationY();
+    imu_msg.accel.z = MPU6050_getAccelerationZ();
+    imu_msg.gyro.x = MPU6050_getRotationX();
+    imu_msg.gyro.y = MPU6050_getRotationY();
+    imu_msg.gyro.z = MPU6050_getRotationZ();
+
 	encoders_pub.publish(&encoders_msg);
-//    left_ticks_msg.data = totalTicksLeft;
-//    right_ticks_msg.data = totalTicksRight;
-//    left_ticks_pub.publish(&left_ticks_msg);
-//    right_ticks_pub.publish(&right_ticks_msg);
-	// Compute ticks since last update
-//	int ticksLeft = totalTicksLeft - prevTicksLeft;
-//	int ticksRight = totalTicksRight - prevTicksRight;
-//	prevTicksLeft = totalTicksLeft;
-//	prevTicksRight = totalTicksRight;
+    imu_pub.publish(&imu_msg);
+
     nh.spinOnce();
 	vTaskDelay(xDelay);
 }
