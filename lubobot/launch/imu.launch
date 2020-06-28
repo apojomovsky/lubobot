@@ -1,0 +1,16 @@
+<launch>
+    <node pkg="tf" type="static_transform_publisher" name="link_broadcaster" args="0 0 0 0 0 0 1 map imu 10" />
+
+    <node name="serial_node" pkg="rosserial_python" type="serial_node.py" output="screen">
+        <param name="port" value="/dev/ttyACM0"/>
+        <param name="baud" value="115200"/>
+    </node>
+
+    <node pkg="imu_complementary_filter" type="complementary_filter_node" name="imu_complementary_filter" output="screen" respawn="false"/>
+
+    <node pkg="tinyIMU_relay" type="tinyIMU_relay" name="tiny_imu_relay" output="screen" respawn="false">
+        <param name="scale" value="true"/>
+        <remap from="imu_msgs" to="imu/data_raw"/>
+    </node>
+
+</launch>
