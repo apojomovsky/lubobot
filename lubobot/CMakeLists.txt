@@ -22,7 +22,7 @@ generate_messages(
 
 catkin_package(
   INCLUDE_DIRS include
-  CATKIN_DEPENDS
+  CATKIN_DEPENDS message_generation
 )
 
 include_directories(include ${catkin_INCLUDE_DIRS})

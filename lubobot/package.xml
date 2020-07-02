@@ -16,6 +16,7 @@
   <exec_depend>freenect_stack</exec_depend>
   <exec_depend>depthimage_to_laserscan</exec_depend>
   <exec_depend>imu_tools</exec_depend>
+  <exec_depend>message_generation</exec_depend>
   <exec_depend>message_runtime</exec_depend>
 
   <buildtool_depend>catkin</buildtool_depend>
