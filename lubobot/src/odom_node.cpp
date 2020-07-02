@@ -331,7 +331,7 @@ void EncodersCallback(const lubobot::luboEncoders::ConstPtr& msg) {
 }
 
 int main(int argc, char** argv) {
-  ros::init(argc, argv, "prueba");
+  ros::init(argc, argv, "odom_node");
 
   tf::TransformBroadcaster tf_broadcaster_;
   ros::NodeHandle n;

@@ -27,9 +27,9 @@ catkin_package(
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_executable(prueba src/prueba.cpp)
-target_link_libraries(prueba ${catkin_LIBRARIES})
-add_dependencies(prueba ${catkin_EXPORTED_TARGETS})
+add_executable(odom_node src/odom_node.cpp)
+target_link_libraries(odom_node ${catkin_LIBRARIES})
+add_dependencies(odom_node ${catkin_EXPORTED_TARGETS})
 
 catkin_install_python(PROGRAMS
   scripts/diff_tf

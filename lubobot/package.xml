@@ -12,6 +12,9 @@
 
   <build_depend>message_generation</build_depend>
 
+  <exec_depend>freenect_launch</exec_depend>
+  <exec_depend>freenect_stack</exec_depend>
+  <exec_depend>depthimage_to_laserscan</exec_depend>
   <exec_depend>imu_tools</exec_depend>
   <exec_depend>message_runtime</exec_depend>
 
