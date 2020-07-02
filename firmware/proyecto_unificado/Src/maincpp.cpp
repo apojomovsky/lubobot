@@ -23,7 +23,7 @@ irobot::create2 robot(&huart5, BRC_GPIO_Port, BRC_Pin);
 ros::NodeHandle nh;
 
 geometry_msgs::Twist cmdvel_msg;
-lubobot::luboEncoders encoders_msg;
+lubobot_msgs::luboEncoders encoders_msg;
 tiny_msgs::tinyIMU imu_msg;
 
 ros::Publisher imu_pub("tinyImu", &imu_msg);
