@@ -1,9 +1,6 @@
 [submodule "external/create_autonomy"]
 	path = external/create_autonomy
 	url = https://github.com/AutonomyLab/create_autonomy.git
-[submodule "external/tinyIMU_relay"]
-	path = external/tinyIMU_relay
-	url = https://github.com/superjax/tinyIMU_relay.git
 [submodule "external/libcreate"]
 	path = external/libcreate
 	url = https://github.com/AutonomyLab/libcreate.git
@@ -15,6 +12,3 @@
 	path = external/rosserial_stm32
 	url = https://github.com/yoneken/rosserial_stm32.git
 	branch = master
-[submodule "external/tiny_msgs"]
-	path = external/tiny_msgs
-	url = https://github.com/superjax/tiny_msgs.git
