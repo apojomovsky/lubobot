@@ -8,7 +8,9 @@ find_package(catkin REQUIRED COMPONENTS
 
 add_message_files(
   FILES
-  luboEncoders.msg
+  LuboEncoders.msg
+  LuboIMU.msg
+  LuboVector3.msg
 )
 
 generate_messages(

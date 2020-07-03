@@ -3,7 +3,7 @@
 
     <node pkg="imu_complementary_filter" type="complementary_filter_node" name="imu_complementary_filter" output="screen" respawn="false"/>
 
-    <node pkg="tinyIMU_relay" type="tinyIMU_relay" name="tiny_imu_relay" output="screen" respawn="false">
+    <node pkg="lubobot" type="lubo_imu_relay" name="lubo_imu_relay" output="screen" respawn="false">
         <param name="scale" value="true"/>
         <remap from="imu_msgs" to="imu/data_raw"/>
     </node>

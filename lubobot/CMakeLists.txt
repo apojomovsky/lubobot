@@ -21,6 +21,12 @@ add_executable(odom_node src/odom_node.cpp)
 target_link_libraries(odom_node ${catkin_LIBRARIES})
 add_dependencies(odom_node ${catkin_EXPORTED_TARGETS})
 
+add_executable(lubo_imu_relay
+  src/lubo_imu_relay.cpp
+  src/lubo_imu_relay_node.cpp)
+target_link_libraries(lubo_imu_relay ${catkin_LIBRARIES})
+add_dependencies(lubo_imu_relay ${catkin_EXPORTED_TARGETS})
+
 catkin_install_python(PROGRAMS
   scripts/diff_tf
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

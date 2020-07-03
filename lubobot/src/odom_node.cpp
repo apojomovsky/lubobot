@@ -1,4 +1,4 @@
-#include <lubobot_msgs/luboEncoders.h>
+#include <lubobot_msgs/LuboEncoders.h>
 #include <nav_msgs/Odometry.h>
 #include <ros/ros.h>
 #include <std_msgs/UInt16.h>
@@ -323,7 +323,7 @@ void publishOdom(tf::TransformBroadcaster& tf_broadcaster) {
 //   rwheel = msg.data;
 // }
 
-void EncodersCallback(const lubobot_msgs::luboEncoders::ConstPtr& msg) {
+void EncodersCallback(const lubobot_msgs::LuboEncoders::ConstPtr& msg) {
   boost::mutex::scoped_lock lock(dataMutex);
   lwheel = msg->left;
   rwheel = msg->right;

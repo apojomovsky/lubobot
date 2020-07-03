@@ -20,8 +20,9 @@ docker run ${DOCKER_ULIMIT_ARGS} --privileged --rm \
         ${DOCKER_CAPABILITIES} \
         ${DOCKER_MOUNT_ARGS} \
         -v /etc/fstab:/etc/fstab:ro \
-        -e ROS_HOSTNAME=localhost \
-        -e ROS_MASTER_URI=http://localhost:11311 \
+        -e ROS_MASTER_URI=http://192.168.1.200:11311 \
+        -e ROS_HOSTNAME=192.168.1.200 \
+        -e ROS_IP=192.168.1.200 \
         ${DOCKER_GRAPHICS_FLAG} \
         --device /dev/ttyACM0 \
         --device /dev/ttyUSB0 \
