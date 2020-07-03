@@ -7,7 +7,7 @@
 		<mesh filename="package://lubobot/meshes/create_2.dae" />
 	</xacro:create_base>
 
-	<kinect name="shoulder_kinect" parent="base_link">
+	<kinect name="kinect" parent="base_link">
 		<origin xyz="0 0 0.3" rpy="0 0 0"/>
 	</kinect>
 </robot>
