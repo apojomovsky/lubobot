@@ -28,6 +28,6 @@ target_link_libraries(lubo_imu_relay ${catkin_LIBRARIES})
 add_dependencies(lubo_imu_relay ${catkin_EXPORTED_TARGETS})
 
 catkin_install_python(PROGRAMS
-  scripts/diff_tf
+  scripts/make_urdf
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

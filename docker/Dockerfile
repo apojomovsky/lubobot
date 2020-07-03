@@ -4,7 +4,13 @@ ARG uid
 LABEL maintainer="Alexis Pojomovsky"
 
 # Setup environment
-RUN apt-get update && apt-get install -y locales
+RUN apt-get update && apt-get install -y locales apt-utils && \
+    apt-get clean && \
+    apt-get autoremove && \
+    apt-get autoclean && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /usr/share/doc
+
 RUN locale-gen en_US.UTF-8
 ENV \
   LANG=en_US.UTF-8 \
@@ -34,12 +40,19 @@ RUN apt-get update && \
       python-rosdep \
       python-rosinstall \
       python-serial \
+      ros-kinetic-depthimage-to-laserscan \
+      ros-kinetic-freenect-launch \
+      ros-kinetic-freenect-stack \
+      ros-kinetic-gmapping \
+      ros-kinetic-imu-tools \
       ros-kinetic-joy \
       ros-kinetic-joy-teleop \
-      ros-kinetic-teleop-tools-msgs \
+      ros-kinetic-rosserial-client \
+      ros-kinetic-rosserial-msgs \
       ros-kinetic-teleop-tools-msgs \
       sudo \
       tmux \
+      vim \
       xserver-xorg-video-intel && \
     apt-get clean && \
     apt-get autoremove && \
