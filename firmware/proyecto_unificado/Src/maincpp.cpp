@@ -8,8 +8,8 @@
 #include <maincpp.h>
 
 #include <geometry_msgs/Twist.h>
-#include <lubobot/luboEncoders.h>
-#include <tiny_msgs/tinyIMU.h>
+#include <lubobot_msgs/LuboEncoders.h>
+#include <lubobot_msgs/LuboIMU.h>
 #include <ros.h>
 
 #include <MPU6050.h>
@@ -23,8 +23,8 @@ irobot::create2 robot(&huart5, BRC_GPIO_Port, BRC_Pin);
 ros::NodeHandle nh;
 
 geometry_msgs::Twist cmdvel_msg;
-lubobot_msgs::luboEncoders encoders_msg;
-tiny_msgs::tinyIMU imu_msg;
+lubobot_msgs::LuboEncoders encoders_msg;
+lubobot_msgs::LuboIMU imu_msg;
 
 ros::Publisher imu_pub("tinyImu", &imu_msg);
 ros::Publisher encoders_pub("encoders", &encoders_msg);

@@ -1,15 +1,15 @@
-#ifndef _ROS_tiny_msgs_tinyVector_h
-#define _ROS_tiny_msgs_tinyVector_h
+#ifndef _ROS_lubobot_msgs_LuboVector3_h
+#define _ROS_lubobot_msgs_LuboVector3_h
 
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
 #include "ros/msg.h"
 
-namespace tiny_msgs
+namespace lubobot_msgs
 {
 
-  class tinyVector : public ros::Msg
+  class LuboVector3 : public ros::Msg
   {
     public:
       typedef int16_t _x_type;
@@ -19,7 +19,7 @@ namespace tiny_msgs
       typedef int16_t _z_type;
       _z_type z;
 
-    tinyVector():
+    LuboVector3():
       x(0),
       y(0),
       z(0)
@@ -89,7 +89,7 @@ namespace tiny_msgs
      return offset;
     }
 
-    const char * getType(){ return "tiny_msgs/tinyVector"; };
+    const char * getType(){ return "lubobot_msgs/LuboVector3"; };
     const char * getMD5(){ return "85729383565f7e059d4a213b3db1317b"; };
 
   };

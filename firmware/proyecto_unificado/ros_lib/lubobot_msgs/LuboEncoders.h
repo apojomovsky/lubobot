@@ -1,15 +1,15 @@
-#ifndef _ROS_lubobot_luboEncoders_h
-#define _ROS_lubobot_luboEncoders_h
+#ifndef _ROS_lubobot_msgs_LuboEncoders_h
+#define _ROS_lubobot_msgs_LuboEncoders_h
 
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
 #include "ros/msg.h"
 
-namespace lubobot
+namespace lubobot_msgs
 {
 
-  class luboEncoders : public ros::Msg
+  class LuboEncoders : public ros::Msg
   {
     public:
       typedef uint16_t _left_type;
@@ -17,7 +17,7 @@ namespace lubobot
       typedef uint16_t _right_type;
       _right_type right;
 
-    luboEncoders():
+    LuboEncoders():
       left(0),
       right(0)
     {
@@ -47,7 +47,7 @@ namespace lubobot
      return offset;
     }
 
-    const char * getType(){ return "lubobot/luboEncoders"; };
+    const char * getType(){ return "lubobot_msgs/LuboEncoders"; };
     const char * getMD5(){ return "52aa20a03a2be2568dcbb88f1a7e85e5"; };
 
   };

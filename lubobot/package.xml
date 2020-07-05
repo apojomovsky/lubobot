@@ -19,6 +19,7 @@
   <exec_depend>joy</exec_depend>
   <exec_depend>joy_teleop</exec_depend>
   <exec_depend>lubobot_msgs</exec_depend>
+  <exec_depend>rosserial</exec_depend>
 
   <buildtool_depend>catkin</buildtool_depend>
 

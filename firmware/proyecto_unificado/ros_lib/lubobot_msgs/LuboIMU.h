@@ -1,27 +1,27 @@
-#ifndef _ROS_tiny_msgs_tinyIMU_h
-#define _ROS_tiny_msgs_tinyIMU_h
+#ifndef _ROS_lubobot_msgs_LuboIMU_h
+#define _ROS_lubobot_msgs_LuboIMU_h
 
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
 #include "ros/msg.h"
 #include "std_msgs/Header.h"
-#include "tiny_msgs/tinyVector.h"
+#include "lubobot_msgs/LuboVector3.h"
 
-namespace tiny_msgs
+namespace lubobot_msgs
 {
 
-  class tinyIMU : public ros::Msg
+  class LuboIMU : public ros::Msg
   {
     public:
       typedef std_msgs::Header _header_type;
       _header_type header;
-      typedef tiny_msgs::tinyVector _accel_type;
+      typedef lubobot_msgs::LuboVector3 _accel_type;
       _accel_type accel;
-      typedef tiny_msgs::tinyVector _gyro_type;
+      typedef lubobot_msgs::LuboVector3 _gyro_type;
       _gyro_type gyro;
 
-    tinyIMU():
+    LuboIMU():
       header(),
       accel(),
       gyro()
@@ -46,7 +46,7 @@ namespace tiny_msgs
      return offset;
     }
 
-    const char * getType(){ return "tiny_msgs/tinyIMU"; };
+    const char * getType(){ return "lubobot_msgs/LuboIMU"; };
     const char * getMD5(){ return "53582bc8b7315f3bc7728d82df98bb24"; };
 
   };
