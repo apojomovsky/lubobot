@@ -47,8 +47,7 @@ RUN apt-get update && \
       ros-kinetic-imu-tools \
       ros-kinetic-joy \
       ros-kinetic-joy-teleop \
-      ros-kinetic-rosserial-client \
-      ros-kinetic-rosserial-msgs \
+      ros-kinetic-rosserial \
       ros-kinetic-teleop-tools-msgs \
       sudo \
       tmux \

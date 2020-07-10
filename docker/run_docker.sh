@@ -15,9 +15,10 @@ DOCKER_MOUNT_ARGS="\
 DOCKER_GRAPHICS_FLAG="--device /dev/dri"
 DOCKER_ULIMIT_ARGS="--ulimit core=-1"
 # REMOTE_ARGS=""
-REMOTE_ARGS="-e ROS_MASTER_URI=http://192.168.1.200:11311 \
-        -e ROS_HOSTNAME=`hostname -I | cut -d " " -f1` \
-        -e ROS_IP=`hostname -I | cut -d " " -f1`"
+REMOTE_ARGS="-e ROS_MASTER_URI=http://`hostname -I | cut -d " " -f1`:11311 \
+  -e ROS_HOSTNAME=`hostname -I | cut -d " " -f1` \
+  -e ROS_IP=`hostname -I | cut -d " " -f1`"
+
 
 xhost +
 docker run ${DOCKER_ULIMIT_ARGS} --privileged --rm \
