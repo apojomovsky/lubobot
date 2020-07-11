@@ -304,13 +304,13 @@ void publishOdom(tf::TransformBroadcaster& tf_broadcaster) {
   // odom_vel.covariance[7]; odom_msg_.twist.covariance[35] =
   // odom_vel.covariance[8];
 
-  // if (publish_tf_) {
-  //   tf_odom_.header.stamp = ros::Time::now();
-  //   tf_odom_.transform.translation.x = odom_pose.x;
-  //   tf_odom_.transform.translation.y = odom_pose.y;
-  //   tf_odom_.transform.rotation = quat;
-  //   tf_broadcaster.sendTransform(tf_odom_);
-  // }
+  if (publish_tf_) {
+    tf_odom_.header.stamp = ros::Time::now();
+    tf_odom_.transform.translation.x = odom_pose.x;
+    tf_odom_.transform.translation.y = odom_pose.y;
+    tf_odom_.transform.rotation = quat;
+    tf_broadcaster.sendTransform(tf_odom_);
+  }
 
   odom_pub_.publish(odom_msg_);
 }
@@ -336,7 +336,7 @@ int main(int argc, char** argv) {
   tf::TransformBroadcaster tf_broadcaster_;
   ros::NodeHandle n;
   odom_pub_ = n.advertise<nav_msgs::Odometry>("odom", 10);
-  n.param<std::string>("base_frame", base_frame_, "base_link");
+  n.param<std::string>("base_frame", base_frame_, "base_footprint");
   n.param<std::string>("odom_frame", odom_frame_, "odom");
   ros::Subscriber encoders_sub = n.subscribe("lubo_encoders", 1, EncodersCallback);
   // ros::Subscriber lwheel_sub = n.subscribe("lwheel", 1, LeftWheelCallback);
