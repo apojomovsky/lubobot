@@ -338,7 +338,7 @@ int main(int argc, char** argv) {
   odom_pub_ = n.advertise<nav_msgs::Odometry>("odom", 10);
   n.param<std::string>("base_frame", base_frame_, "base_link");
   n.param<std::string>("odom_frame", odom_frame_, "odom");
-  ros::Subscriber encoders_sub = n.subscribe("encoders", 1, EncodersCallback);
+  ros::Subscriber encoders_sub = n.subscribe("lubo_encoders", 1, EncodersCallback);
   // ros::Subscriber lwheel_sub = n.subscribe("lwheel", 1, LeftWheelCallback);
   // ros::Subscriber rwheel_sub = n.subscribe("rwheel", 1, RightWheelCallback);
   ros::Rate loop_rate(100);

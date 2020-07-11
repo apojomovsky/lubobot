@@ -26,8 +26,8 @@ geometry_msgs::Twist cmdvel_msg;
 lubobot_msgs::LuboEncoders encoders_msg;
 lubobot_msgs::LuboIMU imu_msg;
 
-ros::Publisher imu_pub("tinyImu", &imu_msg);
-ros::Publisher encoders_pub("encoders", &encoders_msg);
+ros::Publisher imu_pub("lubo_imu", &imu_msg);
+ros::Publisher encoders_pub("lubo_encoders", &encoders_msg);
 
 
 
@@ -71,7 +71,7 @@ void setup(void) {
 	I2Cdev_init(&hi2c1);
 	MPU6050_initialize();
 	seq = 0;
-    imu_msg.header.frame_id = "imu";
+    imu_msg.header.frame_id = "imu_sensor_link";
 
 	robot.start();
 	vTaskDelay(500);
