@@ -28,6 +28,9 @@ lubobot_msgs::LuboIMU imu_msg;
 ros::Publisher imu_pub("lubo_imu", &imu_msg);
 ros::Publisher encoders_pub("lubo_encoders", &encoders_msg);
 
+// MPU6050
+MPU6050 accelgyro;
+
 // tinyIMU
 int16_t ax, ay, az, gx, gy, gz;
 uint32_t seq;
@@ -66,8 +69,21 @@ void setup(void) {
   nh.advertise(imu_pub);
   nh.subscribe(cmdvel_sub);
 
-  I2Cdev_init(&hi2c1);
-  MPU6050_initialize();
+//  I2Cdev_init(&hi2c1);
+  accelgyro = MPU6050();
+  accelgyro.initialize();
+  vTaskDelay(500);
+
+  // TODO: apply calibration values dynamically via rosparam or rosservice
+  accelgyro.setXAccelOffset(-490);
+  accelgyro.setYAccelOffset(-2274);
+  accelgyro.setZAccelOffset(1865);
+  accelgyro.setXGyroOffset(32);
+  accelgyro.setYGyroOffset(-56);
+  accelgyro.setZGyroOffset(79);
+
+  vTaskDelay(500);
+
   seq = 0;
   imu_msg.header.frame_id = "imu_sensor_link";
 
@@ -91,12 +107,12 @@ void loop(void) {
 
   imu_msg.header.stamp = nh.now();
   imu_msg.header.seq = seq;
-  imu_msg.accel.x = MPU6050_getAccelerationX();
-  imu_msg.accel.y = MPU6050_getAccelerationY();
-  imu_msg.accel.z = MPU6050_getAccelerationZ();
-  imu_msg.gyro.x = MPU6050_getRotationX();
-  imu_msg.gyro.y = MPU6050_getRotationY();
-  imu_msg.gyro.z = MPU6050_getRotationZ();
+  imu_msg.accel.x = accelgyro.getAccelerationX();
+  imu_msg.accel.y = accelgyro.getAccelerationY();
+  imu_msg.accel.z = accelgyro.getAccelerationZ();
+  imu_msg.gyro.x = accelgyro.getRotationX();
+  imu_msg.gyro.y = accelgyro.getRotationY();
+  imu_msg.gyro.z = accelgyro.getRotationZ();
 
   encoders_pub.publish(&encoders_msg);
   imu_pub.publish(&imu_msg);

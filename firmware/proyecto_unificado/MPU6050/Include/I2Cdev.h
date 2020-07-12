@@ -1,14 +1,11 @@
-// I2Cdev library collection - Main I2C device class header file
+// I2Cdev library collection - Main I2C device class
 // Abstracts bit and byte I2C R/W functions into a convenient class
-// 6/9/2012 by Jeff Rowberg <jeff@rowberg.net>
-// 6/6/2015 by Andrey Voloshin <voloshin@think.in.ua>
+// RaspberryPi bcm2835 library port: bcm2835 library available at http://www.airspayce.com/mikem/bcm2835/index.html
+// Based on Arduino's I2Cdev by Jeff Rowberg <jeff@rowberg.net>
 //
-// Changelog:
-//      2015-06-06 - ported to STM32 HAL library from Arduino code
 
 /* ============================================
 I2Cdev device library code is placed under the MIT license
-Copyright (c) 2013 Jeff Rowberg
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,53 +30,48 @@ THE SOFTWARE.
 #ifndef _I2CDEV_H_
 #define _I2CDEV_H_
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
+#ifndef __cplusplus
+#error A C++ compiler is required!
+#endif 
 
-// TODO: include depending on chip family
-//#include "stm32f1xx_hal.h"
-//#include "stm32f2xx_hal.h"
-//#include "stm32f3xx_hal.h"
+#define BCM2835_I2C_REASON_OK 1
 
-#include <stm32f7xx_hal.h>
+#include <math.h> // required for BMP180
+#include "main.h"
+//#include "i2c.h"
+extern I2C_HandleTypeDef hi2c1;
 
-//typedef int bool;
-#define true 1
-#define false 0
+#define set_I2C_pins  false  
+/* used to boolean for setting RPi I2C pins P1-03 (SDA) and P1-05 (SCL) to alternate function ALT0, which enables those pins for I2C interface. 
+   setI2Cpin should be false, if the I2C are already configured in alt mode ... */
 
-//uint16_t I2Cdev_readTimeout;
+#define i2c_baudrate 400000
+//uint32_t i2c_baudrate = 400000 ; //400 kHz, 
 
-// 1000ms default read timeout (modify with "I2Cdev::readTimeout = [ms];")
-#define I2CDEV_DEFAULT_READ_TIMEOUT     1000
+class I2Cdev {
+ public:
+        I2Cdev();
 
-#ifdef __cplusplus
- extern "C" {
-#endif
+        static void initialize();
+        static void enable(bool isEnabled);
 
-void I2Cdev_init(I2C_HandleTypeDef * hi2c);
+        static int8_t readBit(uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint8_t *data);
+        //TODO static int8_t readBitW(uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint16_t *data);
+        static int8_t readBits(uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint8_t *data);
+        //TODO static int8_t readBitsW(uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint16_t *data);
+        static int8_t readByte(uint8_t devAddr, uint8_t regAddr, uint8_t *data);
+        static int8_t readWord(uint8_t devAddr, uint8_t regAddr, uint16_t *data);
+        static int8_t readBytes(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint8_t *data);
+        static int8_t readWords(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint16_t *data);
 
-uint8_t I2Cdev_readBit(uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint8_t *data, uint16_t timeout);
-uint8_t I2Cdev_readBitW(uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint16_t *data, uint16_t timeout);
-uint8_t I2Cdev_readBits(uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint8_t *data, uint16_t timeout);
-uint8_t I2Cdev_readBitsW(uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint16_t *data, uint16_t timeout);
-uint8_t I2Cdev_readByte(uint8_t devAddr, uint8_t regAddr, uint8_t *data, uint16_t timeout);
-uint8_t I2Cdev_readWord(uint8_t devAddr, uint8_t regAddr, uint16_t *data, uint16_t timeout);
-uint8_t I2Cdev_readBytes(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint8_t *data, uint16_t timeout);
-uint8_t I2Cdev_readWords(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint16_t *data, uint16_t timeout);
-
-uint16_t I2Cdev_writeBit(uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint8_t data);
-uint16_t I2Cdev_writeBitW(uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint16_t data);
-uint16_t I2Cdev_writeBits(uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint8_t data);
-uint16_t I2Cdev_writeBitsW(uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint16_t data);
-uint16_t I2Cdev_writeByte(uint8_t devAddr, uint8_t regAddr, uint8_t data);
-uint16_t I2Cdev_writeWord(uint8_t devAddr, uint8_t regAddr, uint16_t data);
-uint16_t I2Cdev_writeBytes(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint8_t *data);
-uint16_t I2Cdev_writeWords(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint16_t *data);
-
-
-#ifdef __cplusplus
-}
-#endif
+        static bool writeBit(uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint8_t data);
+        //TODO static bool writeBitW(uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint16_t data);
+        static bool writeBits(uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint8_t data);
+        //TODO static bool writeBitsW(uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint16_t data);
+        static bool writeByte(uint8_t devAddr, uint8_t regAddr, uint8_t data);
+        static bool writeWord(uint8_t devAddr, uint8_t regAddr, uint16_t data);
+        static bool writeBytes(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint8_t *data);
+        static bool writeWords(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint16_t *data);
+};
 
 #endif /* _I2CDEV_H_ */
