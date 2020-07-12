@@ -315,14 +315,6 @@ void publishOdom(tf::TransformBroadcaster& tf_broadcaster) {
   odom_pub_.publish(odom_msg_);
 }
 
-// void LeftWheelCallback(const std_msgs::UInt16 msg) {
-//   lwheel = msg.data;
-// }
-
-// void RightWheelCallback(const std_msgs::UInt16 msg) {
-//   rwheel = msg.data;
-// }
-
 void EncodersCallback(const lubobot_msgs::LuboEncoders::ConstPtr& msg) {
   boost::mutex::scoped_lock lock(dataMutex);
   lwheel = msg->left;
@@ -339,10 +331,7 @@ int main(int argc, char** argv) {
   n.param<std::string>("base_frame", base_frame_, "base_footprint");
   n.param<std::string>("odom_frame", odom_frame_, "odom");
   ros::Subscriber encoders_sub = n.subscribe("lubo_encoders", 1, EncodersCallback);
-  // ros::Subscriber lwheel_sub = n.subscribe("lwheel", 1, LeftWheelCallback);
-  // ros::Subscriber rwheel_sub = n.subscribe("rwheel", 1, RightWheelCallback);
   ros::Rate loop_rate(100);
-  // int count = 0;
   {
     boost::mutex::scoped_lock lock(dataMutex);
     lwheel = 0;
@@ -397,7 +386,6 @@ int main(int argc, char** argv) {
     publishOdom(tf_broadcaster_);
     ros::spinOnce();
     loop_rate.sleep();
-    // ++count;
   }
   return 0;
 }
