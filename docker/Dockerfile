@@ -49,6 +49,7 @@ RUN apt-get update && \
       ros-kinetic-joy-teleop \
       ros-kinetic-robot-localization \
       ros-kinetic-rosserial \
+      ros-kinetic-teleop-twist-msg \
       ros-kinetic-teleop-tools-msgs \
       sudo \
       tmux \
@@ -76,7 +77,7 @@ RUN usermod -a -G dialout dev
 USER dev
 RUN echo ". /opt/ros/kinetic/setup.bash" >> /home/dev/.bashrc
 
-RUN rosdep update --include-eol-distros
+RUN rosdep update
 RUN sudo apt-get update
 
 
