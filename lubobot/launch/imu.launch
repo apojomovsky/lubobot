@@ -1,7 +1,17 @@
 <launch>
-    <!-- <node pkg="tf" type="static_transform_publisher" name="imu_broadcaster" args="0 0 0 0 0 0 1 map imu 10" /> -->
+    <!-- <node pkg="tf" type="static_transform_publisher" name="imu_broadcaster" args="0 0 0 0 0 0 1 map imu_sensor_link 10" /> -->
 
-    <node pkg="imu_complementary_filter" type="complementary_filter_node" name="imu_complementary_filter" output="screen" respawn="false"/>
+    <node pkg="imu_complementary_filter" type="complementary_filter_node" name="imu_complementary_filter" output="screen" respawn="false">
+        <param name="fixed_frame" value="odom"/>
+        <param name="publish_tf" value="true"/>
+    </node>
+
+    <!-- <node pkg="imu_filter_madgwick" type="imu_filter_node" name="imu_madgwick_filter" output="screen" respawn="false">
+        <param name="use_mag" value="false"/>
+        <param name="world_frame" value="enu"/>
+        <param name="world_frame" value="nwu"/>
+        <param name="world_frame" value="ned"/>
+    </node> -->
 
     <node pkg="lubobot" type="lubo_imu_relay" name="lubo_imu_relay" output="screen" respawn="false">
         <param name="scale" value="true"/>

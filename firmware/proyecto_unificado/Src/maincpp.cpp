@@ -85,7 +85,6 @@ void setup(void) {
   vTaskDelay(500);
 
   seq = 0;
-  imu_msg.header.frame_id = "imu_sensor_link";
 
   robot.start();
   vTaskDelay(500);
