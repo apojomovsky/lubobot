@@ -47,6 +47,7 @@ RUN apt-get update && \
       ros-kinetic-imu-tools \
       ros-kinetic-joy \
       ros-kinetic-joy-teleop \
+      ros-kinetic-robot-localization \
       ros-kinetic-rosserial \
       ros-kinetic-teleop-tools-msgs \
       sudo \
