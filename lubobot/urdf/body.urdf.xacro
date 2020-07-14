@@ -1,32 +1,60 @@
 <?xml version="1.0"?>
 <robot name="body" 
   xmlns:xacro="http://ros.org/wiki/xacro">
-  <xacro:macro name="body" params="parent *origin">
-
-    <joint name="${name}_joint" type="fixed">
-      <xacro:insert_block name="origin"/>
+  <!-- Heavily based on: https://github.com/turtlebot/turtlebot/blob/5a97fdd2661354a866ee41238e2197244c220840/turtlebot_description/urdf/stacks/hexagons.urdf.xacro -->
+  <xacro:macro name="stack_bottom_pole" params="parent number x_loc y_loc z_loc">
+    <joint name="pole_bottom_${number}_joint" type="fixed">
+      <origin xyz="${x_loc} ${y_loc} ${z_loc}" rpy="0 0 0"/>
       <parent link="${parent}"/>
-      <child link="${name}_link" />
+      <child link="pole_bottom_${number}_link"/>
     </joint>
-
-    <link name="${name}_link">
+    <link name="pole_bottom_${number}_link">
       <visual>
-        <origin xyz="-0.05 -0.17 -0.02" rpy="${3.1415/2.0} 0 ${3.1415/2.0}"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://lubobot/meshes/kinect/68-04546_Kinect_Sensor--coarse.STL" scale="0.001 0.001 0.001" />
+          <mesh filename="package://turtlebot_description/meshes/stacks/hexagons/pole_bottom.dae"/>
         </geometry>
-        <material name="gray">
-          <color rgba="0.5 0.5 0.5 1"/>
-        </material>
       </visual>
       <collision>
-        <origin xyz="-0.05 -0.17 -0.02" rpy="${3.1415/2.0} 0 ${3.1415/2.0}"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://lubobot/meshes/kinect/68-04546_Kinect_Sensor--coarse_simple.STL" scale="0.001 0.001 0.001" />
+          <cylinder length="0.0492" radius="0.006"/>
         </geometry>
       </collision>
+      <inertial>
+        <mass value="0.008"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="0.000001686" ixy="0.0" ixz="0.0" iyy="0.000001686" iyz="0.0" izz="0.000000144"/>
+      </inertial>
     </link>
-
   </xacro:macro>
+
+  <xacro:macro name="stack_top_pole" params="parent number x_loc y_loc z_loc">
+    <joint name="pole_top_${number}_joint" type="fixed">
+      <origin xyz="${x_loc} ${y_loc} ${z_loc}" rpy="0 0 0"/>
+      <parent link="${parent}"/>
+      <child link="pole_top_${number}_link"/>
+    </joint>
+    <link name="pole_top_${number}_link">
+      <visual>
+        <origin xyz=" 0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://turtlebot_description/meshes/stacks/hexagons/pole_top.dae"/>
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.2032" radius="0.006"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.060"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="0.000206991" ixy="0.0" ixz="0.0" iyy="0.000206991" iyz="0.0" izz="0.000001080"/>
+      </inertial>
+    </link>
+  </xacro:macro>
+
 </robot>
 
