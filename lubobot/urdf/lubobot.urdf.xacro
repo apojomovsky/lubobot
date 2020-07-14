@@ -1,12 +1,17 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="lubobot_description">
-	<xacro:include filename="$(find lubobot)/urdf/kinect.urdf.xacro"/>
+	<xacro:include filename="$(find lubobot)/urdf/body.urdf.xacro"/>
 	<xacro:include filename="$(find lubobot)/urdf/create_base.urdf.xacro" />
 	<xacro:include filename="$(find lubobot)/urdf/imu.urdf.xacro" />
+	<xacro:include filename="$(find lubobot)/urdf/kinect.urdf.xacro"/>
 
 	<xacro:create_base wheel_separation="0.235" base_diameter="0.3485">
 		<mesh filename="package://lubobot/meshes/create_2.dae" />
 	</xacro:create_base>
+
+	<xacro:body parent="base_link">
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+	</xacro:body>
 
 	<xacro:kinect name="camera" parent="base_link">
 		<origin xyz="0 0 0.3" rpy="0 0 0"/>
