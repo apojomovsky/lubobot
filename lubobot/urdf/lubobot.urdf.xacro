@@ -12,9 +12,9 @@
 	<xacro:body parent="base_link"/>
 
 	<xacro:kinect name="camera" parent="base_link">
-		<origin xyz="0 0 0.3" rpy="0 0 0"/>
+		<origin xyz="0.050 0.033 0.210" rpy="0 0 0"/>
 	</xacro:kinect>
 
-	<xacro:imu_sensor xyz="0 0 0" rpy="0 0 -1.57075" parent="base_link" />
+	<xacro:imu_sensor xyz="-0.1 0 0.075" rpy="0 0 -1.57075" parent="base_link" />
 
 </robot>
