@@ -10,7 +10,7 @@
 
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
 
-    <node pkg="lubobot" type="odom_node" name="odom_node" output="screen" respawn="false"/>
+    <node pkg="lubobot" type="lubo_odom_node" name="lubo_odom_node" output="screen" respawn="false"/>
 
     <include file="$(find lubobot)/launch/kinect.launch" />
 

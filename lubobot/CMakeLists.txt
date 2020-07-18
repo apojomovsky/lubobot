@@ -17,9 +17,9 @@ catkin_package(
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_executable(odom_node src/odom_node.cpp)
-target_link_libraries(odom_node ${catkin_LIBRARIES})
-add_dependencies(odom_node ${catkin_EXPORTED_TARGETS})
+add_executable(lubo_odom_node src/lubo_odom_node.cpp)
+target_link_libraries(lubo_odom_node ${catkin_LIBRARIES})
+add_dependencies(lubo_odom_node ${catkin_EXPORTED_TARGETS})
 
 add_executable(lubo_imu_relay
   src/lubo_imu_relay.cpp
