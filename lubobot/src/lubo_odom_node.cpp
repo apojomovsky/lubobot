@@ -138,9 +138,11 @@ void onData() {
   prevTicksRight = totalTicksRight;
 
   // Handle wrap around
+  std::cout << "*********************" << std::endl;
+  std::cout << ticksRight;
   if (fabs(ticksLeft) >= 0.87 * util::V_3_MAX_ENCODER_TICKS) {
     if (ticksLeft > 0) {
-      ticksLeft = ticksLeft - util::V_3_MAX_ENCODER_TICKS;
+      ticksLeft = ticksLeft - util::V_3_MAX_ENCODER_TICKS - 256;
     } else {
       ticksLeft = ticksLeft % util::V_3_MAX_ENCODER_TICKS;
     }
@@ -152,6 +154,7 @@ void onData() {
       ticksRight = ticksRight % util::V_3_MAX_ENCODER_TICKS;
     }
   }
+  std::cout << ", " << ticksRight << std::endl;
 
   // Compute distance travelled by each wheel
   leftWheelDist =
