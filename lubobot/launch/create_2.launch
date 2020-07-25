@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="config" default="$(find ca_driver)/config/default.yaml" />
+  <arg name="desc" default="true" />
+
+  <node name="ca_driver" pkg="ca_driver" type="ca_driver" output="screen">
+    <rosparam command="load" file="$(arg config)" />
+    <param name="robot_model" value="CREATE_2" />
+  </node>
+
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find lubobot)/urdf/lubobot.urdf.xacro"/>
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen" />
+
+  <include file="$(find lubobot)/launch/kinect.launch">
+    <arg name="output_frame_id" value="camera_depth_frame" />
+  </include>
+
+</launch>
