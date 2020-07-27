@@ -3,7 +3,7 @@
   <!-- <include file="$(find lubobot)/launch/gmapping.launch"/> -->
   <include file="$(find lubobot)/launch/static_map.launch"/>
   <!-- <include file="$(find lubobot)/launch/ekf.launch"/> -->
-  <include file="$(find lubobot)/launch/joy_teleop.launch"/>
+  <!-- <include file="$(find lubobot)/launch/joy_teleop.launch"/> -->
   <include file="$(find lubobot)/launch/imu.launch"/>
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find lubobot)/rviz/lubobot.rviz" />
 </launch>
