@@ -6,4 +6,5 @@
     <remap from="scan" to="$(arg scan_topic)"/>
     <remap from="odom" to="odom_combined" />
   </node>
+
 </launch>
