@@ -29,5 +29,6 @@ add_dependencies(lubo_imu_relay ${catkin_EXPORTED_TARGETS})
 
 catkin_install_python(PROGRAMS
   scripts/make_urdf
+  scripts/move_robot_test
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
