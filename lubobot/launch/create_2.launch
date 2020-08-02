@@ -12,8 +12,4 @@
 
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen" />
 
-  <include file="$(find lubobot)/launch/kinect.launch">
-    <arg name="output_frame_id" value="camera_depth_frame" />
-  </include>
-
 </launch>
