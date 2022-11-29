@@ -1,4 +1,4 @@
-FROM osrf/ros:kinetic-desktop-full
+FROM osrf/ros:noetic-desktop-full
 
 ARG uid
 LABEL maintainer="Alexis Pojomovsky"
@@ -36,21 +36,21 @@ RUN apt-get update && \
       libgl1-mesa-glx \
       libsdl1.2debian \
       libslang2 \
-      python-catkin-tools \
-      python-rosdep \
-      python-rosinstall \
-      python-serial \
-      ros-kinetic-depthimage-to-laserscan \
-      ros-kinetic-freenect-launch \
-      ros-kinetic-freenect-stack \
-      ros-kinetic-gmapping \
-      ros-kinetic-imu-tools \
-      ros-kinetic-joy \
-      ros-kinetic-joy-teleop \
-      ros-kinetic-robot-localization \
-      ros-kinetic-rosserial \
-      ros-kinetic-teleop-twist-msg \
-      ros-kinetic-teleop-tools-msgs \
+      python3-catkin-tools \
+      python3-rosdep \
+      python3-rosinstall \
+      python3-serial \
+      ros-noetic-depthimage-to-laserscan \
+      # ros-noetic-freenect-launch \
+      # ros-noetic-freenect-stack \
+      ros-noetic-gmapping \
+      ros-noetic-imu-tools \
+      ros-noetic-joy \
+      ros-noetic-joy-teleop \
+      ros-noetic-robot-localization \
+      ros-noetic-rosserial \
+      # ros-noetic-teleop-twist-msg \
+      ros-noetic-teleop-tools-msgs \
       sudo \
       tmux \
       vim \
@@ -67,15 +67,15 @@ RUN adduser dev sudo
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 # Reduce roslaunch timeout
-RUN \
-  sudo sed -i 's/_TIMEOUT_SIGTERM = 2.0/_TIMEOUT_SIGTERM = 0.5/g' /opt/ros/kinetic/lib/python2.7/dist-packages/roslaunch/nodeprocess.py && \
-  sudo sed -i 's/_TIMEOUT_SIGINT  = 15.0/_TIMEOUT_SIGINT  = 1.0/g' /opt/ros/kinetic/lib/python2.7/dist-packages/roslaunch/nodeprocess.py
+# RUN \
+#   sudo sed -i 's/_TIMEOUT_SIGTERM = 2.0/_TIMEOUT_SIGTERM = 0.5/g' /opt/ros/noetic/lib/python2.7/dist-packages/roslaunch/nodeprocess.py && \
+#   sudo sed -i 's/_TIMEOUT_SIGINT  = 15.0/_TIMEOUT_SIGINT  = 1.0/g' /opt/ros/noetic/lib/python2.7/dist-packages/roslaunch/nodeprocess.py
 
 # Add user permisions to use dialout
 RUN usermod -a -G dialout dev
 
 USER dev
-RUN echo ". /opt/ros/kinetic/setup.bash" >> /home/dev/.bashrc
+RUN echo ". /opt/ros/noetic/setup.bash" >> /home/dev/.bashrc
 
 RUN rosdep update
 RUN sudo apt-get update

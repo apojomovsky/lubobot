@@ -31,5 +31,5 @@ docker run ${DOCKER_ULIMIT_ARGS} --privileged --rm \
         --device /dev/ttyUSB0 \
         ${DOCKER_NETWORK} \
         -e DISPLAY=${DISPLAY} \
-        -it ros-kinetic-dev
+        -it ros-noetic-dev
 xhost -

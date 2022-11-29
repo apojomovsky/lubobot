@@ -4,5 +4,6 @@
         "chrono": "cpp",
         "random": "cpp",
         "limits": "cpp"
-    }
+    },
+    "cmake.configureOnOpen": false
 }
