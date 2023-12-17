@@ -14,11 +14,9 @@ DOCKER_MOUNT_ARGS="\
     -v ${REPO_DIR}/lubobot_msgs:/catkin_ws/src/lubobot_msgs"
 DOCKER_GRAPHICS_FLAG="--device /dev/dri"
 DOCKER_ULIMIT_ARGS="--ulimit core=-1"
-# REMOTE_ARGS=""
 REMOTE_ARGS="-e ROS_MASTER_URI=http://`hostname -I | cut -d " " -f1`:11311 \
   -e ROS_HOSTNAME=`hostname -I | cut -d " " -f1` \
   -e ROS_IP=`hostname -I | cut -d " " -f1`"
-
 
 xhost +
 docker run ${DOCKER_ULIMIT_ARGS} --privileged --rm \
@@ -27,9 +25,8 @@ docker run ${DOCKER_ULIMIT_ARGS} --privileged --rm \
         -v /etc/fstab:/etc/fstab:ro \
         ${DOCKER_GRAPHICS_FLAG} \
         ${REMOTE_ARGS} \
-        --device /dev/ttyACM0 \
-        --device /dev/ttyUSB0 \
         ${DOCKER_NETWORK} \
         -e DISPLAY=${DISPLAY} \
+        -v /dev:/dev \
         -it ros-noetic-dev
 xhost -
