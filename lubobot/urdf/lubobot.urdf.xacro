@@ -3,13 +3,11 @@
 	<xacro:include filename="$(find lubobot)/urdf/body.urdf.xacro"/>
 	<xacro:include filename="$(find create_description)/urdf/create_2.urdf.xacro" />
 	<xacro:include filename="$(find lubobot)/urdf/imu.urdf.xacro" />
-	<!-- <xacro:include filename="$(find lubobot)/urdf/kinect.urdf.xacro"/> -->
+	<xacro:include filename="$(find lubobot)/urdf/lds_lidar.urdf.xacro" />
 
 	<xacro:body parent="base_link"/>
 
-	<!-- <xacro:kinect name="camera" parent="base_link">
-		<origin xyz="0.050 0.033 0.210" rpy="0 0 0"/>
-	</xacro:kinect> -->
+	<xacro:lds_lidar xyz="0 0 0.19" rpy="0 0 ${3.1415}" parent="base_link" />
 
 	<xacro:imu_sensor xyz="0 0 0" rpy="0 0 0" parent="base_link" />
 
