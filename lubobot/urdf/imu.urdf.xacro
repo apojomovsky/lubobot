@@ -2,6 +2,9 @@
 <robot name="imu" 
     xmlns:xacro="http://ros.org/wiki/xacro">
     <xacro:macro name="imu_sensor" params="xyz rpy parent">
+        <material name="red">
+            <color rgba="1 0 0 1"/>
+        </material>
 
         <joint name="imu_sensor_joint" type="fixed">
             <axis xyz="0 0 1" />
@@ -22,7 +25,7 @@
                 <geometry>
                     <box size="0.02 0.02 0.02"/>
                 </geometry>
-                <material name="iRobot/Red"/>
+                <material name="red"/>
             </visual>
             <inertial>
                 <mass value="0.001" />

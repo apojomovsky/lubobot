@@ -30,7 +30,7 @@
     </link>
   </xacro:macro>
 
-  <xacro:macro name="stack_top_pole" params="parent number x_loc y_loc z_loc">
+  <!-- <xacro:macro name="stack_top_pole" params="parent number x_loc y_loc z_loc">
     <joint name="pole_top_${number}_joint" type="fixed">
       <origin xyz="${x_loc} ${y_loc} ${z_loc}" rpy="0 0 0"/>
       <parent link="${parent}"/>
@@ -55,7 +55,7 @@
         <inertia ixx="0.000206991" ixy="0.0" ixz="0.0" iyy="0.000206991" iyz="0.0" izz="0.000001080"/>
       </inertial>
     </link>
-  </xacro:macro>
+  </xacro:macro> -->
 
 
   <!-- 
@@ -94,12 +94,12 @@
       </inertial>
     </link>
 
-    <xacro:stack_top_pole parent="${parent}" number="0" x_loc= "0.07" y_loc= "0.10" z_loc="0.210"/>
+    <!-- <xacro:stack_top_pole parent="${parent}" number="0" x_loc= "0.07" y_loc= "0.10" z_loc="0.210"/>
     <xacro:stack_top_pole parent="${parent}" number="1" x_loc= "0.07" y_loc= "-0.10" z_loc="0.210"/>
     <xacro:stack_top_pole parent="${parent}" number="2" x_loc= "-0.07" y_loc= "0.10" z_loc="0.210"/>
-    <xacro:stack_top_pole parent="${parent}" number="3" x_loc= "-0.07" y_loc= "-0.10" z_loc="0.210"/>
+    <xacro:stack_top_pole parent="${parent}" number="3" x_loc= "-0.07" y_loc= "-0.10" z_loc="0.210"/> -->
 
-    <joint name="plate_top_joint" type="fixed">
+    <!-- <joint name="plate_top_joint" type="fixed">
       <origin xyz="0 0 0.264" rpy="0 0 0"/>
       <parent link="${parent}"/>
       <child link="plate_top_link"/>
@@ -122,7 +122,7 @@
         <origin xyz="0 0 0"/>
         <inertia ixx="0.003328" ixy="0.0" ixz="0.0" iyy="0.003328" iyz="0.0" izz="0.006656" />
       </inertial>
-    </link>
+    </link> -->
   </xacro:macro>
 
 </robot>
