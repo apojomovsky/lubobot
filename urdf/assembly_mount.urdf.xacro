@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot name="body" 
+<robot name="assembly_mount" 
   xmlns:xacro="http://ros.org/wiki/xacro">
   <!-- Heavily based on: https://github.com/turtlebot/turtlebot/blob/5a97fdd2661354a866ee41238e2197244c220840/turtlebot_description/urdf/stacks/hexagons.urdf.xacro -->
 
@@ -63,7 +63,7 @@
     to the parent link (usually base_link). They could be made relative to each
     other, but there is no necessary reason to do so.
   -->
-  <xacro:macro name="body" params="parent">
+  <xacro:macro name="assembly_mount" params="parent">
     <xacro:stack_bottom_pole parent="${parent}" number="0" x_loc= "0.08" y_loc= "0.08" z_loc="0.112"/>
     <xacro:stack_bottom_pole parent="${parent}" number="1" x_loc= "0.08" y_loc= "-0.08" z_loc="0.112"/>
     <xacro:stack_bottom_pole parent="${parent}" number="2" x_loc= "-0.08" y_loc= "0.08" z_loc="0.112"/>

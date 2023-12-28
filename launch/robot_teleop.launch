@@ -1,0 +1,4 @@
+<launch>
+    <include file="$(find lubobot)/launch/create_2.launch"/>
+    <include file="$(find lubobot)/launch/joy_teleop.launch"/>
+</launch>
