@@ -1,0 +1,4 @@
+<launch>
+  <rosparam file="$(find lubobot)/config/imu_config.yaml" command="load"/>
+  <node name="imu_node" pkg="mpu6050_dmp_ros" type="imu_publisher" output="screen"/>
+</launch>

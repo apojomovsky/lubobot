@@ -6,14 +6,14 @@
             <color rgba="1 0 0 1"/>
         </material>
 
-        <joint name="imu_sensor_joint" type="fixed">
+        <joint name="imu_joint" type="fixed">
             <axis xyz="0 0 1" />
             <origin xyz="${xyz}" rpy="${rpy}"/>
             <parent link="${parent}"/>
-            <child link="imu_sensor_link"/>
+            <child link="imu_link"/>
         </joint>
 
-        <link name="imu_sensor_link">
+        <link name="imu_link">
             <collision>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
                 <geometry>
