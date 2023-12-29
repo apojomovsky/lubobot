@@ -3,9 +3,9 @@ imu_publisher:
   frame_id: "imu_link"
   i2c_bus: 1
   device_address: 0x68
-  x_accel_offset: -512
-  y_accel_offset: -2263
-  z_accel_offset: 1893
-  x_gyro_offset: 29
-  y_gyro_offset: -56
-  z_gyro_offset: 74
+  x_accel_offset: -480
+  y_accel_offset: -2259
+  z_accel_offset: 1889
+  x_gyro_offset: 30
+  y_gyro_offset: -55
+  z_gyro_offset: 71

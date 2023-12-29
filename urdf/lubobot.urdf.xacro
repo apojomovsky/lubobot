@@ -19,6 +19,6 @@
 
         <xacro:lds_lidar xyz="0 0 0.19" rpy="0 0 3.1415" parent="base_link"/>
 
-        <xacro:imu_sensor xyz="0 -0.1 0" rpy="0 0 0" parent="base_link" />
+        <xacro:imu_sensor xyz="0 0.105 0.074" rpy="0 0 0" parent="base_link" />
 
 </robot>
