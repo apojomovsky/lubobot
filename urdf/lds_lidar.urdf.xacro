@@ -2,10 +2,6 @@
 <robot name="imu" 
     xmlns:xacro="http://ros.org/wiki/xacro">
     <xacro:macro name="lds_lidar" params="xyz rpy parent">
-      <material name="dark_gray">
-        <color rgba="0.2 0.2 0.2 1"/>
-      </material>
-
     <joint name="lidar_joint" type="fixed">
       <origin xyz="${xyz}" rpy="${rpy}"/>
       <parent link="${parent}"/>

@@ -1,14 +1,24 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="lubobot_description">
+	<material name="dark_gray">
+      <color rgba="0.2 0.2 0.2 1"/>
+	</material>
+	<material name="wood">
+	  <color rgba="0.76 0.6 0.42 1"/>
+	</material>
+	<material name="metal">
+	  <color rgba="0.8 0.8 0.8 1"/>
+	</material>
+
 	<xacro:include filename="$(find create_description)/urdf/create_2.urdf.xacro" />
 	<xacro:include filename="$(find lubobot)/urdf/assembly_mount.urdf.xacro"/>
-	<!-- <xacro:include filename="$(find lubobot)/urdf/imu.urdf.xacro" />
-	<xacro:include filename="$(find lubobot)/urdf/lds_lidar.urdf.xacro" /> -->
+	<!-- <xacro:include filename="$(find lubobot)/urdf/imu.urdf.xacro" /> -->
+	<xacro:include filename="$(find lubobot)/urdf/lds_lidar.urdf.xacro" />
 
 	<xacro:assembly_mount parent="base_link"/>
 
-	<!-- <xacro:lds_lidar xyz="0 0 0.19" rpy="0 0 ${3.1415}" parent="base_link" />
+	<xacro:lds_lidar xyz="0 0 0.19" rpy="0 0 ${3.1415}" parent="base_link" />
 
-	<xacro:imu_sensor xyz="0 -0.05 0" rpy="0 0 0" parent="base_link" /> -->
+	<!-- <xacro:imu_sensor xyz="0 -0.05 0" rpy="0 0 0" parent="base_link" /> -->
 
 </robot>

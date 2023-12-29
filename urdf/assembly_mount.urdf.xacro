@@ -4,10 +4,6 @@
   <!-- Heavily based on: https://github.com/turtlebot/turtlebot/blob/5a97fdd2661354a866ee41238e2197244c220840/turtlebot_description/urdf/stacks/hexagons.urdf.xacro -->
 
   <xacro:macro name="stack_bottom_pole" params="parent number x_loc y_loc z_loc">
-    <material name="dark_gray">
-      <color rgba="0.2 0.2 0.2 1"/>
-    </material>
-
     <joint name="pole_bottom_${number}_joint" type="fixed">
       <origin xyz="${x_loc} ${y_loc} ${z_loc}" rpy="0 0 0"/>
       <parent link="${parent}"/>
@@ -19,7 +15,7 @@
         <geometry>
           <mesh filename="package://lubobot/meshes/pole_80mm.stl" scale="0.001 0.001 0.001"/>
         </geometry>
-        <material name="dark_gray"/>
+        <material name="metal"/>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -52,7 +48,7 @@
         <geometry>
           <mesh filename="package://lubobot/meshes/bottom_plate_290mm.stl" scale="0.001 0.001 0.001"/>
         </geometry>
-        <material name="dark_gray"/>
+        <material name="wood"/>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>

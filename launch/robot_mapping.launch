@@ -1,0 +1,7 @@
+<launch>
+    <include file="$(find lubobot)/launch/create_2.launch"/>
+    <include file="$(find lubobot)/launch/joy_teleop.launch"/>
+    <include file="$(find lubobot)/launch/imu.launch"/>
+    <include file="$(find lubobot)/launch/lidar.launch"/>
+    <include file="$(find lubobot)/launch/gmapping.launch"/>
+</launch>
