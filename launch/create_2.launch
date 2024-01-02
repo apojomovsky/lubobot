@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
 <launch>
   <arg name="config" default="$(find create_bringup)/config/default.yaml" />
-  <arg name="desc" default="true" />
 
   <node name="create_driver" pkg="create_driver" type="create_driver" output="screen">
     <rosparam command="load" file="$(arg config)" />
     <param name="robot_model" value="CREATE_2" />
+    <!-- This avoids the collition of the two transforms published when robot_pose_ekf also publishes to the /odom frame -->
+    <param name="publish_tf" value="false" />
   </node>
 
   <param name="robot_description" command="$(find xacro)/xacro '$(find lubobot)/urdf/lubobot.urdf.xacro'"/>

@@ -3,7 +3,7 @@
 
   <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
     <param name="base_frame" value="base_footprint"/>
-    <param name="odom_frame" value="/odom"/>
+    <param name="odom_frame" value="odom_combined"/>
 
     <remap from="scan" to="$(arg scan_topic)"/>
   </node>
