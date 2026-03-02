@@ -2,7 +2,7 @@
 # zenoh_local.sh — start the zenoh client bridge on this PC
 # Requires: zenoh-bridge-ros2dds installed locally (x86_64 build)
 # Install: https://github.com/eclipse-zenoh/zenoh-plugin-ros2dds/releases
-set -euo pipefail
+set -eo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"

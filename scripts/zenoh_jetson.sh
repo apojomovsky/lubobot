@@ -2,7 +2,7 @@
 # zenoh_jetson.sh — start the zenoh router+bridge on the Jetson over SSH
 # Runs in the background on the Jetson; output is shown locally.
 # Press Ctrl+C to stop tailing (the bridge keeps running on the Jetson).
-set -euo pipefail
+set -eo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
