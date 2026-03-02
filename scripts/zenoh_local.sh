@@ -26,6 +26,7 @@ CONFIG_TEMPLATE="$ROOT_DIR/zenoh/desktop.json5"
 CONFIG_TMP="/tmp/zenoh-desktop-resolved.json5"
 sed "s/\${JETSON_HOST:[^}]*}/${JETSON_HOST}/g" "$CONFIG_TEMPLATE" > "$CONFIG_TMP"
 
-echo "→ Connecting to zenoh router at ${JETSON_HOST}:7447"
+echo "→ Connecting to zenoh router at ${JETSON_HOST}:7447 (Ctrl+C to stop)"
+echo ""
 source /opt/ros/humble/setup.bash
-exec zenoh-bridge-ros2dds -c "$CONFIG_TMP"
+zenoh-bridge-ros2dds -c "$CONFIG_TMP"

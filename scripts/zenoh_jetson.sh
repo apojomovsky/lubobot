@@ -22,14 +22,12 @@ echo "→ Deploying zenoh config to Jetson"
 ssh "$REMOTE" "mkdir -p ~/${JETSON_WORKSPACE}/zenoh"
 rsync -az "$ROOT_DIR/zenoh/jetson.json5" "${REMOTE}:${REMOTE_CFG}"
 
-echo "→ Starting zenoh-bridge-ros2dds on ${REMOTE} (log: ${LOG_FILE})"
-ssh "$REMOTE" "
-  source /opt/ros/humble/setup.bash
-  pkill -f zenoh-bridge-ros2dds 2>/dev/null || true
-  nohup zenoh-bridge-ros2dds -c ${REMOTE_CFG} > ${LOG_FILE} 2>&1 &
-  echo \"✓ zenoh bridge started (PID \$!)\"
-"
+echo "→ Killing any existing zenoh bridge on Jetson"
+ssh "$REMOTE" "pkill -f zenoh-bridge-ros2dds 2>/dev/null && echo '  killed old instance' || echo '  none running'"
 
+echo "→ Starting zenoh-bridge-ros2dds on ${REMOTE} (Ctrl+C to stop)"
 echo ""
-echo "Tailing Jetson zenoh log (Ctrl+C to stop tailing, bridge keeps running)..."
-ssh "$REMOTE" "tail -f ${LOG_FILE}"
+ssh -t "$REMOTE" "
+  source /opt/ros/humble/setup.bash
+  zenoh-bridge-ros2dds -c ${REMOTE_CFG}
+"
