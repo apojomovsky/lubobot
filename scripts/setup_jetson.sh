@@ -31,6 +31,16 @@ ssh -t "$REMOTE" "
   echo '✓ Hostname set to ${DESIRED_HOSTNAME}'
 "
 
+echo "→ Adding ${JETSON_USER} to dialout group (serial port access)"
+ssh "$REMOTE" "
+  if groups | grep -qw dialout; then
+    echo '✓ Already in dialout group'
+  else
+    sudo usermod -aG dialout ${JETSON_USER}
+    echo '✓ Added to dialout group (re-login required to take effect)'
+  fi
+"
+
 echo "→ Creating workspace directory"
 ssh "$REMOTE" "mkdir -p ~/${JETSON_WORKSPACE}/src && echo '✓ Workspace ready'"
 
