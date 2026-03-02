@@ -20,13 +20,7 @@ if ! command -v zenoh-bridge-ros2dds &>/dev/null; then
   echo "  https://github.com/eclipse-zenoh/zenoh-plugin-ros2dds/releases" >&2
   exit 1
 fi
-
-# Substitute JETSON_HOST into the config
-CONFIG_TEMPLATE="$ROOT_DIR/zenoh/desktop.json5"
-CONFIG_TMP="/tmp/zenoh-desktop-resolved.json5"
-sed "s/\${JETSON_HOST:[^}]*}/${JETSON_HOST}/g" "$CONFIG_TEMPLATE" > "$CONFIG_TMP"
-
 echo "→ Connecting to zenoh router at ${JETSON_HOST}:7447 (Ctrl+C to stop)"
 echo ""
 source /opt/ros/humble/setup.bash
-zenoh-bridge-ros2dds -c "$CONFIG_TMP" --ros-localhost-only
+zenoh-bridge-ros2dds client -e "tcp/${JETSON_HOST}:7447" --ros-localhost-only

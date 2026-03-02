@@ -23,11 +23,8 @@ ssh "$REMOTE" "mkdir -p ~/${JETSON_WORKSPACE}/zenoh"
 rsync -az "$ROOT_DIR/zenoh/jetson.json5" "${REMOTE}:${REMOTE_CFG}"
 
 echo "→ Killing any existing zenoh bridge on Jetson"
-ssh "$REMOTE" "pkill -f zenoh-bridge-ros2dds 2>/dev/null && echo '  killed old instance' || echo '  none running'"
+ssh "$REMOTE" "pkill -f zenoh-bridge-ros2dds; true"
 
 echo "→ Starting zenoh-bridge-ros2dds on ${REMOTE} (Ctrl+C to stop)"
 echo ""
-ssh -t "$REMOTE" "
-  source /opt/ros/humble/setup.bash
-  zenoh-bridge-ros2dds -c ${REMOTE_CFG} --ros-localhost-only
-"
+ssh -t "$REMOTE" "source /opt/ros/humble/setup.bash && zenoh-bridge-ros2dds router --ros-localhost-only"
