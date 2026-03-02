@@ -36,15 +36,24 @@ source scripts/env.sh
 # 2. Deploy + build on Jetson
 scripts/deploy_and_build.sh
 
-# 3. Drop into a shell on the Jetson to launch nodes
-scripts/ssh.sh
-  → source ~/robolubo_ws/install/setup.bash
-  → ROS_LOCALHOST_ONLY=1 ros2 launch robolubo <launch_file>
+# 3. Start zenoh router on Jetson (Terminal A)
+scripts/zenoh_jetson.sh
 
-# 4. On PC — start Zenoh bridge (in a separate terminal, source env.sh first)
+# 4. Start zenoh client on PC (Terminal B)
 scripts/zenoh_local.sh
 
-# 5. On PC — RViz (env.sh already sourced ROS2 and set ROS_LOCALHOST_ONLY)
+# 5. Bring up the robot on Jetson (Terminal C — SSH in)
+scripts/ssh.sh
+  → source ~/robolubo_ws/install/setup.bash
+  → ROS_LOCALHOST_ONLY=1 ros2 launch robolubo bringup.launch.py
+
+# 6. Keyboard teleop from PC (Terminal D)
+source scripts/env.sh
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+  # i/j/l/, to move, k to stop, q/z to change speed
+
+# 7. RViz on PC (Terminal E)
+source scripts/env.sh
 rviz2
 ```
 
