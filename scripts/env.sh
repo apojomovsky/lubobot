@@ -4,10 +4,11 @@
 #
 # Then all ros2 commands (topic echo, rviz2, etc.) will use project settings.
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")/.." && pwd)"
+ROOT_DIR="${PWD}"
 
 if [[ ! -f "$ROOT_DIR/.env" ]]; then
-  echo "ERROR: .env not found. Copy .env.example to .env and fill it in." >&2
+  echo "ERROR: .env not found. Source this script from the project root:" >&2
+  echo "  cd ~/robolubo && source scripts/env.sh" >&2
   return 1
 fi
 
