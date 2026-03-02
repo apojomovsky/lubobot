@@ -38,8 +38,8 @@ ssh -t "$REMOTE" "
 echo "→ Creating workspace directory"
 ssh "$REMOTE" "mkdir -p ~/${JETSON_WORKSPACE}/src && echo '✓ Workspace ready'"
 
-echo "→ Installing zenoh-bridge-ros2dds (aarch64)"
-ssh "$REMOTE" "
+echo "→ Installing zenoh-bridge-ros2dds (aarch64) (may prompt for Jetson sudo password)"
+ssh -t "$REMOTE" "
   set -e
   if command -v zenoh-bridge-ros2dds &>/dev/null; then
     echo '✓ zenoh-bridge-ros2dds already installed, skipping'
