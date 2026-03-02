@@ -28,6 +28,9 @@ robolubo/
 
 ## Daily Workflow
 ```bash
+# Once per terminal — loads project env + sources ROS2:
+source scripts/env.sh
+
 # 1. Edit code in src/
 
 # 2. Deploy + build on Jetson
@@ -38,11 +41,11 @@ scripts/ssh.sh
   → source ~/robolubo_ws/install/setup.bash
   → ROS_LOCALHOST_ONLY=1 ros2 launch robolubo <launch_file>
 
-# 4. On PC — start Zenoh bridge (in a separate terminal)
+# 4. On PC — start Zenoh bridge (in a separate terminal, source env.sh first)
 scripts/zenoh_local.sh
 
-# 5. On PC — start RViz (another terminal)
-source /opt/ros/humble/setup.bash && rviz2
+# 5. On PC — RViz (env.sh already sourced ROS2 and set ROS_LOCALHOST_ONLY)
+rviz2
 ```
 
 ---
