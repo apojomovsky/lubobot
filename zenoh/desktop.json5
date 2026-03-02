@@ -1,0 +1,15 @@
+/// Zenoh config for the desktop PC (client + ROS2 bridge)
+/// Run with: zenoh-bridge-ros2dds -c desktop.json5
+/// Set JETSON_HOST env var or replace the placeholder below.
+{
+  mode: "client",
+
+  connect: {
+    /// Replace with jetson-lubo.local once mDNS is working
+    endpoints: ["tcp/${JETSON_HOST:192.168.4.124}:7447"],
+  },
+
+  plugins: {
+    ros2dds: {},
+  },
+}

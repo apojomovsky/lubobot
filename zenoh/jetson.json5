@@ -1,0 +1,23 @@
+/// Zenoh config for the Jetson Nano (router + ROS2 bridge)
+/// Place this on the Jetson at ~/robolubo_ws/zenoh/jetson.json5
+/// Run with: zenoh-bridge-ros2dds -c jetson.json5
+{
+  mode: "router",
+
+  listen: {
+    endpoints: ["tcp/0.0.0.0:7447"],
+  },
+
+  plugins: {
+    ros2dds: {
+      /// Bridge ALL topics/services/params by default.
+      /// Restrict with allow/deny lists as the project grows.
+      // allow: {
+      //   publishers: [".*"],
+      //   subscribers: [".*"],
+      //   service_servers: [".*"],
+      //   action_servers: [".*"],
+      // },
+    },
+  },
+}

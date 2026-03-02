@@ -1,0 +1,28 @@
+# ROS2 workspace build artifacts
+build/
+install/
+log/
+
+# Environment config (contains host/IP - don't commit)
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+
+# C++
+*.o
+*.so
+*.a
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
