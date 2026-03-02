@@ -1,0 +1,18 @@
+create_driver:
+  ros__parameters:
+    # Serial device connected to the Create 2
+    # Override at launch with: ros2 launch robolubo base.launch.py serial_port:=/dev/ttyUSB1
+    dev: "/dev/ttyUSB0"
+
+    # Base and odometry frame IDs (standard REP-105 names)
+    base_frame: "base_footprint"
+    odom_frame: "odom"
+
+    # Stop the robot if no cmd_vel received for this duration (seconds)
+    latch_cmd_duration: 0.2
+
+    # Driver loop rate (Hz)
+    loop_hz: 10.0
+
+    # Publish odom → base_footprint TF
+    publish_tf: true
