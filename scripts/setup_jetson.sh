@@ -50,12 +50,14 @@ ssh -t "$REMOTE" "
 
 echo "→ Checking ROS2 Humble installation"
 ssh "$REMOTE" "
-  source /opt/ros/humble/setup.bash
-  echo \"✓ ROS2 \$(rosversion -d) ready\"
+  source /opt/ros/humble/setup.bash && echo '✓ ROS2 Humble ready' || echo 'ERROR: /opt/ros/humble not found'
 "
 
-echo "→ Initialising rosdep (one-time)"
+echo "→ Installing rosdep (may prompt for Jetson sudo password)"
 ssh -t "$REMOTE" "
+  if ! command -v rosdep &>/dev/null; then
+    sudo apt install -y python3-rosdep
+  fi
   if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then
     sudo rosdep init
   fi
