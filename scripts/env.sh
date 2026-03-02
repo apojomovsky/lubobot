@@ -4,8 +4,7 @@
 #
 # Then all ros2 commands (topic echo, rviz2, etc.) will use project settings.
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="$(dirname "$SCRIPT_DIR")"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")/.." && pwd)"
 
 if [[ ! -f "$ROOT_DIR/.env" ]]; then
   echo "ERROR: .env not found. Copy .env.example to .env and fill it in." >&2
