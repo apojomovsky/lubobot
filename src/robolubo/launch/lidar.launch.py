@@ -22,7 +22,16 @@ def generate_launch_description():
         output="screen",
     )
 
+    # Static transform: base_footprint → laser (lidar mounted at centre, 20cm up)
+    static_tf = Node(
+        package="tf2_ros",
+        executable="static_transform_publisher",
+        name="base_to_laser_tf",
+        arguments=["0", "0", "0.2", "0", "0", "0", "base_footprint", "laser"],
+    )
+
     return LaunchDescription([
         port_arg,
         lidar_node,
+        static_tf,
     ])
