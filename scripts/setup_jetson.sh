@@ -17,15 +17,15 @@ REMOTE="${JETSON_USER}@${JETSON_HOST}"
 DESIRED_HOSTNAME="jetson-lubo"
 
 # zenoh-bridge-ros2dds version and aarch64 binary URL
-ZENOH_VERSION="0.11.0"
-ZENOH_BRIDGE_URL="https://github.com/eclipse-zenoh/zenoh-plugin-ros2dds/releases/download/${ZENOH_VERSION}/zenoh-bridge-ros2dds-${ZENOH_VERSION}-aarch64-unknown-linux-gnu.zip"
+ZENOH_VERSION="1.7.2"
+ZENOH_BRIDGE_URL="https://github.com/eclipse-zenoh/zenoh-plugin-ros2dds/releases/download/${ZENOH_VERSION}/zenoh-plugin-ros2dds-${ZENOH_VERSION}-aarch64-unknown-linux-gnu-standalone.zip"
 
 echo "=== One-time Jetson setup ==="
 echo "Target: ${REMOTE}"
 echo ""
 
-echo "→ Setting hostname to ${DESIRED_HOSTNAME}"
-ssh "$REMOTE" "
+echo "→ Setting hostname to ${DESIRED_HOSTNAME} (may prompt for Jetson sudo password)"
+ssh -t "$REMOTE" "
   sudo hostnamectl set-hostname ${DESIRED_HOSTNAME}
   # Ensure 127.0.1.1 entry exists for new hostname
   if ! grep -q '${DESIRED_HOSTNAME}' /etc/hosts; then
@@ -47,10 +47,10 @@ ssh "$REMOTE" "
   fi
   cd /tmp
   curl -Lo zenoh-bridge.zip '${ZENOH_BRIDGE_URL}'
-  unzip -o zenoh-bridge.zip
+  unzip -o zenoh-bridge.zip zenoh-bridge-ros2dds
   sudo mv zenoh-bridge-ros2dds /usr/local/bin/
   sudo chmod +x /usr/local/bin/zenoh-bridge-ros2dds
-  rm -f zenoh-bridge.zip
+  rm -f zenoh-bridge.zip libzenoh_plugin_ros2dds.so 2>/dev/null || true
   echo '✓ zenoh-bridge-ros2dds installed'
 "
 
