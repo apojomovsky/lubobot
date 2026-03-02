@@ -18,4 +18,9 @@ set +a
 
 source /opt/ros/humble/setup.bash
 
+# If a local build exists, overlay it so 'ros2 launch robolubo ...' works on PC
+if [[ -f "$ROOT_DIR/install/setup.bash" ]]; then
+  source "$ROOT_DIR/install/setup.bash"
+fi
+
 echo "✓ robolubo env loaded (JETSON_HOST=$JETSON_HOST, ROS_DOMAIN_ID=$ROS_DOMAIN_ID, ROS_LOCALHOST_ONLY=$ROS_LOCALHOST_ONLY)"
