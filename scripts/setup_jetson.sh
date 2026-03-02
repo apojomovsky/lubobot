@@ -31,6 +31,20 @@ ssh -t "$REMOTE" "
   echo '✓ Hostname set to ${DESIRED_HOSTNAME}'
 "
 
+echo "→ Enabling multicast on loopback (required for ROS_LOCALHOST_ONLY=1)"
+ssh -t "$REMOTE" "
+  # Enable immediately
+  sudo ip link set lo multicast on
+  # Persist across reboots via systemd-networkd override
+  sudo mkdir -p /etc/systemd/network
+  echo '[Match]
+Name=lo
+
+[Link]
+Multicast=yes' | sudo tee /etc/systemd/network/10-lo-multicast.network > /dev/null
+  echo '✓ Loopback multicast enabled (persistent)'
+"
+
 echo "→ Adding ${JETSON_USER} to dialout group (serial port access)"
 ssh "$REMOTE" "
   if groups | grep -qw dialout; then
