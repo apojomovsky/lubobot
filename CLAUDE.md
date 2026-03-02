@@ -36,7 +36,7 @@ scripts/deploy_and_build.sh
 # 3. Drop into a shell on the Jetson to launch nodes
 scripts/ssh.sh
   → source ~/robolubo_ws/install/setup.bash
-  → ros2 launch robolubo <launch_file>
+  → ROS_LOCALHOST_ONLY=1 ros2 launch robolubo <launch_file>
 
 # 4. On PC — start Zenoh bridge (in a separate terminal)
 scripts/zenoh_local.sh

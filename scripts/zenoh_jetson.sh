@@ -29,5 +29,5 @@ echo "→ Starting zenoh-bridge-ros2dds on ${REMOTE} (Ctrl+C to stop)"
 echo ""
 ssh -t "$REMOTE" "
   source /opt/ros/humble/setup.bash
-  zenoh-bridge-ros2dds -c ${REMOTE_CFG}
+  zenoh-bridge-ros2dds -c ${REMOTE_CFG} --ros-localhost-only
 "

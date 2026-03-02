@@ -29,4 +29,4 @@ sed "s/\${JETSON_HOST:[^}]*}/${JETSON_HOST}/g" "$CONFIG_TEMPLATE" > "$CONFIG_TMP
 echo "→ Connecting to zenoh router at ${JETSON_HOST}:7447 (Ctrl+C to stop)"
 echo ""
 source /opt/ros/humble/setup.bash
-zenoh-bridge-ros2dds -c "$CONFIG_TMP"
+zenoh-bridge-ros2dds -c "$CONFIG_TMP" --ros-localhost-only
