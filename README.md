@@ -8,9 +8,14 @@ Developed on a PC, deployed to a Jetson Nano (`jetson-lubo`).
 ## Prerequisites
 
 **PC:**
-- ROS2 Humble installed from debians
+- ROS2 installed
 - `rsync`, `ssh`
-- [`zenoh-bridge-ros2dds`](https://github.com/eclipse-zenoh/zenoh-plugin-ros2dds/releases) (x86_64) in your PATH
+- `zenoh-bridge-ros2dds` — install via Eclipse Zenoh apt repo:
+  ```bash
+  curl -L https://download.eclipse.org/zenoh/debian-repo/zenoh-public-key | sudo gpg --dearmor --yes --output /etc/apt/keyrings/zenoh-public-key.gpg
+  echo 'deb [signed-by=/etc/apt/keyrings/zenoh-public-key.gpg] https://download.eclipse.org/zenoh/debian-repo/ /' | sudo tee /etc/apt/sources.list.d/zenoh.list
+  sudo apt update && sudo apt install zenoh-bridge-ros2dds
+  ```
 
 **Jetson Nano:**
 - ROS2 Humble installed from debians

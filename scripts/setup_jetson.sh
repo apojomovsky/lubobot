@@ -16,10 +16,6 @@ fi
 REMOTE="${JETSON_USER}@${JETSON_HOST}"
 DESIRED_HOSTNAME="jetson-lubo"
 
-# zenoh-bridge-ros2dds version and aarch64 binary URL
-ZENOH_VERSION="1.7.2"
-ZENOH_BRIDGE_URL="https://github.com/eclipse-zenoh/zenoh-plugin-ros2dds/releases/download/${ZENOH_VERSION}/zenoh-plugin-ros2dds-${ZENOH_VERSION}-aarch64-unknown-linux-gnu-standalone.zip"
-
 echo "=== One-time Jetson setup ==="
 echo "Target: ${REMOTE}"
 echo ""
@@ -38,20 +34,18 @@ ssh -t "$REMOTE" "
 echo "→ Creating workspace directory"
 ssh "$REMOTE" "mkdir -p ~/${JETSON_WORKSPACE}/src && echo '✓ Workspace ready'"
 
-echo "→ Installing zenoh-bridge-ros2dds (aarch64) (may prompt for Jetson sudo password)"
+echo "→ Installing zenoh-bridge-ros2dds via Eclipse Zenoh apt repo (may prompt for Jetson sudo password)"
 ssh -t "$REMOTE" "
   set -e
   if command -v zenoh-bridge-ros2dds &>/dev/null; then
     echo '✓ zenoh-bridge-ros2dds already installed, skipping'
-    exit 0
+  else
+    curl -L https://download.eclipse.org/zenoh/debian-repo/zenoh-public-key | sudo gpg --dearmor --yes --output /etc/apt/keyrings/zenoh-public-key.gpg
+    echo 'deb [signed-by=/etc/apt/keyrings/zenoh-public-key.gpg] https://download.eclipse.org/zenoh/debian-repo/ /' | sudo tee /etc/apt/sources.list.d/zenoh.list
+    sudo apt update -qq
+    sudo apt install -y zenoh-bridge-ros2dds
+    echo '✓ zenoh-bridge-ros2dds installed'
   fi
-  cd /tmp
-  curl -Lo zenoh-bridge.zip '${ZENOH_BRIDGE_URL}'
-  unzip -o zenoh-bridge.zip zenoh-bridge-ros2dds
-  sudo mv zenoh-bridge-ros2dds /usr/local/bin/
-  sudo chmod +x /usr/local/bin/zenoh-bridge-ros2dds
-  rm -f zenoh-bridge.zip libzenoh_plugin_ros2dds.so 2>/dev/null || true
-  echo '✓ zenoh-bridge-ros2dds installed'
 "
 
 echo "→ Checking ROS2 Humble installation"
