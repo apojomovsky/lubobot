@@ -21,6 +21,9 @@ ssh "$REMOTE" bash -lc "
   set -e
   source /opt/ros/humble/setup.bash
   cd ${REMOTE_WS}
+  echo '→ Installing dependencies with rosdep'
+  rosdep install --from-paths src --ignore-src -r -y
+  echo '→ Building'
   colcon build --symlink-install 2>&1
   echo '✓ Build done'
 "

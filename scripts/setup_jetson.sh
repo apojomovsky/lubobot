@@ -54,13 +54,13 @@ ssh "$REMOTE" "
   echo \"✓ ROS2 \$(rosversion -d) ready\"
 "
 
-echo "→ Installing ROS2 robot packages on Jetson"
+echo "→ Initialising rosdep (one-time)"
 ssh -t "$REMOTE" "
-  sudo apt update -qq
-  sudo apt install -y \
-    ros-humble-create-robot \
-    ros-humble-teleop-twist-keyboard
-  echo '✓ Robot packages installed'
+  if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then
+    sudo rosdep init
+  fi
+  rosdep update --rosdistro humble
+  echo '✓ rosdep ready'
 "
 
 echo ""
