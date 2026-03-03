@@ -4,7 +4,6 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /LaserScan1
         - /TF1
       Splitter Ratio: 0.5
     Tree Height: 617
@@ -33,28 +32,6 @@ Visualization Manager:
       Plane: XY
       Plane Cell Count: 10
       Reference Frame: <Fixed Frame>
-      Value: true
-    - Class: rviz_default_plugins/LaserScan
-      Color: 255; 50; 0
-      Color Transformer: FlatColor
-      Decay Time: 0
-      Enabled: true
-      Max Color: 255; 255; 255
-      Min Color: 0; 0; 0
-      Name: LaserScan
-      Position Transformer: XYZ
-      Selectable: true
-      Size (m): 0.05
-      Size (Pixels): 3
-      Style: Points
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        Filter size: 10
-        History Policy: Keep Last
-        Reliability Policy: Best Effort
-        Value: /scan
-      Use Fixed Frame: true
       Value: true
     - Class: rviz_default_plugins/TF
       Enabled: true
