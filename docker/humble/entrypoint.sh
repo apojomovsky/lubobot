@@ -8,8 +8,8 @@ if [[ -n "${XDG_RUNTIME_DIR:-}" ]]; then
   chmod 700 "${XDG_RUNTIME_DIR}" || true
 fi
 
-if [[ -f /workspaces/lubobot/install/setup.bash ]]; then
-  source /workspaces/lubobot/install/setup.bash
+if [[ -f /workspaces/ros2_ws/install/setup.bash ]]; then
+  source /workspaces/ros2_ws/install/setup.bash
 fi
 
 exec "$@"

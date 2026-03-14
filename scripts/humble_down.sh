@@ -9,4 +9,9 @@ GPU="$(detect_gpu)"
 setup_gpu_env "${GPU}"
 COMPOSE_ARGS="$(compose_files "${GPU}" "${ROOT_DIR}")"
 
-exec docker compose ${COMPOSE_ARGS} down
+if docker compose ${COMPOSE_ARGS} down; then
+  exit 0
+fi
+
+echo "docker compose down failed, forcing removal of lubobot-humble-dev" >&2
+docker rm -f lubobot-humble-dev >/dev/null 2>&1 || true

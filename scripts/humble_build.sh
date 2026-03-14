@@ -9,7 +9,7 @@ GPU="$(detect_gpu)"
 setup_gpu_env "${GPU}"
 COMPOSE_ARGS="$(compose_files "${GPU}" "${ROOT_DIR}")"
 WORKERS="${HUMBLE_BUILD_WORKERS:-1}"
-SKIP_KEYS="${HUMBLE_ROSDEP_SKIP_KEYS:-libcrypto}"
+SKIP_KEYS="${HUMBLE_ROSDEP_SKIP_KEYS:-libcrypto boost_serialization}"
 
 docker compose ${COMPOSE_ARGS} exec -u root dev bash -lc "\
   apt-get update && \
