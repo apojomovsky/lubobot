@@ -3,7 +3,6 @@ ARG PANGOLIN_REF=master
 ARG USERNAME=lubobot
 ARG USER_ID=1000
 ARG GROUP_ID=1000
-ARG ROSDEP_SKIP_KEYS="libcrypto boost_serialization"
 
 FROM ${ROS_BASE_IMAGE} AS humble-dev-deps
 
@@ -64,18 +63,13 @@ RUN apt-get update && apt-get install -y \
     libcanberra-gtk3-module \
     && rm -rf /var/lib/apt/lists/*
 
-RUN if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then rosdep init; fi && \
-    rosdep update --rosdistro humble
-
 FROM humble-dev-deps AS ros-workspace-deps
 
-ARG ROSDEP_SKIP_KEYS
+COPY docker/rosdep-apt-packages.txt /tmp/rosdep-apt-packages.txt
 
-COPY docker/rosdep-manifests/ /tmp/rosdep-manifests/
-
-RUN if [ -d /tmp/rosdep-manifests ] && [ "$(find /tmp/rosdep-manifests -name package.xml | wc -l)" -gt 0 ]; then \
+RUN if [ -s /tmp/rosdep-apt-packages.txt ]; then \
       apt-get update && \
-      rosdep install -r --from-paths /tmp/rosdep-manifests --ignore-src -y --rosdistro humble --skip-keys "${ROSDEP_SKIP_KEYS}" && \
+      xargs -r apt-get install -y < /tmp/rosdep-apt-packages.txt && \
       rm -rf /var/lib/apt/lists/*; \
     fi
 
