@@ -9,4 +9,13 @@ GPU="$(detect_gpu)"
 setup_gpu_env "${GPU}"
 COMPOSE_ARGS="$(compose_files "${GPU}" "${ROOT_DIR}")"
 
-exec docker compose ${COMPOSE_ARGS} run --rm --no-deps -u "${HOST_UID}:${HOST_GID}" dev bash
+set +e
+docker compose ${COMPOSE_ARGS} run --rm --no-deps -u "${HOST_UID}:${HOST_GID}" dev bash
+status=$?
+set -e
+
+if [[ "${status}" -eq 0 || "${status}" -eq 1 || "${status}" -eq 130 ]]; then
+  exit 0
+fi
+
+exit "${status}"
