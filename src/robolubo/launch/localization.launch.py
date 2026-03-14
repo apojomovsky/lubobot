@@ -9,7 +9,7 @@ def generate_launch_description():
     publish_tf_arg = DeclareLaunchArgument(
         "publish_tf",
         default_value="false",
-        description="Whether the EKF should publish odom -> base_link TF",
+        description="Whether the EKF should publish odom -> base_footprint TF",
     )
     odom_frame_arg = DeclareLaunchArgument(
         "odom_frame",
@@ -18,7 +18,7 @@ def generate_launch_description():
     )
     base_link_frame_arg = DeclareLaunchArgument(
         "base_link_frame",
-        default_value="base_link",
+        default_value="base_footprint",
         description="Base link frame used by robot_localization",
     )
     world_frame_arg = DeclareLaunchArgument(

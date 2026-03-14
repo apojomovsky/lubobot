@@ -54,7 +54,7 @@ Useful arguments:
 - `odom_frame`
   Default: `odom`
 - `base_link_frame`
-  Default: `base_link`
+  Default: `base_footprint`
 - `world_frame`
   Default: `odom`
 
@@ -63,7 +63,6 @@ Useful arguments:
 Before this should be treated as authoritative, we still need to confirm:
 
 - the actual Create 2 odom topic and frame IDs on the live robot
-- whether `base_link` or `base_footprint` is the more appropriate base frame
 - whether the IMU frame and robot frame conventions line up
 - whether the IMU yaw axis sign is correct
 - whether the Create 2 stack already publishes TF in a way that conflicts with EKF TF
