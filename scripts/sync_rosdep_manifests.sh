@@ -7,6 +7,7 @@ OUT_DIR="${ROOT_DIR}/docker/rosdep-manifests"
 
 rm -rf "${OUT_DIR}"
 mkdir -p "${OUT_DIR}"
+touch "${OUT_DIR}/COLCON_IGNORE"
 
 copy_manifest() {
   local src_file="$1"
