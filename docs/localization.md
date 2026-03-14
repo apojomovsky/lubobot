@@ -29,6 +29,8 @@ The scaffold currently assumes:
 - wheel odometry is available on `/odom`
 - filtered IMU data is available on `/imu/data`
 - the robot is planar, so `two_d_mode` is enabled
+- the IMU is mounted in REP-style orientation, with a provisional static offset
+  of `x = -0.07 m`, `y = 0.0 m`, `z = 0.0 m` relative to `base_footprint`
 
 The EKF is intentionally conservative:
 
@@ -79,4 +81,5 @@ Before this should be treated as authoritative, we still need to confirm:
    - `odom0_config`
    - `imu0_config`
    - `publish_tf`
+   - IMU mount translation once measured more precisely
 4. Only then decide whether the EKF should replace the current odom TF source.

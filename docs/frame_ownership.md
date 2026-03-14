@@ -31,6 +31,20 @@ Use the EKF output as the robot's local motion estimate:
 This should eventually replace raw wheel odometry as the main local pose source
 for downstream consumers.
 
+### IMU Mount
+
+The IMU probe indicates the board orientation already matches robot body-frame
+conventions closely enough that no corrective rotation is currently needed.
+
+Current provisional static transform:
+
+- parent: `base_footprint`
+- child: `imu_link`
+- translation: `(-0.07, 0.0, 0.0)` meters
+- rotation: `(0, 0, 0)` radians
+
+This translation should be remeasured and refined later.
+
 ### Global / Drift-Corrected Pose
 
 Use ORB-SLAM3 as the visual global pose source:
