@@ -1,0 +1,25 @@
+services:
+  dev:
+    build:
+      context: ..
+      dockerfile: docker/humble/Dockerfile
+    image: lubobot:humble-dev
+    container_name: lubobot-humble-dev
+    network_mode: host
+    stdin_open: true
+    tty: true
+    environment:
+      DISPLAY: ${DISPLAY:-}
+      QT_X11_NO_MITSHM: "1"
+      XAUTHORITY: ${XAUTHORITY:-}
+    working_dir: /workspaces/ros2_ws
+    volumes:
+      - ..:/workspaces/ros2_ws/src/lubobot
+      - ../external/ros2_orb_slam3:/workspaces/ros2_ws/src/ros2_orb_slam3
+      - ../ros2_ws/build:/workspaces/ros2_ws/build
+      - ../ros2_ws/install:/workspaces/ros2_ws/install
+      - ../ros2_ws/log:/workspaces/ros2_ws/log
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    devices:
+      - /dev/dri:/dev/dri
+    command: bash

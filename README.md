@@ -73,8 +73,12 @@ rviz2
 
 ```
 src/robolubo/       ROS2 package (mixed C++ / Python)
+external/           Gitignored clones of maintained external dependencies
+ros2_ws/            Gitignored local workspace build/install/log cache
 scripts/            Dev workflow scripts
+docker/             Local development container definitions
 zenoh/              Zenoh bridge configuration
 ```
 
 See [CLAUDE.md](CLAUDE.md) for full developer reference.
+For local ROS 2 Humble-on-desktop validation, see [docs/humble_docker.md](docs/humble_docker.md).

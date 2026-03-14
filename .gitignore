@@ -2,6 +2,12 @@
 build/
 install/
 log/
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+
+# External dependency clones
+external/
 
 # Environment config (contains host/IP - don't commit)
 .env
