@@ -19,6 +19,9 @@ ros-up:
 ros-shell:
   ./scripts/humble_shell.sh
 
+ros-attach:
+  ./scripts/humble_attach.sh
+
 ros-build:
   ./scripts/humble_build.sh
 

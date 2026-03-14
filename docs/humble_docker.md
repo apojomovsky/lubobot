@@ -45,6 +45,7 @@ The primary workflow uses:
 - [`scripts/setup_external.sh`](/home/alexis/lubobot/scripts/setup_external.sh)
 - [`scripts/humble_up.sh`](/home/alexis/lubobot/scripts/humble_up.sh)
 - [`scripts/humble_shell.sh`](/home/alexis/lubobot/scripts/humble_shell.sh)
+- [`scripts/humble_attach.sh`](/home/alexis/lubobot/scripts/humble_attach.sh)
 - [`scripts/humble_build.sh`](/home/alexis/lubobot/scripts/humble_build.sh)
 - [`scripts/humble_down.sh`](/home/alexis/lubobot/scripts/humble_down.sh)
 - [`justfile`](/home/alexis/lubobot/justfile)
@@ -152,6 +153,14 @@ scripts/humble_shell.sh
 
 This opens a one-off container with `docker compose run --rm`, so exiting the shell removes that shell container automatically.
 
+Attach to the shared `dev` container started by `scripts/humble_up.sh`:
+
+```bash
+scripts/humble_attach.sh
+```
+
+Exiting an attached shell does not stop the shared container. Use `scripts/humble_down.sh` when you want that container removed.
+
 Run a one-shot command:
 
 ```bash
@@ -187,6 +196,18 @@ Bring the container up:
 
 ```bash
 just ros-up
+```
+
+Open a disposable shell:
+
+```bash
+just ros-shell
+```
+
+Attach to the shared container:
+
+```bash
+just ros-attach
 ```
 
 Build inside the mounted workspace:
@@ -226,6 +247,17 @@ The ORB-SLAM wrapper is heavy enough that a conservative first build is preferab
 ```bash
 HUMBLE_BUILD_WORKERS=2 scripts/humble_build.sh
 ```
+
+Recommended operator model:
+
+- `just ros-shell`
+  Use for one-off commands or short exploration. The container is removed on `exit`.
+- `just ros-up`
+  Start the shared long-lived `dev` container.
+- `just ros-attach`
+  Open another shell into that shared container.
+- `just ros-down`
+  Stop and remove the shared container.
 
 ## Current Limits
 
