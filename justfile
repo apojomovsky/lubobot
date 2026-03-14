@@ -14,16 +14,16 @@ sync-manifests:
   ./scripts/sync_rosdep_manifests.sh
 
 ros-up:
-  ./scripts/humble_up.sh
+  ./scripts/ros_up.sh
 
 ros-shell:
-  ./scripts/humble_shell.sh
+  ./scripts/ros_shell.sh
 
 ros-attach:
-  ./scripts/humble_attach.sh
+  ./scripts/ros_attach.sh
 
 ros-build:
-  ./scripts/humble_build.sh
+  ./scripts/ros_build.sh
 
 ros-down:
-  ./scripts/humble_down.sh
+  ./scripts/ros_down.sh

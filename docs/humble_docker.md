@@ -26,7 +26,7 @@ Workspace-specific ROS package dependencies are not hardcoded into the image.
 They are resolved from the actual package manifests in two places:
 
 1. a cacheable Docker build layer fed by a manifest-only snapshot
-2. the runtime `rosdep` pass in [`scripts/humble_build.sh`](/home/alexis/lubobot/scripts/humble_build.sh)
+2. the runtime `rosdep` pass in [`scripts/ros_build.sh`](/home/alexis/lubobot/scripts/ros_build.sh)
 
 The helper [`scripts/sync_rosdep_manifests.sh`](/home/alexis/lubobot/scripts/sync_rosdep_manifests.sh) copies only `package.xml` files from:
 
@@ -40,14 +40,14 @@ The primary workflow uses:
 - [`docker/compose.humble.yml`](/home/alexis/lubobot/docker/compose.humble.yml)
 - [`docker/compose.humble.amd.yml`](/home/alexis/lubobot/docker/compose.humble.amd.yml)
 - [`docker/compose.humble.nvidia.yml`](/home/alexis/lubobot/docker/compose.humble.nvidia.yml)
-- [`scripts/humble_common.sh`](/home/alexis/lubobot/scripts/humble_common.sh)
+- [`scripts/ros_common.sh`](/home/alexis/lubobot/scripts/ros_common.sh)
 - [`scripts/sync_rosdep_manifests.sh`](/home/alexis/lubobot/scripts/sync_rosdep_manifests.sh)
 - [`scripts/setup_external.sh`](/home/alexis/lubobot/scripts/setup_external.sh)
-- [`scripts/humble_up.sh`](/home/alexis/lubobot/scripts/humble_up.sh)
-- [`scripts/humble_shell.sh`](/home/alexis/lubobot/scripts/humble_shell.sh)
-- [`scripts/humble_attach.sh`](/home/alexis/lubobot/scripts/humble_attach.sh)
-- [`scripts/humble_build.sh`](/home/alexis/lubobot/scripts/humble_build.sh)
-- [`scripts/humble_down.sh`](/home/alexis/lubobot/scripts/humble_down.sh)
+- [`scripts/ros_up.sh`](/home/alexis/lubobot/scripts/ros_up.sh)
+- [`scripts/ros_shell.sh`](/home/alexis/lubobot/scripts/ros_shell.sh)
+- [`scripts/ros_attach.sh`](/home/alexis/lubobot/scripts/ros_attach.sh)
+- [`scripts/ros_build.sh`](/home/alexis/lubobot/scripts/ros_build.sh)
+- [`scripts/ros_down.sh`](/home/alexis/lubobot/scripts/ros_down.sh)
 - [`justfile`](/home/alexis/lubobot/justfile)
 
 The compose service mounts:
@@ -73,15 +73,15 @@ GPU handling is selected automatically:
 Override detection if needed:
 
 ```bash
-HUMBLE_GPU=nvidia scripts/humble_up.sh
-HUMBLE_GPU=amd scripts/humble_up.sh
-HUMBLE_GPU=cpu scripts/humble_up.sh
+HUMBLE_GPU=nvidia scripts/ros_up.sh
+HUMBLE_GPU=amd scripts/ros_up.sh
+HUMBLE_GPU=cpu scripts/ros_up.sh
 ```
 
 Override the container identity if needed:
 
 ```bash
-HOST_UID=$(id -u) HOST_GID=$(id -g) HOST_USERNAME=$(id -un) scripts/humble_up.sh
+HOST_UID=$(id -u) HOST_GID=$(id -g) HOST_USERNAME=$(id -un) scripts/ros_up.sh
 ```
 
 ## External Dependency Setup
@@ -148,18 +148,18 @@ This expects NVIDIA Container Toolkit to be installed on the host.
 Open a shell:
 
 ```bash
-scripts/humble_shell.sh
+scripts/ros_shell.sh
 ```
 
 This opens a one-off container with `docker compose run --rm`, so exiting the shell removes that shell container automatically.
 
-Attach to the shared `dev` container started by `scripts/humble_up.sh`:
+Attach to the shared `dev` container started by `scripts/ros_up.sh`:
 
 ```bash
-scripts/humble_attach.sh
+scripts/ros_attach.sh
 ```
 
-Exiting an attached shell does not stop the shared container. Use `scripts/humble_down.sh` when you want that container removed.
+Exiting an attached shell does not stop the shared container. Use `scripts/ros_down.sh` when you want that container removed.
 
 Run a one-shot command:
 
@@ -245,7 +245,7 @@ colcon build --symlink-install --parallel-workers 1
 The ORB-SLAM wrapper is heavy enough that a conservative first build is preferable to avoid host instability. Override with:
 
 ```bash
-HUMBLE_BUILD_WORKERS=2 scripts/humble_build.sh
+HUMBLE_BUILD_WORKERS=2 scripts/ros_build.sh
 ```
 
 Recommended operator model:
