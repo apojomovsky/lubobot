@@ -4,6 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 WATCHER="${SCRIPT_DIR}/odom_filtered_watch.py"
+CMD_VEL_SEQUENCE="${SCRIPT_DIR}/publish_cmd_vel_sequence.py"
 if [[ -d /workspaces/ros2_ws/log ]]; then
   OUT_BASE="/workspaces/ros2_ws/log/localization_experiments"
 else
@@ -22,7 +23,7 @@ EKF_LOG="${OUT_DIR}/ekf.log"
 BASE_LAUNCH_LOG="${OUT_DIR}/base.launch.log"
 IMU_LAUNCH_LOG="${OUT_DIR}/imu.launch.log"
 LOCALIZATION_LAUNCH_LOG="${OUT_DIR}/localization.launch.log"
-TELEOP_LAUNCH_LOG="${OUT_DIR}/teleop.launch.log"
+CMD_VEL_LOG="${OUT_DIR}/cmd_vel_sequence.log"
 
 cleanup() {
   jobs -p | xargs -r kill >/dev/null 2>&1 || true
@@ -42,17 +43,6 @@ start_stack() {
     publish_tf:=false \
     >"${LOCALIZATION_LAUNCH_LOG}" 2>&1 &
 
-  if command -v xterm >/dev/null 2>&1 && [[ -n "${DISPLAY:-}" ]]; then
-    stdbuf -oL ros2 launch robolubo teleop_keyboard.launch.py \
-      terminal_prefix:='xterm -e' \
-      >"${TELEOP_LAUNCH_LOG}" 2>&1 &
-  else
-    cat <<EOF
-No xterm/X11 terminal detected for teleop.
-If you want live keyboard control, launch this in another shell:
-  ros2 launch robolubo teleop_keyboard.launch.py
-EOF
-  fi
 }
 
 cat <<EOF
@@ -65,14 +55,15 @@ Bringing up:
   - base.launch.py         (${BASE_SERIAL_PORT})
   - imu.launch.py          (${IMU_PORT})
   - localization.launch.py
-  - teleop_keyboard.launch.py (if xterm is available)
+  - scripted /cmd_vel sequence
 
-For the next ${DURATION}s, drive this sequence:
+Motion sequence:
   1. stay still for 5s
-  2. rotate slowly in place for 5s
+  2. rotate slowly in place left for 5s
   3. drive forward slowly for 5s
-  4. rotate back the other way for 5s
-  5. drive forward and stop for the remaining time
+  4. rotate slowly in place right for 5s
+  5. drive forward slowly for 5s
+  6. stop
 
 Required running nodes:
   none; this script starts them
@@ -88,6 +79,9 @@ stdbuf -oL timeout "${DURATION}" ros2 topic echo /odom \
 stdbuf -oL timeout "${DURATION}" ros2 topic echo /odometry/filtered \
   | stdbuf -oL "${WATCHER}" --label ekf \
   | tee "${EKF_LOG}" >/dev/null &
+
+stdbuf -oL timeout "${DURATION}" "${CMD_VEL_SEQUENCE}" \
+  >"${CMD_VEL_LOG}" 2>&1 &
 
 sleep 1
 
@@ -108,7 +102,7 @@ Captured files:
   ${BASE_LAUNCH_LOG}
   ${IMU_LAUNCH_LOG}
   ${LOCALIZATION_LAUNCH_LOG}
-  ${TELEOP_LAUNCH_LOG}
+  ${CMD_VEL_LOG}
 
 Next step:
   Send me the output directory path above and I will inspect the results.
