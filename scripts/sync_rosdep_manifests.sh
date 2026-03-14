@@ -5,12 +5,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 OUT_DIR="${ROOT_DIR}/docker/rosdep-manifests"
 APT_PKG_FILE="${ROOT_DIR}/docker/rosdep-apt-packages.txt"
+STATE_HASH_FILE="${ROOT_DIR}/docker/rosdep-inputs.sha256"
 ROSDEP_SKIP_KEYS="${ROSDEP_SKIP_KEYS:-libcrypto boost_serialization}"
-
-rm -rf "${OUT_DIR}"
-mkdir -p "${OUT_DIR}"
-touch "${OUT_DIR}/COLCON_IGNORE"
-rm -f "${APT_PKG_FILE}"
 
 copy_manifest() {
   local src_file="$1"
@@ -40,8 +36,35 @@ if [[ -d "${ROOT_DIR}/external/ros2_orb_slam3" ]]; then
   done < <(find "${ROOT_DIR}/external/ros2_orb_slam3" -name package.xml ! -path '*/Thirdparty/*' | sort)
 fi
 
+compute_inputs_hash() {
+  if [[ "${#package_xmls[@]}" -eq 0 ]]; then
+    printf 'empty\n'
+    return 0
+  fi
+
+  {
+    printf 'skip-keys:%s\n' "${ROSDEP_SKIP_KEYS}"
+    for package_xml in "${package_xmls[@]}"; do
+      sha256sum "${package_xml}"
+    done
+  } | sha256sum | awk '{print $1}'
+}
+
+INPUTS_HASH="$(compute_inputs_hash)"
+
+if [[ -f "${STATE_HASH_FILE}" ]] && [[ -f "${APT_PKG_FILE}" ]] && [[ -d "${OUT_DIR}" ]] && [[ "$(cat "${STATE_HASH_FILE}")" == "${INPUTS_HASH}" ]]; then
+  echo "✓ rosdep manifest cache is up to date"
+  exit 0
+fi
+
+rm -rf "${OUT_DIR}"
+mkdir -p "${OUT_DIR}"
+touch "${OUT_DIR}/COLCON_IGNORE"
+rm -f "${APT_PKG_FILE}"
+
 declare -A workspace_packages=()
 declare -A skip_keys=()
+declare -A dep_keys=()
 declare -A apt_packages=()
 
 for key in ${ROSDEP_SKIP_KEYS}; do
@@ -67,21 +90,25 @@ resolve_apt_packages() {
 for package_xml in "${package_xmls[@]}"; do
   while IFS= read -r dep_key; do
     [[ -z "${dep_key}" ]] && continue
-
     if [[ -n "${workspace_packages[${dep_key}]:-}" || -n "${skip_keys[${dep_key}]:-}" ]]; then
       continue
     fi
-
-    while IFS= read -r apt_pkg; do
-      [[ -z "${apt_pkg}" ]] && continue
-      apt_packages["${apt_pkg}"]=1
-    done < <(resolve_apt_packages "${dep_key}")
+    dep_keys["${dep_key}"]=1
   done < <(rg -oP '<(?:depend|build_depend|build_export_depend|buildtool_depend|exec_depend)>\K[^<]+' "${package_xml}" | sort -u)
+done
+
+for dep_key in "${!dep_keys[@]}"; do
+  while IFS= read -r apt_pkg; do
+    [[ -z "${apt_pkg}" ]] && continue
+    apt_packages["${apt_pkg}"]=1
+  done < <(resolve_apt_packages "${dep_key}")
 done
 
 for apt_pkg in "${!apt_packages[@]}"; do
   printf '%s\n' "${apt_pkg}"
 done | sort > "${APT_PKG_FILE}"
+
+printf '%s\n' "${INPUTS_HASH}" > "${STATE_HASH_FILE}"
 
 echo "✓ synced rosdep manifests to ${OUT_DIR}"
 echo "✓ wrote ROS apt package list to ${APT_PKG_FILE}"

@@ -10,6 +10,7 @@ ros2_ws/log/
 external/
 docker/rosdep-manifests/
 docker/rosdep-apt-packages.txt
+docker/rosdep-inputs.sha256
 
 # Environment config (contains host/IP - don't commit)
 .env
