@@ -24,9 +24,16 @@ BASE_LAUNCH_LOG="${OUT_DIR}/base.launch.log"
 IMU_LAUNCH_LOG="${OUT_DIR}/imu.launch.log"
 LOCALIZATION_LAUNCH_LOG="${OUT_DIR}/localization.launch.log"
 CMD_VEL_LOG="${OUT_DIR}/cmd_vel_sequence.log"
+declare -a STACK_PIDS=()
+declare -a EXPERIMENT_PIDS=()
 
 cleanup() {
-  jobs -p | xargs -r kill >/dev/null 2>&1 || true
+  for pid in "${EXPERIMENT_PIDS[@]:-}"; do
+    kill "${pid}" >/dev/null 2>&1 || true
+  done
+  for pid in "${STACK_PIDS[@]:-}"; do
+    kill "${pid}" >/dev/null 2>&1 || true
+  done
 }
 trap cleanup EXIT INT TERM
 
@@ -34,15 +41,17 @@ start_stack() {
   stdbuf -oL ros2 launch robolubo base.launch.py \
     serial_port:="${BASE_SERIAL_PORT}" \
     >"${BASE_LAUNCH_LOG}" 2>&1 &
+  STACK_PIDS+=("$!")
 
   stdbuf -oL ros2 launch robolubo imu.launch.py \
     port:="${IMU_PORT}" \
     >"${IMU_LAUNCH_LOG}" 2>&1 &
+  STACK_PIDS+=("$!")
 
   stdbuf -oL ros2 launch robolubo localization.launch.py \
     publish_tf:=false \
     >"${LOCALIZATION_LAUNCH_LOG}" 2>&1 &
-
+  STACK_PIDS+=("$!")
 }
 
 cat <<EOF
@@ -75,13 +84,16 @@ sleep 5
 stdbuf -oL timeout "${DURATION}" ros2 topic echo /odom \
   | stdbuf -oL "${WATCHER}" --label raw \
   | tee "${RAW_LOG}" >/dev/null &
+EXPERIMENT_PIDS+=("$!")
 
 stdbuf -oL timeout "${DURATION}" ros2 topic echo /odometry/filtered \
   | stdbuf -oL "${WATCHER}" --label ekf \
   | tee "${EKF_LOG}" >/dev/null &
+EXPERIMENT_PIDS+=("$!")
 
 stdbuf -oL timeout "${DURATION}" "${CMD_VEL_SEQUENCE}" \
   >"${CMD_VEL_LOG}" 2>&1 &
+EXPERIMENT_PIDS+=("$!")
 
 sleep 1
 
@@ -91,7 +103,9 @@ for remaining in $(seq "${DURATION}" -1 1); do
 done
 printf '\n'
 
-wait || true
+for pid in "${EXPERIMENT_PIDS[@]}"; do
+  wait "${pid}" || true
+done
 
 cat <<EOF
 Experiment complete.
