@@ -1,0 +1,7 @@
+services:
+  dev:
+    runtime: nvidia
+    gpus: all
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: all

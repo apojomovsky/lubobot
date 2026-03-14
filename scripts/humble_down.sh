@@ -3,6 +3,10 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
-COMPOSE_FILE="${ROOT_DIR}/docker/compose.humble.yml"
+source "${SCRIPT_DIR}/humble_common.sh"
 
-exec docker compose -f "${COMPOSE_FILE}" down
+GPU="$(detect_gpu)"
+setup_gpu_env "${GPU}"
+COMPOSE_ARGS="$(compose_files "${GPU}" "${ROOT_DIR}")"
+
+exec docker compose ${COMPOSE_ARGS} down

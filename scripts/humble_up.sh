@@ -3,7 +3,11 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
-COMPOSE_FILE="${ROOT_DIR}/docker/compose.humble.yml"
+source "${SCRIPT_DIR}/humble_common.sh"
+
+GPU="$(detect_gpu)"
+setup_gpu_env "${GPU}"
+COMPOSE_ARGS="$(compose_files "${GPU}" "${ROOT_DIR}")"
 
 mkdir -p "${ROOT_DIR}/ros2_ws/build" "${ROOT_DIR}/ros2_ws/install" "${ROOT_DIR}/ros2_ws/log"
 
@@ -13,8 +17,12 @@ if [[ ! -d "${ROOT_DIR}/external/ros2_orb_slam3/.git" ]]; then
   exit 1
 fi
 
+bash "${SCRIPT_DIR}/sync_rosdep_manifests.sh"
+
 if [[ -n "${DISPLAY:-}" ]]; then
   xhost +local:docker >/dev/null 2>&1 || true
 fi
 
-docker compose -f "${COMPOSE_FILE}" up -d --build
+echo "→ Using GPU mode: ${GPU}"
+
+docker compose ${COMPOSE_ARGS} up -d --build

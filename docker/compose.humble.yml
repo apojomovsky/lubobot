@@ -3,15 +3,23 @@ services:
     build:
       context: ..
       dockerfile: docker/humble/Dockerfile
+      args:
+        USERNAME: ${HOST_USERNAME:-lubobot}
+        USER_ID: ${HOST_UID:-1000}
+        GROUP_ID: ${HOST_GID:-1000}
     image: lubobot:humble-dev
     container_name: lubobot-humble-dev
     network_mode: host
     stdin_open: true
     tty: true
+    init: true
     environment:
       DISPLAY: ${DISPLAY:-}
       QT_X11_NO_MITSHM: "1"
       XAUTHORITY: ${XAUTHORITY:-}
+      XDG_RUNTIME_DIR: /tmp/runtime-root
+      QT_QPA_PLATFORM: ${QT_QPA_PLATFORM:-xcb}
+      HOST_USERNAME: ${HOST_USERNAME:-lubobot}
     working_dir: /workspaces/ros2_ws
     volumes:
       - ..:/workspaces/ros2_ws/src/lubobot
@@ -22,6 +30,4 @@ services:
       - ../ros2_ws/install:/workspaces/ros2_ws/install
       - ../ros2_ws/log:/workspaces/ros2_ws/log
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
-    devices:
-      - /dev/dri:/dev/dri
     command: bash

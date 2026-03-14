@@ -8,6 +8,7 @@ ros2_ws/log/
 
 # External dependency clones
 external/
+docker/rosdep-manifests/
 
 # Environment config (contains host/IP - don't commit)
 .env
