@@ -6,10 +6,36 @@ The zenoh bridge forwards /cmd_vel to the Jetson automatically.
 
   ros2 launch robolubo teleop_keyboard.launch.py
 """
+import os
+import shutil
+
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
+from launch.actions import OpaqueFunction
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
+
+
+def _teleop_node(context):
+    terminal_prefix = LaunchConfiguration("terminal_prefix").perform(context).strip()
+
+    if terminal_prefix:
+        prefix = terminal_prefix
+    elif os.environ.get("DISPLAY") and shutil.which("xterm"):
+        prefix = "xterm -e"
+    else:
+        prefix = ""
+
+    return [
+        Node(
+            package="teleop_twist_keyboard",
+            executable="teleop_twist_keyboard",
+            name="teleop_twist_keyboard",
+            output="screen",
+            remappings=[("/cmd_vel", LaunchConfiguration("cmd_vel_topic"))],
+            prefix=prefix,
+        )
+    ]
 
 
 def generate_launch_description():
@@ -24,17 +50,8 @@ def generate_launch_description():
         description="Optional command prefix for opening teleop in another terminal, e.g. 'xterm -e'",
     )
 
-    teleop_node = Node(
-        package="teleop_twist_keyboard",
-        executable="teleop_twist_keyboard",
-        name="teleop_twist_keyboard",
-        output="screen",
-        remappings=[("/cmd_vel", LaunchConfiguration("cmd_vel_topic"))],
-        prefix=LaunchConfiguration("terminal_prefix"),
-    )
-
     return LaunchDescription([
         cmd_vel_arg,
         terminal_prefix_arg,
-        teleop_node,
+        OpaqueFunction(function=_teleop_node),
     ])
