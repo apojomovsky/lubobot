@@ -4,7 +4,11 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 WATCHER="${SCRIPT_DIR}/odom_filtered_watch.py"
-OUT_BASE="${ROOT_DIR}/ros2_ws/log/localization_experiments"
+if [[ -d /workspaces/ros2_ws/log ]]; then
+  OUT_BASE="/workspaces/ros2_ws/log/localization_experiments"
+else
+  OUT_BASE="${ROOT_DIR}/ros2_ws/log/localization_experiments"
+fi
 STAMP="$(date +%Y%m%d_%H%M%S)"
 OUT_DIR="${OUT_BASE}/${STAMP}"
 DURATION="${1:-30}"
