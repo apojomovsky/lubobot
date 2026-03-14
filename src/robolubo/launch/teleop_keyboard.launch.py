@@ -18,6 +18,11 @@ def generate_launch_description():
         default_value="/cmd_vel",
         description="Velocity command topic",
     )
+    terminal_prefix_arg = DeclareLaunchArgument(
+        "terminal_prefix",
+        default_value="",
+        description="Optional command prefix for opening teleop in another terminal, e.g. 'xterm -e'",
+    )
 
     teleop_node = Node(
         package="teleop_twist_keyboard",
@@ -25,10 +30,11 @@ def generate_launch_description():
         name="teleop_twist_keyboard",
         output="screen",
         remappings=[("/cmd_vel", LaunchConfiguration("cmd_vel_topic"))],
-        prefix="xterm -e",  # open in its own window so stdin works
+        prefix=LaunchConfiguration("terminal_prefix"),
     )
 
     return LaunchDescription([
         cmd_vel_arg,
+        terminal_prefix_arg,
         teleop_node,
     ])
