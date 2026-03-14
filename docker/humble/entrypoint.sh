@@ -31,6 +31,7 @@ ensure_group() {
 ensure_group "${AMD_RENDER_GID:-}" "render-host"
 ensure_group "${AMD_VIDEO_GID:-}" "video-host"
 ensure_group "${SERIAL_GID:-}" "serial-host"
+ensure_group "${VIDEO_GID:-}" "camera-host"
 
 if [[ -n "${XDG_RUNTIME_DIR:-}" ]]; then
   mkdir -p "${XDG_RUNTIME_DIR}"

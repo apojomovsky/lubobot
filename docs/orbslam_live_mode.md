@@ -44,9 +44,12 @@ Example:
 ```bash
 ros2 launch robolubo orbslam_mono.launch.py \
   image_topic:=/usb_cam/image_raw \
-  settings_file:=/workspaces/ros2_ws/src/ros2_orb_slam3/orb_slam3/config/Monocular/EuRoC.yaml \
   use_rviz:=true
 ```
+
+The default settings file is now the repo-owned camera-specific config:
+
+- [`src/robolubo/config/orbslam/general_webcam_640x480.yaml`](/home/alexis/lubobot/src/robolubo/config/orbslam/general_webcam_640x480.yaml)
 
 ## Expectations
 
@@ -58,7 +61,7 @@ For a real robot validation pass, the minimum expected inputs are:
 - a stable camera frame and mount
 - a calibration YAML that matches the physical webcam
 
-The shipped EuRoC config is only a bringup placeholder. Real tracking quality depends on replacing it with a camera-specific calibration file.
+The original EuRoC config is no longer the default. The current default is the first local webcam-specific calibration-based config, but real tracking quality still depends on validating that configuration against the actual camera stream.
 
 ## Current Output
 

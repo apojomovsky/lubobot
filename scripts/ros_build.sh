@@ -7,8 +7,9 @@ source "${SCRIPT_DIR}/ros_common.sh"
 
 GPU="$(detect_gpu)"
 SERIAL="$(detect_serial)"
+VIDEO="$(detect_video)"
 setup_gpu_env "${GPU}"
-COMPOSE_ARGS="$(compose_files "${GPU}" "${ROOT_DIR}" "${SERIAL}")"
+COMPOSE_ARGS="$(compose_files "${GPU}" "${ROOT_DIR}" "${SERIAL}" "${VIDEO}")"
 WORKERS="${HUMBLE_BUILD_WORKERS:-1}"
 SKIP_KEYS="${HUMBLE_ROSDEP_SKIP_KEYS:-libcrypto boost_serialization}"
 

@@ -30,9 +30,9 @@ Useful arguments:
 - `video_device`
   Default: `/dev/video0`
 - `frame_id`
-  Default: `camera_link`
+  Reserved for later TF integration
 - `camera_name`
-  Default: `usb_camera`
+  Reserved for later calibration naming
 - `camera_info_url`
   Default: empty
 - `image_width`
@@ -40,21 +40,22 @@ Useful arguments:
 - `image_height`
   Default: `480`
 - `framerate`
-  Default: `30.0`
+  Default: `30`
 - `pixel_format`
-  Default: `mjpeg2rgb`
-- `av_device_format`
-  Default: `MJPG`
-- `io_method`
-  Default: `mmap`
+  Default: `YUYV`
+- `output_encoding`
+  Default: `rgb8`
 
 Example:
 
 ```bash
 ros2 launch robolubo camera.launch.py \
-  video_device:=/dev/video0 \
+  video_device:=/dev/v4l/by-id/<stable-camera-path> \
   namespace:=camera \
-  frame_id:=camera_link
+  image_width:=640 \
+  image_height:=480 \
+  pixel_format:=YUYV \
+  output_encoding:=rgb8
 ```
 
 Expected topics are then under:
@@ -83,14 +84,19 @@ The goal is to determine:
 - actual `/dev/videoX`
 - supported resolutions
 - supported frame rates
-- whether MJPEG works reliably
+- whether the driver should start from a conservative YUYV mode first
 
 ### 2. Start the camera driver
 
 Inside the Humble container:
 
 ```bash
-ros2 launch robolubo camera.launch.py video_device:=/dev/video0
+ros2 launch robolubo camera.launch.py \
+  video_device:=/dev/v4l/by-id/<stable-camera-path> \
+  image_width:=640 \
+  image_height:=480 \
+  pixel_format:=YUYV \
+  output_encoding:=rgb8
 ```
 
 Then verify:
@@ -115,6 +121,12 @@ The result should be a calibration YAML later referenced via:
 
 - `camera_info_url:=file:///...`
 
+The repository now includes the first calibration result at:
+
+- [`src/robolubo/config/camera/general_webcam_640x480.yaml`](/home/alexis/lubobot/src/robolubo/config/camera/general_webcam_640x480.yaml)
+
+The camera launch defaults to that file.
+
 ### 4. Extrinsics come later
 
 Camera extrinsics cannot be finalized yet because the camera is not mounted on the robot.
@@ -126,7 +138,8 @@ Those will be defined later through:
 
 ## Current Limits
 
-- `usb_cam` is not yet validated in the current Humble image build
+- `v4l2_camera` is now the preferred driver path for this repo
+- the current launch resolves stable `/dev/v4l/by-id/...` paths to the underlying `/dev/videoN`
 - no calibration YAML exists yet
 - no combined camera + ORB-SLAM launch exists yet
 - no rectification pipeline is configured yet

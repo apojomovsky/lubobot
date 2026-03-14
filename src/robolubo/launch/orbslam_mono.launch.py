@@ -17,11 +17,10 @@ def generate_launch_description():
         "settings_file",
         default_value=PathJoinSubstitution(
             [
-                FindPackageShare("ros2_orb_slam3"),
-                "orb_slam3",
+                FindPackageShare("robolubo"),
                 "config",
-                "Monocular",
-                "EuRoC.yaml",
+                "orbslam",
+                "general_webcam_640x480.yaml",
             ]
         ),
         description="ORB-SLAM3 monocular settings YAML",

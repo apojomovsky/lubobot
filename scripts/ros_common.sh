@@ -41,6 +41,28 @@ detect_serial() {
   echo "none"
 }
 
+detect_video() {
+  if [[ -n "${ROS_VIDEO:-}" ]]; then
+    case "${ROS_VIDEO}" in
+      1|true|yes|on)
+        echo "video"
+        return 0
+        ;;
+      0|false|no|off)
+        echo "none"
+        return 0
+        ;;
+    esac
+  fi
+
+  if [[ -d /dev/v4l/by-id ]] || compgen -G "/dev/video*" >/dev/null; then
+    echo "video"
+    return 0
+  fi
+
+  echo "none"
+}
+
 setup_gpu_env() {
   local gpu="$1"
 
@@ -83,12 +105,27 @@ setup_gpu_env() {
       export SERIAL_GID="$(stat -Lc '%g' "${serial_node}" 2>/dev/null || true)"
     fi
   fi
+
+  export VIDEO_GID="${VIDEO_GID:-}"
+  if [[ -z "${VIDEO_GID}" ]]; then
+    local video_node=""
+    if [[ -d /dev/v4l/by-id ]]; then
+      video_node="$(find /dev/v4l/by-id -maxdepth 1 -type l | head -n 1)"
+    fi
+    if [[ -z "${video_node}" ]] && compgen -G "/dev/video*" >/dev/null; then
+      video_node="$(printf '%s\n' /dev/video* | head -n 1)"
+    fi
+    if [[ -n "${video_node}" ]]; then
+      export VIDEO_GID="$(stat -Lc '%g' "${video_node}" 2>/dev/null || true)"
+    fi
+  fi
 }
 
 compose_files() {
   local gpu="$1"
   local root_dir="$2"
   local serial="${3:-none}"
+  local video="${4:-none}"
 
   printf -- "-f %s/docker/compose.humble.yml " "${root_dir}"
 
@@ -103,7 +140,7 @@ compose_files() {
       ;;
   esac
 
-  if [[ "${serial}" == "serial" ]]; then
-    printf -- " -f %s/docker/compose.humble.serial.yml" "${root_dir}"
+  if [[ "${serial}" == "serial" || "${video}" == "video" ]]; then
+    printf -- " -f %s/docker/compose.humble.devices.yml" "${root_dir}"
   fi
 }

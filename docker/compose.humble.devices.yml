@@ -4,7 +4,9 @@ services:
       - /dev:/dev
       - /run/udev:/run/udev:ro
     device_cgroup_rules:
+      - "c 81:* rmw"
       - "c 166:* rmw"
       - "c 188:* rmw"
     environment:
       SERIAL_GID: ${SERIAL_GID:-}
+      VIDEO_GID: ${VIDEO_GID:-}
