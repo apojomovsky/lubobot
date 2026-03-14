@@ -111,6 +111,15 @@ RUN if getent group "${GROUP_ID}" >/dev/null; then \
     mkdir -p /workspaces && \
     chown -R "${USER_ID}:${GROUP_ID}" /workspaces
 
+RUN cat <<'EOF' >> /etc/bash.bashrc
+if [ -f /opt/ros/humble/setup.bash ]; then
+  source /opt/ros/humble/setup.bash
+fi
+if [ -f /workspaces/ros2_ws/install/setup.bash ]; then
+  source /workspaces/ros2_ws/install/setup.bash
+fi
+EOF
+
 COPY docker/humble/entrypoint.sh /usr/local/bin/lubobot-humble-entrypoint
 RUN chmod +x /usr/local/bin/lubobot-humble-entrypoint
 
