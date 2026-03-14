@@ -150,6 +150,8 @@ Open a shell:
 scripts/humble_shell.sh
 ```
 
+This opens a one-off container with `docker compose run --rm`, so exiting the shell removes that shell container automatically.
+
 Run a one-shot command:
 
 ```bash

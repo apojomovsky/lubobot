@@ -9,4 +9,4 @@ GPU="$(detect_gpu)"
 setup_gpu_env "${GPU}"
 COMPOSE_ARGS="$(compose_files "${GPU}" "${ROOT_DIR}")"
 
-exec docker compose ${COMPOSE_ARGS} exec dev bash
+exec docker compose ${COMPOSE_ARGS} run --rm --no-deps -u "${HOST_UID}:${HOST_GID}" dev bash

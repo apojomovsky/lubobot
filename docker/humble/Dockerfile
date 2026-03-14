@@ -26,6 +26,7 @@ RUN apt-get update && apt-get install -y \
     python3-vcstool \
     python3-wheel \
     python3-natsort \
+    gosu \
     libeigen3-dev \
     libopencv-dev \
     libboost-system-dev \
@@ -110,8 +111,6 @@ RUN chmod +x /usr/local/bin/lubobot-humble-entrypoint
 
 ENV USER=${USERNAME}
 ENV HOME=/home/${USERNAME}
-
-USER ${USERNAME}
 WORKDIR /workspaces/ros2_ws
 
 ENTRYPOINT ["/usr/local/bin/lubobot-humble-entrypoint"]

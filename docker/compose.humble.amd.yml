@@ -3,10 +3,9 @@ services:
     devices:
       - /dev/dri:/dev/dri
       - /dev/kfd:/dev/kfd
-    group_add:
-      - "${AMD_RENDER_GID:-render}"
-      - "${AMD_VIDEO_GID:-video}"
     security_opt:
       - seccomp=unconfined
     environment:
+      AMD_RENDER_GID: ${AMD_RENDER_GID:-render}
+      AMD_VIDEO_GID: ${AMD_VIDEO_GID:-video}
       VK_ICD_FILENAMES: ${VK_ICD_FILENAMES:-/usr/share/vulkan/icd.d/radeon_icd.json}
