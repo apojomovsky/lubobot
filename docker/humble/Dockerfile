@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     pkg-config \
     vim \
+    tmux \
     python3-colcon-common-extensions \
     python3-dev \
     python3-pip \
