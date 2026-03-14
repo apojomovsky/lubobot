@@ -19,6 +19,28 @@ detect_gpu() {
   echo "cpu"
 }
 
+detect_serial() {
+  if [[ -n "${ROS_SERIAL:-}" ]]; then
+    case "${ROS_SERIAL}" in
+      1|true|yes|on)
+        echo "serial"
+        return 0
+        ;;
+      0|false|no|off)
+        echo "none"
+        return 0
+        ;;
+    esac
+  fi
+
+  if [[ -d /dev/serial/by-id ]] || compgen -G "/dev/ttyACM*" >/dev/null || compgen -G "/dev/ttyUSB*" >/dev/null; then
+    echo "serial"
+    return 0
+  fi
+
+  echo "none"
+}
+
 setup_gpu_env() {
   local gpu="$1"
 
@@ -44,11 +66,29 @@ setup_gpu_env() {
       return 1
       ;;
   esac
+
+  export SERIAL_GID="${SERIAL_GID:-}"
+  if [[ -z "${SERIAL_GID}" ]]; then
+    local serial_node=""
+    if [[ -d /dev/serial/by-id ]]; then
+      serial_node="$(find /dev/serial/by-id -maxdepth 1 -type l | head -n 1)"
+    fi
+    if [[ -z "${serial_node}" ]] && compgen -G "/dev/ttyACM*" >/dev/null; then
+      serial_node="$(printf '%s\n' /dev/ttyACM* | head -n 1)"
+    fi
+    if [[ -z "${serial_node}" ]] && compgen -G "/dev/ttyUSB*" >/dev/null; then
+      serial_node="$(printf '%s\n' /dev/ttyUSB* | head -n 1)"
+    fi
+    if [[ -n "${serial_node}" ]]; then
+      export SERIAL_GID="$(stat -Lc '%g' "${serial_node}" 2>/dev/null || true)"
+    fi
+  fi
 }
 
 compose_files() {
   local gpu="$1"
   local root_dir="$2"
+  local serial="${3:-none}"
 
   printf -- "-f %s/docker/compose.humble.yml " "${root_dir}"
 
@@ -62,4 +102,8 @@ compose_files() {
     cpu)
       ;;
   esac
+
+  if [[ "${serial}" == "serial" ]]; then
+    printf -- " -f %s/docker/compose.humble.serial.yml" "${root_dir}"
+  fi
 }

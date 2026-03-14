@@ -1,0 +1,7 @@
+services:
+  dev:
+    volumes:
+      - /dev:/dev
+      - /run/udev:/run/udev:ro
+    environment:
+      SERIAL_GID: ${SERIAL_GID:-}

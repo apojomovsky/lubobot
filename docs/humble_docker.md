@@ -40,6 +40,7 @@ The primary workflow uses:
 - [`docker/compose.humble.yml`](/home/alexis/lubobot/docker/compose.humble.yml)
 - [`docker/compose.humble.amd.yml`](/home/alexis/lubobot/docker/compose.humble.amd.yml)
 - [`docker/compose.humble.nvidia.yml`](/home/alexis/lubobot/docker/compose.humble.nvidia.yml)
+- [`docker/compose.humble.serial.yml`](/home/alexis/lubobot/docker/compose.humble.serial.yml)
 - [`scripts/ros_common.sh`](/home/alexis/lubobot/scripts/ros_common.sh)
 - [`scripts/sync_rosdep_manifests.sh`](/home/alexis/lubobot/scripts/sync_rosdep_manifests.sh)
 - [`scripts/setup_external.sh`](/home/alexis/lubobot/scripts/setup_external.sh)
@@ -183,6 +184,23 @@ This is meant to support:
 - RViz
 - OpenCV windows if needed
 - `vulkaninfo` and Mesa Vulkan tooling for debugging
+
+When serial devices are present on the host, the helper scripts automatically add a serial override that exposes:
+
+- `/dev`
+- `/run/udev`
+
+This supports both:
+
+- `/dev/ttyACM*` and `/dev/ttyUSB*`
+- stable symlinks under `/dev/serial/by-id`
+
+You can override detection with:
+
+```bash
+ROS_SERIAL=1 just ros-shell
+ROS_SERIAL=0 just ros-shell
+```
 
 If GUI access fails on the host, allow local Docker access once:
 

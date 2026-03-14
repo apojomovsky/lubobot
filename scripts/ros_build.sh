@@ -6,8 +6,9 @@ ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 source "${SCRIPT_DIR}/ros_common.sh"
 
 GPU="$(detect_gpu)"
+SERIAL="$(detect_serial)"
 setup_gpu_env "${GPU}"
-COMPOSE_ARGS="$(compose_files "${GPU}" "${ROOT_DIR}")"
+COMPOSE_ARGS="$(compose_files "${GPU}" "${ROOT_DIR}" "${SERIAL}")"
 WORKERS="${HUMBLE_BUILD_WORKERS:-1}"
 SKIP_KEYS="${HUMBLE_ROSDEP_SKIP_KEYS:-libcrypto boost_serialization}"
 
@@ -18,7 +19,7 @@ docker compose ${COMPOSE_ARGS} exec -u root dev bash -lc "\
   rosdep update --rosdistro humble && \
   rosdep install -r --from-paths src --ignore-src -y --rosdistro humble --skip-keys '${SKIP_KEYS}'"
 
-exec docker compose ${COMPOSE_ARGS} exec dev bash -lc "\
+exec docker compose ${COMPOSE_ARGS} exec dev gosu "${HOST_USERNAME}" bash -lc "\
   source /opt/ros/humble/setup.bash && \
   cd /workspaces/ros2_ws && \
   colcon build --symlink-install --parallel-workers ${WORKERS}"

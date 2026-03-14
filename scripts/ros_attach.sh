@@ -6,7 +6,8 @@ ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 source "${SCRIPT_DIR}/ros_common.sh"
 
 GPU="$(detect_gpu)"
+SERIAL="$(detect_serial)"
 setup_gpu_env "${GPU}"
-COMPOSE_ARGS="$(compose_files "${GPU}" "${ROOT_DIR}")"
+COMPOSE_ARGS="$(compose_files "${GPU}" "${ROOT_DIR}" "${SERIAL}")"
 
-exec docker compose ${COMPOSE_ARGS} exec -u "${HOST_UID}:${HOST_GID}" dev bash
+exec docker compose ${COMPOSE_ARGS} exec dev gosu "${HOST_USERNAME}" bash

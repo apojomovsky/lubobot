@@ -6,8 +6,9 @@ ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 source "${SCRIPT_DIR}/ros_common.sh"
 
 GPU="$(detect_gpu)"
+SERIAL="$(detect_serial)"
 setup_gpu_env "${GPU}"
-COMPOSE_ARGS="$(compose_files "${GPU}" "${ROOT_DIR}")"
+COMPOSE_ARGS="$(compose_files "${GPU}" "${ROOT_DIR}" "${SERIAL}")"
 
 if docker compose ${COMPOSE_ARGS} down; then
   exit 0

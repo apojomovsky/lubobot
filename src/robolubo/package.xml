@@ -20,6 +20,8 @@
   <exec_depend>create_driver</exec_depend>
   <exec_depend>create_description</exec_depend>
   <exec_depend>create_msgs</exec_depend>
+  <exec_depend>imu_bridge</exec_depend>
+  <exec_depend>imu_filter_madgwick</exec_depend>
   <exec_depend>ros2_orb_slam3</exec_depend>
   <exec_depend>rviz2</exec_depend>
   <exec_depend>teleop_twist_keyboard</exec_depend>
