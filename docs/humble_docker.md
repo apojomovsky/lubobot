@@ -65,6 +65,8 @@ The container user is built to match the host user by UID/GID:
 
 The helper scripts populate those automatically from the current host user so files created in mounted directories stay owned by the same user outside the container.
 
+That mapped user also has passwordless `sudo` inside the dev container. Normal project dependencies should still be handled through the Dockerfile and `rosdep`, but ad-hoc package installs and debugging do not require dropping back to `docker exec -u root`.
+
 GPU handling is selected automatically:
 
 - NVIDIA if `nvidia-smi` is available

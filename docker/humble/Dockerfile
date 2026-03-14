@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     ca-certificates \
     pkg-config \
+    vim \
     python3-colcon-common-extensions \
     python3-dev \
     python3-pip \
@@ -27,6 +28,7 @@ RUN apt-get update && apt-get install -y \
     python3-wheel \
     python3-natsort \
     gosu \
+    sudo \
     libeigen3-dev \
     libopencv-dev \
     libboost-system-dev \
@@ -103,6 +105,9 @@ RUN if getent group "${GROUP_ID}" >/dev/null; then \
       groupadd -g "${GROUP_ID}" "${USERNAME}"; \
     fi && \
     useradd -m -s /bin/bash -u "${USER_ID}" -g "${GROUP_ID}" -o "${USERNAME}" && \
+    usermod -aG sudo "${USERNAME}" && \
+    echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >/etc/sudoers.d/${USERNAME} && \
+    chmod 0440 /etc/sudoers.d/${USERNAME} && \
     mkdir -p /workspaces && \
     chown -R "${USER_ID}:${GROUP_ID}" /workspaces
 
