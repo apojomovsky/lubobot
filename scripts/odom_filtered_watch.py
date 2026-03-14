@@ -1,10 +1,24 @@
 #!/usr/bin/env python3
 
+import argparse
 import math
 import sys
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Reduce nav_msgs/Odometry YAML output to x/y/yaw lines."
+    )
+    parser.add_argument(
+        "--label",
+        default="",
+        help="Optional prefix label, e.g. raw or ekf",
+    )
+    return parser.parse_args()
+
+
 def main() -> int:
+    args = parse_args()
     values: dict[str, float] = {}
     mode = None
 
@@ -36,11 +50,10 @@ def main() -> int:
             w = values.get("ori_w", 1.0)
 
             yaw = math.atan2(2.0 * (w * z + x * y), 1.0 - 2.0 * (y * y + z * z))
-            print(
-                f"x={values.get('pos_x', 0.0): .3f} "
-                f"y={values.get('pos_y', 0.0): .3f} "
-                f"yaw={yaw: .3f}"
-            )
+            prefix = f"[{args.label}] " if args.label else ""
+            print(f"{prefix}x={values.get('pos_x', 0.0): .3f} "
+                  f"y={values.get('pos_y', 0.0): .3f} "
+                  f"yaw={yaw: .3f}")
             values = {}
 
     return 0
