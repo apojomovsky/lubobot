@@ -30,6 +30,7 @@ ensure_group() {
 
 ensure_group "${AMD_RENDER_GID:-}" "render-host"
 ensure_group "${AMD_VIDEO_GID:-}" "video-host"
+ensure_group "${INPUT_GID:-}" "input-host"
 ensure_group "${SERIAL_GID:-}" "serial-host"
 ensure_group "${VIDEO_GID:-}" "camera-host"
 

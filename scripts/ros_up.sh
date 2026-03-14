@@ -8,8 +8,9 @@ source "${SCRIPT_DIR}/ros_common.sh"
 GPU="$(detect_gpu)"
 SERIAL="$(detect_serial)"
 VIDEO="$(detect_video)"
+INPUT="$(detect_input)"
 setup_gpu_env "${GPU}"
-COMPOSE_ARGS="$(compose_files "${GPU}" "${ROOT_DIR}" "${SERIAL}" "${VIDEO}")"
+COMPOSE_ARGS="$(compose_files "${GPU}" "${ROOT_DIR}" "${SERIAL}" "${VIDEO}" "${INPUT}")"
 
 mkdir -p "${ROOT_DIR}/ros2_ws/build" "${ROOT_DIR}/ros2_ws/install" "${ROOT_DIR}/ros2_ws/log"
 
@@ -28,5 +29,6 @@ fi
 echo "→ Using GPU mode: ${GPU}"
 echo "→ Using serial mode: ${SERIAL}"
 echo "→ Using video mode: ${VIDEO}"
+echo "→ Using input mode: ${INPUT}"
 
 docker compose ${COMPOSE_ARGS} up -d --build

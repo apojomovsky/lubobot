@@ -63,6 +63,28 @@ detect_video() {
   echo "none"
 }
 
+detect_input() {
+  if [[ -n "${ROS_INPUT:-}" ]]; then
+    case "${ROS_INPUT}" in
+      1|true|yes|on)
+        echo "input"
+        return 0
+        ;;
+      0|false|no|off)
+        echo "none"
+        return 0
+        ;;
+    esac
+  fi
+
+  if compgen -G "/dev/input/js*" >/dev/null; then
+    echo "input"
+    return 0
+  fi
+
+  echo "none"
+}
+
 setup_gpu_env() {
   local gpu="$1"
 
@@ -119,6 +141,17 @@ setup_gpu_env() {
       export VIDEO_GID="$(stat -Lc '%g' "${video_node}" 2>/dev/null || true)"
     fi
   fi
+
+  export INPUT_GID="${INPUT_GID:-}"
+  if [[ -z "${INPUT_GID}" ]]; then
+    local input_node=""
+    if compgen -G "/dev/input/js*" >/dev/null; then
+      input_node="$(printf '%s\n' /dev/input/js* | head -n 1)"
+    fi
+    if [[ -n "${input_node}" ]]; then
+      export INPUT_GID="$(stat -Lc '%g' "${input_node}" 2>/dev/null || true)"
+    fi
+  fi
 }
 
 compose_files() {
@@ -126,6 +159,7 @@ compose_files() {
   local root_dir="$2"
   local serial="${3:-none}"
   local video="${4:-none}"
+  local input="${5:-none}"
 
   printf -- "-f %s/docker/compose.humble.yml " "${root_dir}"
 
@@ -140,7 +174,7 @@ compose_files() {
       ;;
   esac
 
-  if [[ "${serial}" == "serial" || "${video}" == "video" ]]; then
+  if [[ "${serial}" == "serial" || "${video}" == "video" || "${input}" == "input" ]]; then
     printf -- " -f %s/docker/compose.humble.devices.yml" "${root_dir}"
   fi
 }
