@@ -25,6 +25,7 @@ services:
       - ..:/workspaces/ros2_ws/src/lubobot
       - ../external/ros2_orb_slam3:/workspaces/ros2_ws/src/ros2_orb_slam3
       - /workspaces/ros2_ws/src/lubobot/external
+      - /workspaces/ros2_ws/src/lubobot/docker/rosdep-manifests
       - /workspaces/ros2_ws/src/lubobot/ros2_ws
       - ../ros2_ws/build:/workspaces/ros2_ws/build
       - ../ros2_ws/install:/workspaces/ros2_ws/install

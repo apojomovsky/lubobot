@@ -13,4 +13,3 @@ __pycache__/
 .eggs/
 .vscode/
 .idea/
-docker/rosdep-manifests/
