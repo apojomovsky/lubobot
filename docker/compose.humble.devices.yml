@@ -11,4 +11,5 @@ services:
     environment:
       INPUT_GID: ${INPUT_GID:-}
       SERIAL_GID: ${SERIAL_GID:-}
+      SERIAL_GIDS: ${SERIAL_GIDS:-}
       VIDEO_GID: ${VIDEO_GID:-}

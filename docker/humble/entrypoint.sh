@@ -32,6 +32,10 @@ ensure_group "${AMD_RENDER_GID:-}" "render-host"
 ensure_group "${AMD_VIDEO_GID:-}" "video-host"
 ensure_group "${INPUT_GID:-}" "input-host"
 ensure_group "${SERIAL_GID:-}" "serial-host"
+IFS=',' read -r -a serial_gids <<< "${SERIAL_GIDS:-}"
+for serial_gid in "${serial_gids[@]}"; do
+  ensure_group "${serial_gid}" "serial-host-${serial_gid}"
+done
 ensure_group "${VIDEO_GID:-}" "camera-host"
 
 if [[ -n "${XDG_RUNTIME_DIR:-}" ]]; then

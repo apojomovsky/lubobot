@@ -112,19 +112,40 @@ setup_gpu_env() {
   esac
 
   export SERIAL_GID="${SERIAL_GID:-}"
-  if [[ -z "${SERIAL_GID}" ]]; then
-    local serial_node=""
+  export SERIAL_GIDS="${SERIAL_GIDS:-}"
+  if [[ -z "${SERIAL_GIDS}" ]]; then
+    local -a serial_nodes=()
     if [[ -d /dev/serial/by-id ]]; then
-      serial_node="$(find /dev/serial/by-id -maxdepth 1 -type l | head -n 1)"
+      while IFS= read -r serial_node; do
+        serial_nodes+=("${serial_node}")
+      done < <(find /dev/serial/by-id -maxdepth 1 -type l | sort)
     fi
-    if [[ -z "${serial_node}" ]] && compgen -G "/dev/ttyACM*" >/dev/null; then
-      serial_node="$(printf '%s\n' /dev/ttyACM* | head -n 1)"
+    if compgen -G "/dev/ttyACM*" >/dev/null; then
+      while IFS= read -r serial_node; do
+        serial_nodes+=("${serial_node}")
+      done < <(printf '%s\n' /dev/ttyACM* | sort)
     fi
-    if [[ -z "${serial_node}" ]] && compgen -G "/dev/ttyUSB*" >/dev/null; then
-      serial_node="$(printf '%s\n' /dev/ttyUSB* | head -n 1)"
+    if compgen -G "/dev/ttyUSB*" >/dev/null; then
+      while IFS= read -r serial_node; do
+        serial_nodes+=("${serial_node}")
+      done < <(printf '%s\n' /dev/ttyUSB* | sort)
     fi
-    if [[ -n "${serial_node}" ]]; then
-      export SERIAL_GID="$(stat -Lc '%g' "${serial_node}" 2>/dev/null || true)"
+
+    local -a serial_gids=()
+    local serial_gid=""
+    for serial_node in "${serial_nodes[@]}"; do
+      serial_gid="$(stat -Lc '%g' "${serial_node}" 2>/dev/null || true)"
+      if [[ -n "${serial_gid}" ]] && [[ ! " ${serial_gids[*]} " =~ [[:space:]]${serial_gid}[[:space:]] ]]; then
+        serial_gids+=("${serial_gid}")
+      fi
+    done
+
+    if [[ "${#serial_gids[@]}" -gt 0 ]]; then
+      export SERIAL_GIDS
+      SERIAL_GIDS="$(IFS=,; printf '%s' "${serial_gids[*]}")"
+      if [[ -z "${SERIAL_GID}" ]]; then
+        export SERIAL_GID="${serial_gids[0]}"
+      fi
     fi
   fi
 
