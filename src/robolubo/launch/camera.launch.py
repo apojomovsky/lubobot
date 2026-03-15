@@ -11,12 +11,15 @@ from launch_ros.substitutions import FindPackageShare
 def _camera_node(context):
     video_device = LaunchConfiguration("video_device").perform(context)
     resolved_video_device = os.path.realpath(video_device)
+    camera_info_url = LaunchConfiguration("camera_info_url").perform(context)
     image_width = int(LaunchConfiguration("image_width").perform(context))
     image_height = int(LaunchConfiguration("image_height").perform(context))
     framerate = int(LaunchConfiguration("framerate").perform(context))
 
     if not resolved_video_device.startswith("/dev/video"):
         resolved_video_device = video_device
+    if camera_info_url and not camera_info_url.startswith("file://"):
+        camera_info_url = f"file://{camera_info_url}"
 
     return [
         Node(
@@ -28,8 +31,8 @@ def _camera_node(context):
             parameters=[
                 {
                     "video_device": resolved_video_device,
-                    "camera_info_url": LaunchConfiguration("camera_info_url"),
-                    "frame_id": LaunchConfiguration("frame_id"),
+                    "camera_info_url": camera_info_url,
+                    "camera_frame_id": LaunchConfiguration("frame_id"),
                     "pixel_format": LaunchConfiguration("pixel_format"),
                     "output_encoding": LaunchConfiguration("output_encoding"),
                     "image_size": [image_width, image_height],

@@ -1,6 +1,6 @@
 image_width: 640
 image_height: 480
-camera_name: general_webcam_640x480
+camera_name: "general_webcam:_general_webcam"
 camera_matrix:
   rows: 3
   cols: 3
