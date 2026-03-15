@@ -16,6 +16,8 @@ OUT_DIR="${OUT_BASE}/${STAMP}"
 DURATION="${1:-60}"
 BASE_SERIAL_PORT="${BASE_SERIAL_PORT:-/dev/ttyUSB0}"
 VIDEO_DEVICE="${VIDEO_DEVICE:-/dev/v4l/by-id/usb-GENERAL_GENERAL_WEBCAM_JH3503_20230616_v001-video-index0}"
+USE_PANGOLIN="${USE_PANGOLIN:-true}"
+USE_RVIZ="${USE_RVIZ:-false}"
 
 mkdir -p "${OUT_DIR}"
 
@@ -109,8 +111,8 @@ start_stack() {
 
   stdbuf -oL ros2 launch robolubo orbslam_mono.launch.py \
     image_topic:=/camera/image_raw \
-    use_pangolin:=false \
-    use_rviz:=false \
+    use_pangolin:="${USE_PANGOLIN}" \
+    use_rviz:="${USE_RVIZ}" \
     >"${ORBSLAM_LAUNCH_LOG}" 2>&1 &
   STACK_PIDS+=("$!")
 }
@@ -215,12 +217,18 @@ Bringing up:
   - camera.launch.py       (${VIDEO_DEVICE})
   - orbslam_mono.launch.py
 
+Viewer settings:
+  - Pangolin: ${USE_PANGOLIN}
+  - RViz:     ${USE_RVIZ}
+
 Manual motion guidance:
-  1. stay still for a few seconds
-  2. rotate the robot very slowly by hand
-  3. translate it slowly through a textured, well-lit scene
-  4. keep some distant structure in view, not just floor
-  5. if tracking looks bad, stop and press Ctrl-C
+  1. wait for the Pangolin window to appear
+  2. keep the robot still for 5 seconds
+  3. point the camera at a textured, well-lit scene
+  4. rotate the robot very slowly by hand for 10-15 seconds
+  5. move it forward/back slowly by hand for 10-15 seconds
+  6. keep walls, furniture, and room structure in view, not only floor
+  7. if Pangolin clearly loses tracking or keeps resetting, press Ctrl-C
 
 Recorded topics:
   - /odom           -> ${RAW_LOG}
