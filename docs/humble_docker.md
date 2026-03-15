@@ -154,15 +154,17 @@ Open a shell:
 scripts/ros_shell.sh
 ```
 
-This opens a one-off container with `docker compose run --rm`, so exiting the shell removes that shell container automatically.
+This opens a shell in the shared `dev` container. If the shared container is not already running, `scripts/ros_shell.sh` starts it first.
 
-Attach to the shared `dev` container started by `scripts/ros_up.sh`:
+Open another shell into the same shared `dev` container:
 
 ```bash
 scripts/ros_attach.sh
 ```
 
-Exiting an attached shell does not stop the shared container. Use `scripts/ros_down.sh` when you want that container removed.
+`scripts/ros_attach.sh` is now just an alias for `scripts/ros_shell.sh`.
+
+Exiting a shell does not stop the shared container. Use `scripts/ros_down.sh` when you want that container removed.
 
 Run a one-shot command:
 
@@ -213,13 +215,13 @@ Bring the container up:
 just ros-up
 ```
 
-Open a disposable shell:
+Open a shell in the shared container:
 
 ```bash
 just ros-shell
 ```
 
-Attach to the shared container:
+Open another shell in the same shared container:
 
 ```bash
 just ros-attach
@@ -266,11 +268,11 @@ HUMBLE_BUILD_WORKERS=2 scripts/ros_build.sh
 Recommended operator model:
 
 - `just ros-shell`
-  Use for one-off commands or short exploration. The container is removed on `exit`.
+  Open a shell in the shared long-lived `dev` container. If needed, it starts that container first.
 - `just ros-up`
   Start the shared long-lived `dev` container.
 - `just ros-attach`
-  Open another shell into that shared container.
+  Alias for `just ros-shell`.
 - `just ros-down`
   Stop and remove the shared container.
 
