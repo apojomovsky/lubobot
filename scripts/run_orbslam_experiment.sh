@@ -146,6 +146,40 @@ wait_for_message() {
   return 1
 }
 
+publisher_count() {
+  local topic="$1"
+  ros2 topic info "${topic}" -v 2>/dev/null | grep -c 'Endpoint type: PUBLISHER' || true
+}
+
+require_no_publishers() {
+  local topic="$1"
+  local count
+
+  count="$(publisher_count "${topic}")"
+  if [[ "${count}" != "0" ]]; then
+    echo "ERROR: expected 0 publishers on ${topic} before startup, found ${count}" >&2
+    return 1
+  fi
+}
+
+require_exactly_one_publisher() {
+  local topic="$1"
+  local count
+
+  count="$(publisher_count "${topic}")"
+  if [[ "${count}" != "1" ]]; then
+    echo "ERROR: expected exactly 1 publisher on ${topic}, found ${count}" >&2
+    return 1
+  fi
+}
+
+assert_clean_graph() {
+  require_no_publishers /odom
+  require_no_publishers /camera/image_raw
+  require_no_publishers /camera/camera_info
+  require_no_publishers /orb_slam3/pose
+}
+
 preflight_check() {
   : >"${PREFLIGHT_LOG}"
 
@@ -153,18 +187,22 @@ preflight_check() {
 
   wait_for_topic /odom 20
   wait_for_message /odom 5 "${OUT_DIR}/odom.preflight.log"
+  require_exactly_one_publisher /odom
   echo "  PASS /odom" | tee -a "${PREFLIGHT_LOG}"
 
   wait_for_topic /camera/image_raw 20
   wait_for_message /camera/image_raw 8 "${OUT_DIR}/camera_image_raw.preflight.log"
+  require_exactly_one_publisher /camera/image_raw
   echo "  PASS /camera/image_raw" | tee -a "${PREFLIGHT_LOG}"
 
   wait_for_topic /camera/camera_info 20
   wait_for_message /camera/camera_info 8 "${OUT_DIR}/camera_info.preflight.log"
+  require_exactly_one_publisher /camera/camera_info
   echo "  PASS /camera/camera_info" | tee -a "${PREFLIGHT_LOG}"
 
   wait_for_topic /orb_slam3/pose 30
   wait_for_message /orb_slam3/pose 12 "${OUT_DIR}/orb_slam3_pose.preflight.log"
+  require_exactly_one_publisher /orb_slam3/pose
   echo "  PASS /orb_slam3/pose" | tee -a "${PREFLIGHT_LOG}"
 }
 
@@ -195,6 +233,15 @@ Recorded topics:
 Required running nodes:
   none; this script starts them
 EOF
+
+if ! assert_clean_graph; then
+  cat <<EOF
+Refusing to start: the ROS graph is already dirty.
+
+Stop any existing base, camera, or ORB-SLAM publishers and rerun this script.
+EOF
+  exit 1
+fi
 
 start_stack
 sleep 5
