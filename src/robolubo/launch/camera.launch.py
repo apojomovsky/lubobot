@@ -29,13 +29,60 @@ def _camera_node(context):
                 {
                     "video_device": resolved_video_device,
                     "camera_info_url": LaunchConfiguration("camera_info_url"),
+                    "frame_id": LaunchConfiguration("frame_id"),
                     "pixel_format": LaunchConfiguration("pixel_format"),
                     "output_encoding": LaunchConfiguration("output_encoding"),
                     "image_size": [image_width, image_height],
                     "time_per_frame": [1, framerate],
                 }
             ],
-        )
+        ),
+        Node(
+            package="tf2_ros",
+            executable="static_transform_publisher",
+            name="camera_mount_tf",
+            arguments=[
+                "--x",
+                LaunchConfiguration("camera_x"),
+                "--y",
+                LaunchConfiguration("camera_y"),
+                "--z",
+                LaunchConfiguration("camera_z"),
+                "--roll",
+                LaunchConfiguration("camera_roll"),
+                "--pitch",
+                LaunchConfiguration("camera_pitch"),
+                "--yaw",
+                LaunchConfiguration("camera_yaw"),
+                "--frame-id",
+                LaunchConfiguration("parent_frame"),
+                "--child-frame-id",
+                LaunchConfiguration("frame_id"),
+            ],
+        ),
+        Node(
+            package="tf2_ros",
+            executable="static_transform_publisher",
+            name="camera_optical_tf",
+            arguments=[
+                "--x",
+                "0.0",
+                "--y",
+                "0.0",
+                "--z",
+                "0.0",
+                "--roll",
+                "-1.57079632679",
+                "--pitch",
+                "0.0",
+                "--yaw",
+                "-1.57079632679",
+                "--frame-id",
+                LaunchConfiguration("frame_id"),
+                "--child-frame-id",
+                LaunchConfiguration("optical_frame"),
+            ],
+        ),
     ]
 
 
@@ -53,7 +100,17 @@ def generate_launch_description():
     frame_id_arg = DeclareLaunchArgument(
         "frame_id",
         default_value="camera_link",
-        description="Reserved for later TF integration; current v4l2_camera uses its own frame defaults",
+        description="Physical camera frame attached to the robot body",
+    )
+    optical_frame_arg = DeclareLaunchArgument(
+        "optical_frame",
+        default_value="camera_optical_frame",
+        description="Optical frame derived from camera_link using REP-style optical axes",
+    )
+    parent_frame_arg = DeclareLaunchArgument(
+        "parent_frame",
+        default_value="base_footprint",
+        description="Parent robot frame for the camera mount transform",
     )
     camera_name_arg = DeclareLaunchArgument(
         "camera_name",
@@ -98,12 +155,44 @@ def generate_launch_description():
         default_value="rgb8",
         description="ROS image encoding produced by v4l2_camera",
     )
+    camera_x_arg = DeclareLaunchArgument(
+        "camera_x",
+        default_value="0.14",
+        description="Camera x offset in meters relative to the parent frame",
+    )
+    camera_y_arg = DeclareLaunchArgument(
+        "camera_y",
+        default_value="0.0",
+        description="Camera y offset in meters relative to the parent frame",
+    )
+    camera_z_arg = DeclareLaunchArgument(
+        "camera_z",
+        default_value="0.12",
+        description="Camera z offset in meters relative to the parent frame",
+    )
+    camera_roll_arg = DeclareLaunchArgument(
+        "camera_roll",
+        default_value="0.0",
+        description="Camera roll offset in radians relative to the parent frame",
+    )
+    camera_pitch_arg = DeclareLaunchArgument(
+        "camera_pitch",
+        default_value="-0.15",
+        description="Camera pitch offset in radians relative to the parent frame",
+    )
+    camera_yaw_arg = DeclareLaunchArgument(
+        "camera_yaw",
+        default_value="0.0",
+        description="Camera yaw offset in radians relative to the parent frame",
+    )
 
     return LaunchDescription(
         [
             namespace_arg,
             video_device_arg,
             frame_id_arg,
+            optical_frame_arg,
+            parent_frame_arg,
             camera_name_arg,
             camera_info_url_arg,
             image_width_arg,
@@ -111,6 +200,12 @@ def generate_launch_description():
             framerate_arg,
             pixel_format_arg,
             output_encoding_arg,
+            camera_x_arg,
+            camera_y_arg,
+            camera_z_arg,
+            camera_roll_arg,
+            camera_pitch_arg,
+            camera_yaw_arg,
             OpaqueFunction(function=_camera_node),
         ]
     )

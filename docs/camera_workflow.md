@@ -30,7 +30,11 @@ Useful arguments:
 - `video_device`
   Default: `/dev/video0`
 - `frame_id`
-  Reserved for later TF integration
+  Default: `camera_link`
+- `optical_frame`
+  Default: `camera_optical_frame`
+- `parent_frame`
+  Default: `base_footprint`
 - `camera_name`
   Reserved for later calibration naming
 - `camera_info_url`
@@ -45,6 +49,18 @@ Useful arguments:
   Default: `YUYV`
 - `output_encoding`
   Default: `rgb8`
+- `camera_x`
+  Default: `0.14`
+- `camera_y`
+  Default: `0.0`
+- `camera_z`
+  Default: `0.12`
+- `camera_roll`
+  Default: `0.0`
+- `camera_pitch`
+  Default: `-0.15`
+- `camera_yaw`
+  Default: `0.0`
 
 Example:
 
@@ -129,12 +145,24 @@ The camera launch defaults to that file.
 
 ### 4. Extrinsics come later
 
-Camera extrinsics cannot be finalized yet because the camera is not mounted on the robot.
+The launch now includes a provisional static camera mount transform and the
+standard optical-frame transform.
 
-Those will be defined later through:
+Current provisional mount assumptions:
 
-- the physical mount
-- `base_link -> camera_link` static transform
+- parent frame: `base_footprint`
+- child frame: `camera_link`
+- translation: `(0.14, 0.0, 0.12)` meters
+- rotation: `(roll=0, pitch=-0.15, yaw=0)` radians
+
+The optical frame is always published as:
+
+- `camera_link -> camera_optical_frame`
+
+with the standard REP-style optical-axis rotation.
+
+These mount values should be treated as provisional and refined after the
+camera mount is finalized.
 
 ## Current Limits
 
