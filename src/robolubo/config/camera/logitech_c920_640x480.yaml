@@ -4,12 +4,12 @@ camera_name: "hd_pro_webcam_c920"
 camera_matrix:
   rows: 3
   cols: 3
-  data: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+  data: [608.52714, 0.0, 328.64946, 0.0, 606.12361, 235.71922, 0.0, 0.0, 1.0]
 distortion_model: plumb_bob
 distortion_coefficients:
   rows: 1
   cols: 5
-  data: [0.0, 0.0, 0.0, 0.0, 0.0]
+  data: [0.109151, -0.234530, -0.003135, 0.000771, 0.0]
 rectification_matrix:
   rows: 3
   cols: 3
@@ -17,4 +17,4 @@ rectification_matrix:
 projection_matrix:
   rows: 3
   cols: 4
-  data: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+  data: [615.29242, 0.0, 328.63802, 0.0, 0.0, 612.71521, 234.21914, 0.0, 0.0, 0.0, 1.0, 0.0]

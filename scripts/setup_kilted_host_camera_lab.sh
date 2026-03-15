@@ -3,7 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
-KILTED_WS_ROOT="${KILTED_WS_ROOT:-${ROOT_DIR}/ros2_ws_kilted}"
+KILTED_WS_ROOT="${KILTED_WS_ROOT:-${ROOT_DIR}/../ros2_ws_kilted}"
 
 if [[ ! -f /etc/os-release ]]; then
   echo "ERROR: /etc/os-release not found." >&2
@@ -45,7 +45,7 @@ rosdep update --rosdistro kilted
 
 mkdir -p "${KILTED_WS_ROOT}/src" "${KILTED_WS_ROOT}/build" "${KILTED_WS_ROOT}/install" "${KILTED_WS_ROOT}/log"
 
-ln -sfn "${ROOT_DIR}" "${KILTED_WS_ROOT}/src/lubobot"
+ln -sfn "${ROOT_DIR}/src/robolubo" "${KILTED_WS_ROOT}/src/robolubo"
 
 if [[ ! -d "${ROOT_DIR}/external/ros2_orb_slam3/.git" ]]; then
   echo "ERROR: external/ros2_orb_slam3 is missing." >&2

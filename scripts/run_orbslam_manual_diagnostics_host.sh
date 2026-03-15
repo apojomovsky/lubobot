@@ -3,5 +3,6 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/env_kilted_host.sh"
+export USE_PANGOLIN="${USE_PANGOLIN:-false}"
 
 exec "${SCRIPT_DIR}/run_orbslam_manual_diagnostics.sh" "$@"

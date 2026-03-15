@@ -35,3 +35,7 @@ __pycache__/
 
 # OS
 .DS_Store
+
+# ORB-SLAM runtime outputs
+CameraTrajectory.txt
+KeyFrameTrajectory.txt

@@ -98,8 +98,29 @@ The wrapper sets:
 - `ROS_WS_ROOT=ros2_ws_kilted`
 - `/opt/ros/kilted`
 - `ros2_ws_kilted/install/setup.bash` if present
+- `USE_PANGOLIN=false` by default on host
 
 So the existing manual diagnostics script can be reused without mixing logs/install paths with the Docker workspace.
+
+If you explicitly want Pangolin despite the host instability risk:
+
+```bash
+USE_PANGOLIN=true scripts/run_orbslam_manual_diagnostics_host.sh 60
+```
+
+## Recovering From Stale ORB-SLAM Processes
+
+If a previous host-native run leaves `/orbslam_mono` or camera nodes behind, use:
+
+```bash
+just kilted-orbslam-clean
+```
+
+This helper:
+
+- kills stale `mono_node_cpp`, `v4l2_camera_node`, and camera TF publishers
+- restarts the ROS 2 daemon
+- prints remaining matching processes and current ROS nodes
 
 ## Calibrating The Logitech C920
 
@@ -119,7 +140,7 @@ Run the host-native calibration helper:
 
 ```bash
 source scripts/env_kilted_host.sh
-just kilted-c920-calibrate
+CHESSBOARD_SIZE=8x6 SQUARE_SIZE=0.025 just kilted-c920-calibrate
 ```
 
 This launches the C920 and opens `camera_calibration`.
@@ -132,6 +153,11 @@ What you need:
 - default square size:
   - `0.024` meters
 
+For the checkerboard currently in use in this repo workflow:
+
+- `CHESSBOARD_SIZE=8x6`
+- `SQUARE_SIZE=0.025`
+
 Override if needed, for example:
 
 ```bash
@@ -142,6 +168,14 @@ After calibration:
 
 - save the YAML over the dedicated C920 file in the repo
 - then point camera and ORB-SLAM runs at the C920 profile instead of the generic webcam profile
+
+The current calibrated C920 profile lives at:
+
+- [`logitech_c920_640x480.yaml`](/home/alexis/lubobot/src/robolubo/config/camera/logitech_c920_640x480.yaml)
+
+The matching ORB-SLAM settings file for the calibrated C920 currently lives at:
+
+- [`logitech_c920_640x480_aggressive.yaml`](/home/alexis/lubobot/src/robolubo/config/orbslam/logitech_c920_640x480_aggressive.yaml)
 
 ## Notes
 

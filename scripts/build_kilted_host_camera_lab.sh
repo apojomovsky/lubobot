@@ -9,7 +9,7 @@ WORKERS="${KILTED_BUILD_WORKERS:-$(nproc)}"
 SKIP_KEYS="${KILTED_ROSDEP_SKIP_KEYS:-}"
 
 mkdir -p "${ROS_WS_ROOT}/src" "${ROS_WS_ROOT}/build" "${ROS_WS_ROOT}/install" "${ROS_WS_ROOT}/log"
-ln -sfn "${ROOT_DIR}" "${ROS_WS_ROOT}/src/lubobot"
+ln -sfn "${ROOT_DIR}/src/robolubo" "${ROS_WS_ROOT}/src/robolubo"
 ln -sfn "${ROOT_DIR}/external/ros2_orb_slam3" "${ROS_WS_ROOT}/src/ros2_orb_slam3"
 
 rosdep update --rosdistro kilted

@@ -48,7 +48,10 @@ ros2 launch robolubo camera.launch.py \
 sleep 5
 
 exec ros2 run camera_calibration cameracalibrator \
+  --no-service-check \
+  --camera_name "${CAMERA_NAME}" \
   --size "${CHESSBOARD_SIZE}" \
   --square "${SQUARE_SIZE}" \
-  image:="/${CAMERA_NAMESPACE}/image_raw" \
-  camera:="/${CAMERA_NAMESPACE}"
+  --ros-args \
+  --remap image:="/${CAMERA_NAMESPACE}/image_raw" \
+  --remap camera:="/${CAMERA_NAMESPACE}"

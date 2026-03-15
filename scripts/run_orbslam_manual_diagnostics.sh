@@ -34,6 +34,7 @@ CAMERA_IMAGE_HEIGHT="${CAMERA_IMAGE_HEIGHT:-480}"
 CAMERA_FRAMERATE="${CAMERA_FRAMERATE:-30}"
 CAMERA_PIXEL_FORMAT="${CAMERA_PIXEL_FORMAT:-YUYV}"
 CAMERA_OUTPUT_ENCODING="${CAMERA_OUTPUT_ENCODING:-rgb8}"
+CAMERA_INFO_URL="${CAMERA_INFO_URL:-}"
 CAMERA_AUTO_FOCUS="${CAMERA_AUTO_FOCUS:-true}"
 CAMERA_FOCUS_ABSOLUTE="${CAMERA_FOCUS_ABSOLUTE:-0}"
 CAMERA_AUTO_EXPOSURE="${CAMERA_AUTO_EXPOSURE:-3}"
@@ -50,10 +51,9 @@ PREFLIGHT_LOG="${OUT_DIR}/preflight.log"
 declare -a STACK_PIDS=()
 declare -a RECORDING_PIDS=()
 declare -a STACK_PATTERNS=(
-  "${ROS_PREFIX}/lib/v4l2_camera/v4l2_camera_node --ros-args -r __node:=camera -r __ns:=/camera"
-  "${ROS_PREFIX}/lib/tf2_ros/static_transform_publisher --x 0.14 --y 0.0 --z 0.12"
-  "${ROS_PREFIX}/lib/tf2_ros/static_transform_publisher --x 0.0 --y 0.0 --z 0.0 --roll -1.57079632679"
-  "${ROS_WS_ROOT}/install/ros2_orb_slam3/lib/ros2_orb_slam3/mono_node_cpp --ros-args -r __node:=orbslam_mono"
+  'v4l2_camera_node'
+  'static_transform_publisher'
+  'mono_node_cpp'
 )
 INTERRUPTED=0
 SHUTDOWN_DONE=0
@@ -73,9 +73,13 @@ stop_matching_processes() {
   local signal="$1"
   shift
   local pattern=""
+  local pid=""
   for pattern in "$@"; do
     if [[ -n "${pattern}" ]]; then
-      pkill "-${signal}" -f -- "${pattern}" >/dev/null 2>&1 || true
+      while read -r pid; do
+        [[ -n "${pid}" ]] || continue
+        kill "-${signal}" "${pid}" >/dev/null 2>&1 || true
+      done < <(pgrep -f -- "${pattern}" || true)
     fi
   done
 }
@@ -142,6 +146,7 @@ start_stack() {
   stdbuf -oL ros2 launch robolubo camera.launch.py \
     video_device:="${VIDEO_DEVICE}" \
     camera_pitch:="${CAMERA_PITCH_RAD}" \
+    camera_info_url:="${CAMERA_INFO_URL}" \
     image_width:="${CAMERA_IMAGE_WIDTH}" \
     image_height:="${CAMERA_IMAGE_HEIGHT}" \
     framerate:="${CAMERA_FRAMERATE}" \
@@ -262,6 +267,7 @@ Viewer settings:
   - RViz:     ${USE_RVIZ}
   - Camera pitch: ${CAMERA_PITCH_DEG} deg (${CAMERA_PITCH_RAD} rad)
   - Camera mode: ${CAMERA_IMAGE_WIDTH}x${CAMERA_IMAGE_HEIGHT} ${CAMERA_PIXEL_FORMAT} @ ${CAMERA_FRAMERATE} fps -> ${CAMERA_OUTPUT_ENCODING}
+  - Camera info URL: ${CAMERA_INFO_URL:-<launch default>}
   - Camera focus: auto=${CAMERA_AUTO_FOCUS} absolute=${CAMERA_FOCUS_ABSOLUTE}
   - Camera exposure: auto_mode=${CAMERA_AUTO_EXPOSURE} time=${CAMERA_EXPOSURE_TIME_ABSOLUTE} dynamic_framerate=${CAMERA_EXPOSURE_DYNAMIC_FRAMERATE}
   - ORB settings: ${ORBSLAM_SETTINGS_FILE}

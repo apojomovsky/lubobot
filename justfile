@@ -36,3 +36,6 @@ kilted-build:
 
 kilted-c920-calibrate:
   ./scripts/run_c920_calibration_host.sh
+
+kilted-orbslam-clean:
+  ./scripts/cleanup_orbslam_host_processes.sh
