@@ -30,6 +30,7 @@ LOCALIZATION_LAUNCH_LOG="${OUT_DIR}/localization.launch.log"
 CAMERA_LAUNCH_LOG="${OUT_DIR}/camera.launch.log"
 ORBSLAM_LAUNCH_LOG="${OUT_DIR}/orbslam.launch.log"
 CMD_VEL_LOG="${OUT_DIR}/cmd_vel_sequence.log"
+PREFLIGHT_LOG="${OUT_DIR}/preflight.log"
 declare -a STACK_PIDS=()
 declare -a EXPERIMENT_PIDS=()
 
@@ -88,6 +89,53 @@ wait_for_topic() {
   return 1
 }
 
+wait_for_message() {
+  local topic="$1"
+  local timeout_s="${2:-10}"
+  local log_file="${3:-/dev/null}"
+
+  if timeout "${timeout_s}" ros2 topic echo "${topic}" --once >"${log_file}" 2>&1; then
+    return 0
+  fi
+
+  echo "ERROR: timed out waiting for a message on ${topic}" >&2
+  return 1
+}
+
+preflight_check() {
+  : >"${PREFLIGHT_LOG}"
+
+  echo "Preflight checks:" | tee -a "${PREFLIGHT_LOG}"
+
+  wait_for_topic /odom 20
+  wait_for_message /odom 5 "${OUT_DIR}/odom.preflight.log"
+  echo "  PASS /odom" | tee -a "${PREFLIGHT_LOG}"
+
+  wait_for_topic /imu/data_raw 20
+  wait_for_message /imu/data_raw 8 "${OUT_DIR}/imu_data_raw.preflight.log"
+  echo "  PASS /imu/data_raw" | tee -a "${PREFLIGHT_LOG}"
+
+  wait_for_topic /imu/data 20
+  wait_for_message /imu/data 8 "${OUT_DIR}/imu_data.preflight.log"
+  echo "  PASS /imu/data" | tee -a "${PREFLIGHT_LOG}"
+
+  wait_for_topic /odometry/filtered 20
+  wait_for_message /odometry/filtered 8 "${OUT_DIR}/odometry_filtered.preflight.log"
+  echo "  PASS /odometry/filtered" | tee -a "${PREFLIGHT_LOG}"
+
+  wait_for_topic /camera/image_raw 20
+  wait_for_message /camera/image_raw 8 "${OUT_DIR}/camera_image_raw.preflight.log"
+  echo "  PASS /camera/image_raw" | tee -a "${PREFLIGHT_LOG}"
+
+  wait_for_topic /camera/camera_info 20
+  wait_for_message /camera/camera_info 8 "${OUT_DIR}/camera_info.preflight.log"
+  echo "  PASS /camera/camera_info" | tee -a "${PREFLIGHT_LOG}"
+
+  wait_for_topic /orb_slam3/pose 30
+  wait_for_message /orb_slam3/pose 12 "${OUT_DIR}/orb_slam3_pose.preflight.log"
+  echo "  PASS /orb_slam3/pose" | tee -a "${PREFLIGHT_LOG}"
+}
+
 cat <<EOF
 State-estimation experiment starting.
 
@@ -122,10 +170,22 @@ EOF
 start_stack
 sleep 5
 
-wait_for_topic /odom 20
-wait_for_topic /odometry/filtered 20
-wait_for_topic /camera/image_raw 20
-wait_for_topic /orb_slam3/pose 30
+if ! preflight_check; then
+  cat <<EOF
+Preflight failed.
+
+Relevant logs:
+  ${BASE_LAUNCH_LOG}
+  ${IMU_LAUNCH_LOG}
+  ${LOCALIZATION_LAUNCH_LOG}
+  ${CAMERA_LAUNCH_LOG}
+  ${ORBSLAM_LAUNCH_LOG}
+  ${PREFLIGHT_LOG}
+
+The scripted motion sequence was not started.
+EOF
+  exit 1
+fi
 
 stdbuf -oL timeout "${DURATION}" ros2 topic echo /odom \
   | stdbuf -oL "${WATCHER}" --label raw \
@@ -171,6 +231,7 @@ Captured files:
   ${CAMERA_LAUNCH_LOG}
   ${ORBSLAM_LAUNCH_LOG}
   ${CMD_VEL_LOG}
+  ${PREFLIGHT_LOG}
 
 Next step:
   Send me the output directory path above and I will inspect the results.
