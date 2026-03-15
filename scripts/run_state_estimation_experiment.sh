@@ -33,16 +33,74 @@ CMD_VEL_LOG="${OUT_DIR}/cmd_vel_sequence.log"
 PREFLIGHT_LOG="${OUT_DIR}/preflight.log"
 declare -a STACK_PIDS=()
 declare -a EXPERIMENT_PIDS=()
+INTERRUPTED=0
+SHUTDOWN_DONE=0
 
-cleanup() {
-  for pid in "${EXPERIMENT_PIDS[@]:-}"; do
-    kill "${pid}" >/dev/null 2>&1 || true
-  done
-  for pid in "${STACK_PIDS[@]:-}"; do
-    kill "${pid}" >/dev/null 2>&1 || true
+stop_pid_list() {
+  local signal="$1"
+  shift
+  local pid=""
+  for pid in "$@"; do
+    if [[ -n "${pid}" ]] && kill -0 "${pid}" >/dev/null 2>&1; then
+      kill "-${signal}" "${pid}" >/dev/null 2>&1 || true
+    fi
   done
 }
-trap cleanup EXIT INT TERM
+
+wait_pid_list() {
+  local timeout_s="$1"
+  shift
+  local deadline=$((SECONDS + timeout_s))
+  local remaining=1
+  local pid=""
+
+  while (( SECONDS < deadline )); do
+    remaining=0
+    for pid in "$@"; do
+      if [[ -n "${pid}" ]] && kill -0 "${pid}" >/dev/null 2>&1; then
+        remaining=1
+        break
+      fi
+    done
+    if (( remaining == 0 )); then
+      return 0
+    fi
+    sleep 1
+  done
+
+  return 1
+}
+
+shutdown_all() {
+  if (( SHUTDOWN_DONE == 1 )); then
+    return 0
+  fi
+  SHUTDOWN_DONE=1
+
+  stop_pid_list INT "${EXPERIMENT_PIDS[@]:-}"
+  stop_pid_list INT "${STACK_PIDS[@]:-}"
+  wait_pid_list 5 "${EXPERIMENT_PIDS[@]:-}" "${STACK_PIDS[@]:-}" || true
+
+  stop_pid_list TERM "${EXPERIMENT_PIDS[@]:-}"
+  stop_pid_list TERM "${STACK_PIDS[@]:-}"
+  wait_pid_list 5 "${EXPERIMENT_PIDS[@]:-}" "${STACK_PIDS[@]:-}" || true
+
+  stop_pid_list KILL "${EXPERIMENT_PIDS[@]:-}"
+  stop_pid_list KILL "${STACK_PIDS[@]:-}"
+}
+
+on_interrupt() {
+  INTERRUPTED=1
+  printf '\nInterrupt received. Stopping experiment and launched processes...\n' >&2
+  shutdown_all
+}
+
+cleanup() {
+  shutdown_all
+}
+
+trap cleanup EXIT
+trap on_interrupt INT TERM
 
 start_stack() {
   stdbuf -oL ros2 launch robolubo base.launch.py \
@@ -217,6 +275,28 @@ printf '\n'
 for pid in "${EXPERIMENT_PIDS[@]}"; do
   wait "${pid}" || true
 done
+
+if (( INTERRUPTED == 1 )); then
+  cat <<EOF
+Experiment interrupted.
+
+Captured files so far:
+  ${RAW_LOG}
+  ${EKF_LOG}
+  ${SLAM_LOG}
+  ${BASE_LAUNCH_LOG}
+  ${IMU_LAUNCH_LOG}
+  ${LOCALIZATION_LAUNCH_LOG}
+  ${CAMERA_LAUNCH_LOG}
+  ${ORBSLAM_LAUNCH_LOG}
+  ${CMD_VEL_LOG}
+  ${PREFLIGHT_LOG}
+
+Next step:
+  Send me the output directory path above and I will inspect the partial results.
+EOF
+  exit 130
+fi
 
 cat <<EOF
 Experiment complete.
