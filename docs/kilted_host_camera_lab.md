@@ -31,7 +31,7 @@ It uses:
 The host-native workspace lives under:
 
 ```bash
-ros2_ws_kilted/
+../ros2_ws_kilted/
 ```
 
 It is kept separate from the existing Docker-oriented:
@@ -41,6 +41,7 @@ ros2_ws/
 ```
 
 That avoids mixing Humble container artifacts with Kilted host artifacts.
+It also avoids recursive symlink problems from placing a workspace inside the repo itself.
 
 ## One-Time Setup
 
@@ -61,7 +62,7 @@ This script:
 - ensures `rosdep` is initialized
 - creates `ros2_ws_kilted/`
 - symlinks:
-  - repo root as `ros2_ws_kilted/src/lubobot`
+  - `src/robolubo` as `ros2_ws_kilted/src/robolubo`
   - `external/ros2_orb_slam3` as `ros2_ws_kilted/src/ros2_orb_slam3`
 
 ## Build
@@ -99,6 +100,48 @@ The wrapper sets:
 - `ros2_ws_kilted/install/setup.bash` if present
 
 So the existing manual diagnostics script can be reused without mixing logs/install paths with the Docker workspace.
+
+## Calibrating The Logitech C920
+
+Before serious ORB-SLAM testing with the C920, calibrate it in the exact intended mode.
+
+Current intended mode:
+
+- `640x480`
+- `YUYV`
+- fixed focus
+
+The repo includes a dedicated C920 calibration target file:
+
+- [`logitech_c920_640x480.yaml`](/home/alexis/lubobot/src/robolubo/config/camera/logitech_c920_640x480.yaml)
+
+Run the host-native calibration helper:
+
+```bash
+source scripts/env_kilted_host.sh
+just kilted-c920-calibrate
+```
+
+This launches the C920 and opens `camera_calibration`.
+
+What you need:
+
+- a printed chessboard
+- default board size currently assumed by the helper:
+  - `8x6`
+- default square size:
+  - `0.024` meters
+
+Override if needed, for example:
+
+```bash
+CHESSBOARD_SIZE=7x6 SQUARE_SIZE=0.025 just kilted-c920-calibrate
+```
+
+After calibration:
+
+- save the YAML over the dedicated C920 file in the repo
+- then point camera and ORB-SLAM runs at the C920 profile instead of the generic webcam profile
 
 ## Notes
 

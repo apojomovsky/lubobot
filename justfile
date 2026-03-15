@@ -33,3 +33,6 @@ kilted-setup:
 
 kilted-build:
   ./scripts/build_kilted_host_camera_lab.sh
+
+kilted-c920-calibrate:
+  ./scripts/run_c920_calibration_host.sh
