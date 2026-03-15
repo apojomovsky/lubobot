@@ -82,3 +82,4 @@ zenoh/              Zenoh bridge configuration
 
 See [CLAUDE.md](CLAUDE.md) for full developer reference.
 For local ROS 2 Humble-on-desktop validation, see [docs/humble_docker.md](docs/humble_docker.md).
+For a host-native Kilted camera/ORB-SLAM workflow, see [docs/kilted_host_camera_lab.md](docs/kilted_host_camera_lab.md).

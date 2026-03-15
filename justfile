@@ -27,3 +27,9 @@ ros-build:
 
 ros-down:
   ./scripts/ros_down.sh
+
+kilted-setup:
+  ./scripts/setup_kilted_host_camera_lab.sh
+
+kilted-build:
+  ./scripts/build_kilted_host_camera_lab.sh

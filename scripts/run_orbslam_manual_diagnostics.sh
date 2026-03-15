@@ -4,11 +4,21 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 WATCHER="${SCRIPT_DIR}/odom_filtered_watch.py"
+ROS_WS_ROOT="${ROS_WS_ROOT:-}"
+if [[ -z "${ROS_WS_ROOT}" ]]; then
+  if [[ -d /workspaces/ros2_ws ]]; then
+    ROS_WS_ROOT="/workspaces/ros2_ws"
+  else
+    ROS_WS_ROOT="${ROOT_DIR}/ros2_ws"
+  fi
+fi
+ROS_DISTRO_NAME="${ROS_DISTRO:-humble}"
+ROS_PREFIX="/opt/ros/${ROS_DISTRO_NAME}"
 
-if [[ -d /workspaces/ros2_ws/log ]]; then
-  OUT_BASE="/workspaces/ros2_ws/log/orbslam_manual_diagnostics"
+if [[ -d "${ROS_WS_ROOT}/log" ]]; then
+  OUT_BASE="${ROS_WS_ROOT}/log/orbslam_manual_diagnostics"
 else
-  OUT_BASE="${ROOT_DIR}/ros2_ws/log/orbslam_manual_diagnostics"
+  OUT_BASE="${ROS_WS_ROOT}/log/orbslam_manual_diagnostics"
 fi
 
 STAMP="$(date +%Y%m%d_%H%M%S)"
@@ -29,7 +39,7 @@ CAMERA_FOCUS_ABSOLUTE="${CAMERA_FOCUS_ABSOLUTE:-0}"
 CAMERA_AUTO_EXPOSURE="${CAMERA_AUTO_EXPOSURE:-3}"
 CAMERA_EXPOSURE_TIME_ABSOLUTE="${CAMERA_EXPOSURE_TIME_ABSOLUTE:-250}"
 CAMERA_EXPOSURE_DYNAMIC_FRAMERATE="${CAMERA_EXPOSURE_DYNAMIC_FRAMERATE:-true}"
-ORBSLAM_SETTINGS_FILE="${ORBSLAM_SETTINGS_FILE:-/workspaces/ros2_ws/install/robolubo/share/robolubo/config/orbslam/general_webcam_640x480.yaml}"
+ORBSLAM_SETTINGS_FILE="${ORBSLAM_SETTINGS_FILE:-${ROS_WS_ROOT}/install/robolubo/share/robolubo/config/orbslam/general_webcam_640x480.yaml}"
 
 mkdir -p "${OUT_DIR}"
 
@@ -40,10 +50,10 @@ PREFLIGHT_LOG="${OUT_DIR}/preflight.log"
 declare -a STACK_PIDS=()
 declare -a RECORDING_PIDS=()
 declare -a STACK_PATTERNS=(
-  "/opt/ros/humble/lib/v4l2_camera/v4l2_camera_node --ros-args -r __node:=camera -r __ns:=/camera"
-  "/opt/ros/humble/lib/tf2_ros/static_transform_publisher --x 0.14 --y 0.0 --z 0.12"
-  "/opt/ros/humble/lib/tf2_ros/static_transform_publisher --x 0.0 --y 0.0 --z 0.0 --roll -1.57079632679"
-  "/workspaces/ros2_ws/install/ros2_orb_slam3/lib/ros2_orb_slam3/mono_node_cpp --ros-args -r __node:=orbslam_mono"
+  "${ROS_PREFIX}/lib/v4l2_camera/v4l2_camera_node --ros-args -r __node:=camera -r __ns:=/camera"
+  "${ROS_PREFIX}/lib/tf2_ros/static_transform_publisher --x 0.14 --y 0.0 --z 0.12"
+  "${ROS_PREFIX}/lib/tf2_ros/static_transform_publisher --x 0.0 --y 0.0 --z 0.0 --roll -1.57079632679"
+  "${ROS_WS_ROOT}/install/ros2_orb_slam3/lib/ros2_orb_slam3/mono_node_cpp --ros-args -r __node:=orbslam_mono"
 )
 INTERRUPTED=0
 SHUTDOWN_DONE=0
