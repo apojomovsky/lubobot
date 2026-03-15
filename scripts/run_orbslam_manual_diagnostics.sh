@@ -19,6 +19,11 @@ USE_PANGOLIN="${USE_PANGOLIN:-true}"
 USE_RVIZ="${USE_RVIZ:-false}"
 CAMERA_PITCH_DEG="${CAMERA_PITCH_DEG:-0}"
 CAMERA_PITCH_RAD="$(python3 -c 'import math,sys; print(f"{math.radians(float(sys.argv[1])):.6f}")' "${CAMERA_PITCH_DEG}")"
+CAMERA_IMAGE_WIDTH="${CAMERA_IMAGE_WIDTH:-640}"
+CAMERA_IMAGE_HEIGHT="${CAMERA_IMAGE_HEIGHT:-480}"
+CAMERA_FRAMERATE="${CAMERA_FRAMERATE:-30}"
+CAMERA_PIXEL_FORMAT="${CAMERA_PIXEL_FORMAT:-YUYV}"
+CAMERA_OUTPUT_ENCODING="${CAMERA_OUTPUT_ENCODING:-rgb8}"
 ORBSLAM_SETTINGS_FILE="${ORBSLAM_SETTINGS_FILE:-/workspaces/ros2_ws/install/robolubo/share/robolubo/config/orbslam/general_webcam_640x480.yaml}"
 
 mkdir -p "${OUT_DIR}"
@@ -102,6 +107,11 @@ start_stack() {
   stdbuf -oL ros2 launch robolubo camera.launch.py \
     video_device:="${VIDEO_DEVICE}" \
     camera_pitch:="${CAMERA_PITCH_RAD}" \
+    image_width:="${CAMERA_IMAGE_WIDTH}" \
+    image_height:="${CAMERA_IMAGE_HEIGHT}" \
+    framerate:="${CAMERA_FRAMERATE}" \
+    pixel_format:="${CAMERA_PIXEL_FORMAT}" \
+    output_encoding:="${CAMERA_OUTPUT_ENCODING}" \
     >"${CAMERA_LAUNCH_LOG}" 2>&1 &
   STACK_PIDS+=("$!")
 
@@ -181,19 +191,19 @@ preflight_check() {
 
   echo "Preflight checks:" | tee -a "${PREFLIGHT_LOG}"
 
-  wait_for_topic /camera/image_raw 20
-  wait_for_message /camera/image_raw 8 "${OUT_DIR}/camera_image_raw.preflight.log"
-  require_exactly_one_publisher /camera/image_raw
+  wait_for_topic /camera/image_raw 20 || return 1
+  wait_for_message /camera/image_raw 8 "${OUT_DIR}/camera_image_raw.preflight.log" || return 1
+  require_exactly_one_publisher /camera/image_raw || return 1
   echo "  PASS /camera/image_raw" | tee -a "${PREFLIGHT_LOG}"
 
-  wait_for_topic /camera/camera_info 20
-  wait_for_message /camera/camera_info 8 "${OUT_DIR}/camera_info.preflight.log"
-  require_exactly_one_publisher /camera/camera_info
+  wait_for_topic /camera/camera_info 20 || return 1
+  wait_for_message /camera/camera_info 8 "${OUT_DIR}/camera_info.preflight.log" || return 1
+  require_exactly_one_publisher /camera/camera_info || return 1
   echo "  PASS /camera/camera_info" | tee -a "${PREFLIGHT_LOG}"
 
-  wait_for_topic /orb_slam3/pose 30
-  wait_for_message /orb_slam3/pose 12 "${OUT_DIR}/orb_slam3_pose.preflight.log"
-  require_exactly_one_publisher /orb_slam3/pose
+  wait_for_topic /orb_slam3/pose 30 || return 1
+  wait_for_message /orb_slam3/pose 12 "${OUT_DIR}/orb_slam3_pose.preflight.log" || return 1
+  require_exactly_one_publisher /orb_slam3/pose || return 1
   echo "  PASS /orb_slam3/pose" | tee -a "${PREFLIGHT_LOG}"
 }
 
@@ -211,6 +221,7 @@ Viewer settings:
   - Pangolin: ${USE_PANGOLIN}
   - RViz:     ${USE_RVIZ}
   - Camera pitch: ${CAMERA_PITCH_DEG} deg (${CAMERA_PITCH_RAD} rad)
+  - Camera mode: ${CAMERA_IMAGE_WIDTH}x${CAMERA_IMAGE_HEIGHT} ${CAMERA_PIXEL_FORMAT} @ ${CAMERA_FRAMERATE} fps -> ${CAMERA_OUTPUT_ENCODING}
   - ORB settings: ${ORBSLAM_SETTINGS_FILE}
 
 Manual motion guidance:
@@ -233,7 +244,6 @@ if ! assert_clean_graph; then
   cat <<EOF
 Refusing to start: the ROS graph is already dirty.
 
-Stop any existing base, camera, or ORB-SLAM publishers and rerun this script.
 Stop any existing camera or ORB-SLAM publishers and rerun this script.
 EOF
   exit 1
