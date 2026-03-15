@@ -24,6 +24,11 @@ CAMERA_IMAGE_HEIGHT="${CAMERA_IMAGE_HEIGHT:-480}"
 CAMERA_FRAMERATE="${CAMERA_FRAMERATE:-30}"
 CAMERA_PIXEL_FORMAT="${CAMERA_PIXEL_FORMAT:-YUYV}"
 CAMERA_OUTPUT_ENCODING="${CAMERA_OUTPUT_ENCODING:-rgb8}"
+CAMERA_AUTO_FOCUS="${CAMERA_AUTO_FOCUS:-true}"
+CAMERA_FOCUS_ABSOLUTE="${CAMERA_FOCUS_ABSOLUTE:-0}"
+CAMERA_AUTO_EXPOSURE="${CAMERA_AUTO_EXPOSURE:-3}"
+CAMERA_EXPOSURE_TIME_ABSOLUTE="${CAMERA_EXPOSURE_TIME_ABSOLUTE:-250}"
+CAMERA_EXPOSURE_DYNAMIC_FRAMERATE="${CAMERA_EXPOSURE_DYNAMIC_FRAMERATE:-true}"
 ORBSLAM_SETTINGS_FILE="${ORBSLAM_SETTINGS_FILE:-/workspaces/ros2_ws/install/robolubo/share/robolubo/config/orbslam/general_webcam_640x480.yaml}"
 
 mkdir -p "${OUT_DIR}"
@@ -112,6 +117,11 @@ start_stack() {
     framerate:="${CAMERA_FRAMERATE}" \
     pixel_format:="${CAMERA_PIXEL_FORMAT}" \
     output_encoding:="${CAMERA_OUTPUT_ENCODING}" \
+    auto_focus:="${CAMERA_AUTO_FOCUS}" \
+    focus_absolute:="${CAMERA_FOCUS_ABSOLUTE}" \
+    auto_exposure:="${CAMERA_AUTO_EXPOSURE}" \
+    exposure_time_absolute:="${CAMERA_EXPOSURE_TIME_ABSOLUTE}" \
+    exposure_dynamic_framerate:="${CAMERA_EXPOSURE_DYNAMIC_FRAMERATE}" \
     >"${CAMERA_LAUNCH_LOG}" 2>&1 &
   STACK_PIDS+=("$!")
 
@@ -222,6 +232,8 @@ Viewer settings:
   - RViz:     ${USE_RVIZ}
   - Camera pitch: ${CAMERA_PITCH_DEG} deg (${CAMERA_PITCH_RAD} rad)
   - Camera mode: ${CAMERA_IMAGE_WIDTH}x${CAMERA_IMAGE_HEIGHT} ${CAMERA_PIXEL_FORMAT} @ ${CAMERA_FRAMERATE} fps -> ${CAMERA_OUTPUT_ENCODING}
+  - Camera focus: auto=${CAMERA_AUTO_FOCUS} absolute=${CAMERA_FOCUS_ABSOLUTE}
+  - Camera exposure: auto_mode=${CAMERA_AUTO_EXPOSURE} time=${CAMERA_EXPOSURE_TIME_ABSOLUTE} dynamic_framerate=${CAMERA_EXPOSURE_DYNAMIC_FRAMERATE}
   - ORB settings: ${ORBSLAM_SETTINGS_FILE}
 
 Manual motion guidance:

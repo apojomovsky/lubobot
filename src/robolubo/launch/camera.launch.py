@@ -15,6 +15,21 @@ def _camera_node(context):
     image_width = int(LaunchConfiguration("image_width").perform(context))
     image_height = int(LaunchConfiguration("image_height").perform(context))
     framerate = int(LaunchConfiguration("framerate").perform(context))
+    auto_focus = LaunchConfiguration("auto_focus").perform(context).lower() in (
+        "1",
+        "true",
+        "yes",
+        "on",
+    )
+    focus_absolute = int(LaunchConfiguration("focus_absolute").perform(context))
+    auto_exposure = int(LaunchConfiguration("auto_exposure").perform(context))
+    exposure_time_absolute = int(
+        LaunchConfiguration("exposure_time_absolute").perform(context)
+    )
+    exposure_dynamic_framerate = (
+        LaunchConfiguration("exposure_dynamic_framerate").perform(context).lower()
+        in ("1", "true", "yes", "on")
+    )
 
     if not resolved_video_device.startswith("/dev/video"):
         resolved_video_device = video_device
@@ -37,6 +52,11 @@ def _camera_node(context):
                     "output_encoding": LaunchConfiguration("output_encoding"),
                     "image_size": [image_width, image_height],
                     "time_per_frame": [1, framerate],
+                    "focus_auto": auto_focus,
+                    "focus_absolute": focus_absolute,
+                    "auto_exposure": auto_exposure,
+                    "exposure_time_absolute": exposure_time_absolute,
+                    "exposure_dynamic_framerate": exposure_dynamic_framerate,
                 }
             ],
         ),
@@ -158,6 +178,31 @@ def generate_launch_description():
         default_value="rgb8",
         description="ROS image encoding produced by v4l2_camera",
     )
+    auto_focus_arg = DeclareLaunchArgument(
+        "auto_focus",
+        default_value="true",
+        description="Enable continuous autofocus when supported by the camera",
+    )
+    focus_absolute_arg = DeclareLaunchArgument(
+        "focus_absolute",
+        default_value="0",
+        description="Manual focus value when autofocus is disabled",
+    )
+    auto_exposure_arg = DeclareLaunchArgument(
+        "auto_exposure",
+        default_value="3",
+        description="V4L2 auto_exposure mode; 1=manual, 3=aperture priority",
+    )
+    exposure_time_absolute_arg = DeclareLaunchArgument(
+        "exposure_time_absolute",
+        default_value="250",
+        description="Manual exposure value when auto_exposure is 1",
+    )
+    exposure_dynamic_framerate_arg = DeclareLaunchArgument(
+        "exposure_dynamic_framerate",
+        default_value="true",
+        description="Allow the camera to vary frame timing for exposure",
+    )
     camera_x_arg = DeclareLaunchArgument(
         "camera_x",
         default_value="0.14",
@@ -203,6 +248,11 @@ def generate_launch_description():
             framerate_arg,
             pixel_format_arg,
             output_encoding_arg,
+            auto_focus_arg,
+            focus_absolute_arg,
+            auto_exposure_arg,
+            exposure_time_absolute_arg,
+            exposure_dynamic_framerate_arg,
             camera_x_arg,
             camera_y_arg,
             camera_z_arg,
