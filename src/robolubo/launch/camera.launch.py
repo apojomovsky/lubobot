@@ -52,7 +52,7 @@ def _camera_node(context):
                     "output_encoding": LaunchConfiguration("output_encoding"),
                     "image_size": [image_width, image_height],
                     "time_per_frame": [1, framerate],
-                    "focus_auto": auto_focus,
+                    "focus_automatic_continuous": auto_focus,
                     "focus_absolute": focus_absolute,
                     "auto_exposure": auto_exposure,
                     "exposure_time_absolute": exposure_time_absolute,

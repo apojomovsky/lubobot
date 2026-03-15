@@ -26,6 +26,13 @@ LOCALIZATION_LAUNCH_LOG="${OUT_DIR}/localization.launch.log"
 CMD_VEL_LOG="${OUT_DIR}/cmd_vel_sequence.log"
 declare -a STACK_PIDS=()
 declare -a EXPERIMENT_PIDS=()
+declare -a STACK_PATTERNS=(
+  "/opt/ros/humble/lib/create_driver/create_driver --ros-args -r __node:=create_driver"
+  "/workspaces/ros2_ws/install/imu_bridge/lib/imu_bridge/imu_bridge_node --ros-args -r __node:=imu_bridge"
+  "/opt/ros/humble/lib/imu_filter_madgwick/imu_filter_madgwick_node --ros-args -r __node:=imu_filter"
+  "/opt/ros/humble/lib/tf2_ros/static_transform_publisher --x -0.07 --y 0.0 --z 0.0"
+  "/opt/ros/humble/lib/robot_localization/ekf_node --ros-args -r __node:=ekf_filter_node"
+)
 
 cleanup() {
   for pid in "${EXPERIMENT_PIDS[@]:-}"; do
@@ -33,6 +40,10 @@ cleanup() {
   done
   for pid in "${STACK_PIDS[@]:-}"; do
     kill "${pid}" >/dev/null 2>&1 || true
+  done
+  local pattern=""
+  for pattern in "${STACK_PATTERNS[@]}"; do
+    pkill -TERM -f -- "${pattern}" >/dev/null 2>&1 || true
   done
 }
 trap cleanup EXIT INT TERM

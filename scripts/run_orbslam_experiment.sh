@@ -29,6 +29,13 @@ CMD_VEL_LOG="${OUT_DIR}/cmd_vel_sequence.log"
 PREFLIGHT_LOG="${OUT_DIR}/preflight.log"
 declare -a STACK_PIDS=()
 declare -a EXPERIMENT_PIDS=()
+declare -a STACK_PATTERNS=(
+  "/opt/ros/humble/lib/create_driver/create_driver --ros-args -r __node:=create_driver"
+  "/opt/ros/humble/lib/v4l2_camera/v4l2_camera_node --ros-args -r __node:=camera -r __ns:=/camera"
+  "/opt/ros/humble/lib/tf2_ros/static_transform_publisher --x 0.14 --y 0.0 --z 0.12"
+  "/opt/ros/humble/lib/tf2_ros/static_transform_publisher --x 0.0 --y 0.0 --z 0.0 --roll -1.57079632679"
+  "/workspaces/ros2_ws/install/ros2_orb_slam3/lib/ros2_orb_slam3/mono_node_cpp --ros-args -r __node:=orbslam_mono"
+)
 INTERRUPTED=0
 SHUTDOWN_DONE=0
 
@@ -39,6 +46,17 @@ stop_pid_list() {
   for pid in "$@"; do
     if [[ -n "${pid}" ]] && kill -0 "${pid}" >/dev/null 2>&1; then
       kill "-${signal}" "${pid}" >/dev/null 2>&1 || true
+    fi
+  done
+}
+
+stop_matching_processes() {
+  local signal="$1"
+  shift
+  local pattern=""
+  for pattern in "$@"; do
+    if [[ -n "${pattern}" ]]; then
+      pkill "-${signal}" -f -- "${pattern}" >/dev/null 2>&1 || true
     fi
   done
 }
@@ -75,14 +93,17 @@ shutdown_all() {
 
   stop_pid_list INT "${EXPERIMENT_PIDS[@]:-}"
   stop_pid_list INT "${STACK_PIDS[@]:-}"
+  stop_matching_processes INT "${STACK_PATTERNS[@]}"
   wait_pid_list 5 "${EXPERIMENT_PIDS[@]:-}" "${STACK_PIDS[@]:-}" || true
 
   stop_pid_list TERM "${EXPERIMENT_PIDS[@]:-}"
   stop_pid_list TERM "${STACK_PIDS[@]:-}"
+  stop_matching_processes TERM "${STACK_PATTERNS[@]}"
   wait_pid_list 5 "${EXPERIMENT_PIDS[@]:-}" "${STACK_PIDS[@]:-}" || true
 
   stop_pid_list KILL "${EXPERIMENT_PIDS[@]:-}"
   stop_pid_list KILL "${STACK_PIDS[@]:-}"
+  stop_matching_processes KILL "${STACK_PATTERNS[@]}"
 }
 
 on_interrupt() {
