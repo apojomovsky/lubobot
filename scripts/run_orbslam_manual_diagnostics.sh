@@ -14,18 +14,16 @@ fi
 STAMP="$(date +%Y%m%d_%H%M%S)"
 OUT_DIR="${OUT_BASE}/${STAMP}"
 DURATION="${1:-60}"
-BASE_SERIAL_PORT="${BASE_SERIAL_PORT:-/dev/ttyUSB0}"
 VIDEO_DEVICE="${VIDEO_DEVICE:-/dev/v4l/by-id/usb-GENERAL_GENERAL_WEBCAM_JH3503_20230616_v001-video-index0}"
 USE_PANGOLIN="${USE_PANGOLIN:-true}"
 USE_RVIZ="${USE_RVIZ:-false}"
 CAMERA_PITCH_DEG="${CAMERA_PITCH_DEG:-0}"
 CAMERA_PITCH_RAD="$(python3 -c 'import math,sys; print(f"{math.radians(float(sys.argv[1])):.6f}")' "${CAMERA_PITCH_DEG}")"
+ORBSLAM_SETTINGS_FILE="${ORBSLAM_SETTINGS_FILE:-/workspaces/ros2_ws/install/robolubo/share/robolubo/config/orbslam/general_webcam_640x480.yaml}"
 
 mkdir -p "${OUT_DIR}"
 
-RAW_LOG="${OUT_DIR}/raw.log"
 SLAM_LOG="${OUT_DIR}/slam.log"
-BASE_LAUNCH_LOG="${OUT_DIR}/base.launch.log"
 CAMERA_LAUNCH_LOG="${OUT_DIR}/camera.launch.log"
 ORBSLAM_LAUNCH_LOG="${OUT_DIR}/orbslam.launch.log"
 PREFLIGHT_LOG="${OUT_DIR}/preflight.log"
@@ -101,11 +99,6 @@ trap cleanup EXIT
 trap on_interrupt INT TERM
 
 start_stack() {
-  stdbuf -oL ros2 launch robolubo base.launch.py \
-    serial_port:="${BASE_SERIAL_PORT}" \
-    >"${BASE_LAUNCH_LOG}" 2>&1 &
-  STACK_PIDS+=("$!")
-
   stdbuf -oL ros2 launch robolubo camera.launch.py \
     video_device:="${VIDEO_DEVICE}" \
     camera_pitch:="${CAMERA_PITCH_RAD}" \
@@ -114,6 +107,7 @@ start_stack() {
 
   stdbuf -oL ros2 launch robolubo orbslam_mono.launch.py \
     image_topic:=/camera/image_raw \
+    settings_file:="${ORBSLAM_SETTINGS_FILE}" \
     use_pangolin:="${USE_PANGOLIN}" \
     use_rviz:="${USE_RVIZ}" \
     >"${ORBSLAM_LAUNCH_LOG}" 2>&1 &
@@ -177,7 +171,6 @@ require_exactly_one_publisher() {
 }
 
 assert_clean_graph() {
-  require_no_publishers /odom
   require_no_publishers /camera/image_raw
   require_no_publishers /camera/camera_info
   require_no_publishers /orb_slam3/pose
@@ -187,11 +180,6 @@ preflight_check() {
   : >"${PREFLIGHT_LOG}"
 
   echo "Preflight checks:" | tee -a "${PREFLIGHT_LOG}"
-
-  wait_for_topic /odom 20
-  wait_for_message /odom 5 "${OUT_DIR}/odom.preflight.log"
-  require_exactly_one_publisher /odom
-  echo "  PASS /odom" | tee -a "${PREFLIGHT_LOG}"
 
   wait_for_topic /camera/image_raw 20
   wait_for_message /camera/image_raw 8 "${OUT_DIR}/camera_image_raw.preflight.log"
@@ -216,7 +204,6 @@ Output directory:
   ${OUT_DIR}
 
 Bringing up:
-  - base.launch.py         (${BASE_SERIAL_PORT})
   - camera.launch.py       (${VIDEO_DEVICE})
   - orbslam_mono.launch.py
 
@@ -224,6 +211,7 @@ Viewer settings:
   - Pangolin: ${USE_PANGOLIN}
   - RViz:     ${USE_RVIZ}
   - Camera pitch: ${CAMERA_PITCH_DEG} deg (${CAMERA_PITCH_RAD} rad)
+  - ORB settings: ${ORBSLAM_SETTINGS_FILE}
 
 Manual motion guidance:
   1. wait for the Pangolin window to appear
@@ -235,7 +223,6 @@ Manual motion guidance:
   7. if Pangolin clearly loses tracking or keeps resetting, press Ctrl-C
 
 Recorded topics:
-  - /odom           -> ${RAW_LOG}
   - /orb_slam3/pose -> ${SLAM_LOG}
 
 Duration:
@@ -247,6 +234,7 @@ if ! assert_clean_graph; then
 Refusing to start: the ROS graph is already dirty.
 
 Stop any existing base, camera, or ORB-SLAM publishers and rerun this script.
+Stop any existing camera or ORB-SLAM publishers and rerun this script.
 EOF
   exit 1
 fi
@@ -259,7 +247,6 @@ if ! preflight_check; then
 Preflight failed.
 
 Relevant logs:
-  ${BASE_LAUNCH_LOG}
   ${CAMERA_LAUNCH_LOG}
   ${ORBSLAM_LAUNCH_LOG}
   ${PREFLIGHT_LOG}
@@ -268,11 +255,6 @@ Manual diagnostics were not started.
 EOF
   exit 1
 fi
-
-stdbuf -oL timeout "${DURATION}" ros2 topic echo /odom \
-  | stdbuf -oL "${WATCHER}" --label raw \
-  | tee "${RAW_LOG}" >/dev/null &
-RECORDING_PIDS+=("$!")
 
 stdbuf -oL timeout "${DURATION}" ros2 topic echo /orb_slam3/pose \
   | stdbuf -oL "${WATCHER}" --label slam \
@@ -296,9 +278,7 @@ if (( INTERRUPTED == 1 )); then
 Manual diagnostics interrupted.
 
 Captured files so far:
-  ${RAW_LOG}
   ${SLAM_LOG}
-  ${BASE_LAUNCH_LOG}
   ${CAMERA_LAUNCH_LOG}
   ${ORBSLAM_LAUNCH_LOG}
   ${PREFLIGHT_LOG}
@@ -313,9 +293,7 @@ cat <<EOF
 Manual diagnostics complete.
 
 Captured files:
-  ${RAW_LOG}
   ${SLAM_LOG}
-  ${BASE_LAUNCH_LOG}
   ${CAMERA_LAUNCH_LOG}
   ${ORBSLAM_LAUNCH_LOG}
   ${PREFLIGHT_LOG}
