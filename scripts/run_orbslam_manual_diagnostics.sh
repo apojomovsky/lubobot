@@ -18,6 +18,8 @@ BASE_SERIAL_PORT="${BASE_SERIAL_PORT:-/dev/ttyUSB0}"
 VIDEO_DEVICE="${VIDEO_DEVICE:-/dev/v4l/by-id/usb-GENERAL_GENERAL_WEBCAM_JH3503_20230616_v001-video-index0}"
 USE_PANGOLIN="${USE_PANGOLIN:-true}"
 USE_RVIZ="${USE_RVIZ:-false}"
+CAMERA_PITCH_DEG="${CAMERA_PITCH_DEG:-0}"
+CAMERA_PITCH_RAD="$(python3 -c 'import math,sys; print(f"{math.radians(float(sys.argv[1])):.6f}")' "${CAMERA_PITCH_DEG}")"
 
 mkdir -p "${OUT_DIR}"
 
@@ -106,6 +108,7 @@ start_stack() {
 
   stdbuf -oL ros2 launch robolubo camera.launch.py \
     video_device:="${VIDEO_DEVICE}" \
+    camera_pitch:="${CAMERA_PITCH_RAD}" \
     >"${CAMERA_LAUNCH_LOG}" 2>&1 &
   STACK_PIDS+=("$!")
 
@@ -220,6 +223,7 @@ Bringing up:
 Viewer settings:
   - Pangolin: ${USE_PANGOLIN}
   - RViz:     ${USE_RVIZ}
+  - Camera pitch: ${CAMERA_PITCH_DEG} deg (${CAMERA_PITCH_RAD} rad)
 
 Manual motion guidance:
   1. wait for the Pangolin window to appear

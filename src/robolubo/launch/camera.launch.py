@@ -180,7 +180,7 @@ def generate_launch_description():
     )
     camera_pitch_arg = DeclareLaunchArgument(
         "camera_pitch",
-        default_value="-0.15",
+        default_value="0.0",
         description="Camera pitch offset in radians relative to the parent frame",
     )
     camera_yaw_arg = DeclareLaunchArgument(
