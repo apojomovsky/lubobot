@@ -12,7 +12,6 @@ services:
     network_mode: host
     stdin_open: true
     tty: true
-    init: true
     environment:
       DISPLAY: ${DISPLAY:-}
       QT_X11_NO_MITSHM: "1"

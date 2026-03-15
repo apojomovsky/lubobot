@@ -164,7 +164,7 @@ scripts/ros_attach.sh
 
 `scripts/ros_attach.sh` is now just an alias for `scripts/ros_shell.sh`.
 
-Exiting a shell does not stop the shared container. Use `scripts/ros_down.sh` when you want that container removed.
+Exiting a shell does not stop the shared container. Use `scripts/ros_down.sh` when you want that container stopped.
 
 Run a one-shot command:
 
@@ -214,6 +214,14 @@ Bring the container up:
 ```bash
 just ros-up
 ```
+
+The helper scripts now use a persistent container workflow:
+
+- `ros-up` creates the `lubobot-humble-dev` container once, then later reuses it
+- `ros-shell` starts the existing container if needed and execs into it
+- `ros-down` stops the container instead of tearing it down with `docker compose down`
+
+This avoids routine `compose down` churn and reduces the chances of Docker lifecycle wedges on this host.
 
 Open a shell in the shared container:
 

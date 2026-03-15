@@ -12,13 +12,7 @@ INPUT="$(detect_input)"
 setup_gpu_env "${GPU}"
 COMPOSE_ARGS="$(compose_files "${GPU}" "${ROOT_DIR}" "${SERIAL}" "${VIDEO}" "${INPUT}")"
 
-container_id="$(docker compose ${COMPOSE_ARGS} ps -q dev)"
-container_running="false"
-if [[ -n "${container_id}" ]]; then
-  container_running="$(docker inspect -f '{{.State.Running}}' "${container_id}" 2>/dev/null || echo false)"
-fi
-
-if [[ "${container_running}" != "true" ]]; then
+if ! container_running; then
   bash "${SCRIPT_DIR}/ros_up.sh"
 fi
 

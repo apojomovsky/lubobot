@@ -31,4 +31,15 @@ echo "→ Using serial mode: ${SERIAL}"
 echo "→ Using video mode: ${VIDEO}"
 echo "→ Using input mode: ${INPUT}"
 
+if container_running; then
+  echo "→ Reusing running container: lubobot-humble-dev"
+  exit 0
+fi
+
+if container_exists; then
+  echo "→ Starting existing container: lubobot-humble-dev"
+  docker start lubobot-humble-dev >/dev/null
+  exit 0
+fi
+
 docker compose ${COMPOSE_ARGS} up -d --build

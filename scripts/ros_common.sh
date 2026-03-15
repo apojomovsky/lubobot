@@ -199,3 +199,13 @@ compose_files() {
     printf -- " -f %s/docker/compose.humble.devices.yml" "${root_dir}"
   fi
 }
+
+container_exists() {
+  docker container inspect lubobot-humble-dev >/dev/null 2>&1
+}
+
+container_running() {
+  local running="false"
+  running="$(docker inspect -f '{{.State.Running}}' lubobot-humble-dev 2>/dev/null || echo false)"
+  [[ "${running}" == "true" ]]
+}
